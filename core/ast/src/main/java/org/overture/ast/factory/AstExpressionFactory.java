@@ -1,6 +1,7 @@
 package org.overture.ast.factory;
 
 import org.overture.ast.expressions.AAndBooleanBinaryExp;
+import org.overture.ast.expressions.ABooleanConstExp;
 import org.overture.ast.expressions.AEqualsBinaryExp;
 import org.overture.ast.expressions.AGreaterNumericBinaryExp;
 import org.overture.ast.expressions.AImpliesBooleanBinaryExp;
@@ -14,11 +15,20 @@ import org.overture.ast.expressions.PExp;
 import org.overture.ast.expressions.SBinaryExp;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.ast.intf.lex.ILexToken;
+import org.overture.ast.lex.LexBooleanToken;
 import org.overture.ast.lex.LexToken;
 import org.overture.ast.lex.VDMToken;
 
 public class AstExpressionFactory {
 
+	
+	public static ABooleanConstExp newAFalseConstExp() {
+		ABooleanConstExp result = new ABooleanConstExp();
+		result.setValue(new LexBooleanToken(false, null));
+		result.setLocation(null);
+		return result;
+	}
+	
 	public static AEqualsBinaryExp newAEqualsBinaryExp(PExp left, PExp right) {
 		AEqualsBinaryExp result = new AEqualsBinaryExp();
 		ILexToken op = new LexToken(null, VDMToken.EQUALS);

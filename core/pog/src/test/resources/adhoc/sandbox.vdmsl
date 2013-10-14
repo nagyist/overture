@@ -1,7 +1,4 @@
-types
-    A = (int*int*int) | (int*int);
-    B = A*A
-    
 functions
-    picker : A -> int
-    picker (x) == x.#3
+
+anz : int*int -> bool
+anz (x,y) == 1/x > 1 and 2/y > 1

@@ -87,6 +87,18 @@ abstract public class ProofObligation implements IProofObligation, Serializable 
 	private final UniqueNameGenerator generator;
 	private ILexLocation location;
 
+	protected PExp stitch;
+	
+	public PExp getStitch()
+	{
+		return stitch;
+	}
+
+	public void setStitch(PExp stitch)
+	{
+		this.stitch = stitch;
+	}
+
 	public ProofObligation(INode rootnode, POType kind,
 			IPOContextStack context, ILexLocation location) {
 		this.rootNode = rootnode;
@@ -121,6 +133,8 @@ abstract public class ProofObligation implements IProofObligation, Serializable 
 		return valuetree;
 	}
 
+	
+	
 	// this method should call a visitor on the potree that creates the "value"
 	// string as it exists in the current
 	// version

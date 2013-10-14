@@ -1,5 +1,6 @@
 package org.overture.pog.pub;
 
+import org.overture.ast.expressions.PExp;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.ast.node.INode;
 import org.overture.pof.AVdmPoTree;
@@ -33,4 +34,6 @@ public interface IProofObligation extends Comparable<IProofObligation>
 	ILexLocation getLocation();
 	
 	INode getNode();
+
+	PExp getStitch();
 }

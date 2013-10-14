@@ -31,14 +31,14 @@ import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.POType;
 
-public class NonZeroObligation extends ProofObligation
+public class NonZeroLPF extends ProofObligation
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5773921447005368923L;
 
-	public NonZeroObligation(
+	public NonZeroLPF(
 		ILexLocation location, PExp exp, IPOContextStack ctxt)
 	{
 		super(exp, POType.NON_ZERO, ctxt, exp.getLocation());
@@ -47,9 +47,11 @@ public class NonZeroObligation extends ProofObligation
 		
 		AIntLiteralExp zeroExp = getIntLiteral(0);		
 		ANotEqualBinaryExp notEqualsExp = AstExpressionFactory.newANotEqualBinaryExp(exp.clone(), zeroExp);
-		
+		stitch = notEqualsExp;
 		
 //		valuetree.setContext(ctxt.getContextNodeList());
 		valuetree.setPredicate(ctxt.getPredWithContext(notEqualsExp));
 	}
+	
+	
 }
