@@ -44,11 +44,11 @@ import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.POType;
 
 
-public class FiniteMapObligation extends ProofObligation
+public class FiniteMapLPF extends ProofObligation
 {
 	private static final long serialVersionUID = -2891663568497319141L;
 
-	public FiniteMapObligation(AMapCompMapExp exp, PType mapType, IPOContextStack ctxt)
+	public FiniteMapLPF(AMapCompMapExp exp, PType mapType, IPOContextStack ctxt)
 	{
 		super(exp, POType.FINITE_MAP, ctxt, exp.getLocation());
 
@@ -65,6 +65,8 @@ public class FiniteMapObligation extends ProofObligation
 		AExistsExp existsExp = new AExistsExp();
 		existsExp.setBindList(getMultipleTypeBindList(mapType.clone(), finmap));
 		existsExp.setPredicate(getForallExp(exp.clone(), finmap, findex));
+		
+		stitch = existsExp;
 		
 		valuetree.setPredicate(ctxt.getPredWithContext(existsExp));
 	}

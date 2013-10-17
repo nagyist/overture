@@ -38,11 +38,11 @@ import org.overture.pog.pub.POType;
 import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 
 
-public class FuncComposeObligation extends ProofObligation
+public class FuncComposeLPF extends ProofObligation
 {
 	private static final long serialVersionUID = 8813166638915813635L;
 
-	public FuncComposeObligation(
+	public FuncComposeLPF(
 		ACompBinaryExp exp, ILexNameToken pref1, ILexNameToken pref2, IPOContextStack ctxt)
 	{
 		super(exp, POType.FUNC_COMPOSE, ctxt, exp.getLocation());
@@ -116,6 +116,8 @@ public class FuncComposeObligation extends ProofObligation
 		{
 			forallExp.setPredicate(AstExpressionFactory.newAImpliesBooleanBinaryExp(firstPart, secondPart));
 		}
+		
+		stitch = forallExp;
 
 		//valuetree.setContext(ctxt.getContextNodeList());
 		valuetree.setPredicate(ctxt.getPredWithContext(forallExp));

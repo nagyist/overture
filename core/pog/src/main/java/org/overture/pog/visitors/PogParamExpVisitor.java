@@ -28,9 +28,9 @@ import org.overture.ast.types.ASeq1SeqType;
 import org.overture.ast.types.AUnionType;
 import org.overture.ast.types.PType;
 import org.overture.ast.types.SMapType;
-import org.overture.pog.obligation.CasesExhaustiveObligation;
-import org.overture.pog.obligation.FiniteMapObligation;
-import org.overture.pog.obligation.FuncComposeObligation;
+import org.overture.pog.obligation.CasesExhaustiveLPF;
+import org.overture.pog.obligation.FiniteMapLPF;
+import org.overture.pog.obligation.FuncComposeLPF;
 import org.overture.pog.obligation.FunctionApplyObligation;
 import org.overture.pog.obligation.LPFAndPO;
 import org.overture.pog.obligation.LetBeExistsObligation;
@@ -261,7 +261,7 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 			question.pop();
 
 		if (node.getOthers() == null && !hasIgnore)
-			obligations.add(new CasesExhaustiveObligation(node, question));
+			obligations.add(new CasesExhaustiveLPF(node, question));
 
 		return obligations;
 	}
@@ -288,7 +288,7 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 		}
 
 		if (finiteTest)
-			obligations.add(new FiniteMapObligation(node, node.getType(), question));
+			obligations.add(new FiniteMapLPF(node, node.getType(), question));
 
 		PExp predicate = node.getPredicate();
 		if (predicate != null)
@@ -427,7 +427,10 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 		{
 			obligations.addAll(mb.apply(rootVisitor, question));
 		}
+		
+	//	IProofObligation defpos = 		obligations.addAll(node.getPredicate().apply(mainVisitor, question));
 
+		//new LPFFORALL PO collection
 		question.push(new POForAllContext(node));
 		obligations.addAll(node.getPredicate().apply(mainVisitor, question));
 		question.pop();
@@ -1121,7 +1124,7 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 			ILexNameToken pref2 = PExpAssistantTC.getPreName(rExp);
 
 			if (pref1 == null || !pref1.equals(PExpAssistantTC.NO_PRECONDITION))
-				obligations.add(new FuncComposeObligation(node, pref1, pref2, question));
+				obligations.add(new FuncComposeLPF(node, pref1, pref2, question));
 		}
 
 		if (PTypeAssistantTC.isMap(lType))
@@ -1745,7 +1748,7 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 
 		if (finiteTest)
 		{
-			obligations.add(new org.overture.pog.obligation.FiniteSetObligation(node, node.getSetType(), question));
+			obligations.add(new org.overture.pog.obligation.FiniteSetLPF(node, node.getSetType(), question));
 		}
 
 		if (predicate != null)

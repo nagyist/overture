@@ -41,7 +41,7 @@ import org.overture.ast.types.ASetType;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.POType;
 
-public class FiniteSetObligation extends ProofObligation {
+public class FiniteSetLPF extends ProofObligation {
 
 	private static final long serialVersionUID = 4471304924561635823L;
 
@@ -49,7 +49,7 @@ public class FiniteSetObligation extends ProofObligation {
 	 * { f(a) | a:A & p(a) } yields exists m:map nat to map A to :f & forall a:A
 	 * & p(a) => exists idx in set dom m & m(idx) = f(a)
 	 */
-	public FiniteSetObligation(ASetCompSetExp exp, ASetType settype,
+	public FiniteSetLPF(ASetCompSetExp exp, ASetType settype,
 			IPOContextStack ctxt) {
 		super(exp, POType.FINITE_SET, ctxt, exp.getLocation());
 
@@ -65,6 +65,8 @@ public class FiniteSetObligation extends ProofObligation {
 		existsExp.setBindList(getMultipleTypeBindList(mapType, finmap));
 		existsExp.setPredicate(getForallExp(exp.clone(), finmap, findex));
 
+		stitch=existsExp;
+		
 		// valuetree.setContext(ctxt.getContextNodeList());
 		valuetree.setPredicate(ctxt.getPredWithContext(existsExp));
 	}

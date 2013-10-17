@@ -28,6 +28,8 @@ public class LPFAndPO extends ProofObligation
 		PExp  or1_exp = AstExpressionFactory.newAOrBooleanBinaryExp(lfalse_exp, rfalse_exp);
 		PExp or2_exp = AstExpressionFactory.newAOrBooleanBinaryExp(or1_exp, defs_exp);
 		
+		stitch=or2_exp;
+		
 		valuetree.setPredicate(ctxt.getPredWithContext(or2_exp));
 		
 		
