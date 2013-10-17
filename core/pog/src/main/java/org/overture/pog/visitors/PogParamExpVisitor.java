@@ -428,12 +428,18 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 			obligations.addAll(mb.apply(rootVisitor, question));
 		}
 		
-	//	IProofObligation defpos = 		obligations.addAll(node.getPredicate().apply(mainVisitor, question));
+		IProofObligationList fapos = node.getPredicate().apply(mainVisitor, question);
 
-		//new LPFFORALL PO collection
-		question.push(new POForAllContext(node));
-		obligations.addAll(node.getPredicate().apply(mainVisitor, question));
-		question.pop();
+		
+		if (!fapos.isEmpty() ){
+			List<PExp> definedPredicates = new LinkedList<PExp>();
+			for (IProofObligation po : fapos){
+				definedPredicates.add(po.getStitch());
+			}
+	
+			obligations.add(new LPFForAllPO(node, node.getPredicate(), definedPredicates, question));
+		}
+
 		return obligations;
 	}
 
