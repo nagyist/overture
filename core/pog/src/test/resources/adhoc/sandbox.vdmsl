@@ -1,4 +1,4 @@
 functions
 
-anz : int -> bool
-anz (a) == forall x in set {1/y  | y in set {1,2,3} & y >0} & 1/x>0
+h : () -> int*int -> int
+h () (x, 0 ) == 0
