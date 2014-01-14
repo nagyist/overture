@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.intf.IQuestionAnswer;
+import org.overture.ast.assistant.pattern.PTypeList;
 import org.overture.ast.assistant.type.PTypeAssistant;
 import org.overture.ast.definitions.ATypeDefinition;
 import org.overture.ast.definitions.PDefinition;
@@ -255,6 +256,17 @@ public class PTypeAssistantTC extends PTypeAssistant
 		}
 	}
 
+	public static boolean isTag(PType type)
+	{
+		try
+		{
+			return type.apply(af.getTagBasisChecker());
+		} catch (AnalysisException e)
+		{
+			return false;
+		}
+	}
+
 	public static ARecordInvariantType getRecord(PType type)
 	{
 		try
@@ -460,4 +472,15 @@ public class PTypeAssistantTC extends PTypeAssistant
 		return other;
 	}
 
+	public static PTypeList getComposeTypes(PType type)
+	{
+		try
+		{
+			return type.apply(af.getComposeTypeCollector());
+		}
+		catch (AnalysisException e)
+		{
+			return new PTypeList();
+		}
+	}
 }

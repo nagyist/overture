@@ -261,7 +261,7 @@ type {-> package='org.overture.ast.types'
 	|	(opaque):java_Boolean
     |   (invDef):definition.#Function.explicit}
     =   {named} (name):LexNameToken (type):type //[invdef]:#Function.explicit //super = invariant type
-    |   {record} [name]:LexNameToken (fields):field.field* (infinite):java_Boolean //[invdef]:#Function.explicit //super = invariant type
+    |   {record} [name]:LexNameToken (fields):field.field* (infinite):java_Boolean (composed):java_Boolean //[invdef]:#Function.explicit //super = invariant type
     ;
 
 #basic {-> package='org.overture.ast.types'}
@@ -382,6 +382,7 @@ definition {-> package='org.overture.ast.definitions'
     |   {thread} [statement]:stm [operationName]:LexNameToken [operationDef]:definition.#Operation.explicit
     |   {type} (invType):type.#invariant [invPattern]:pattern [invExpression]:exp 
                [invdef]:definition.#Function.explicit [infinite]:java_Boolean (name):LexNameToken//is access missing here
+               (composeDefinitions):definition*
     |   {untyped}
     |   {value} [pattern]:pattern [expression]:exp [defs]:definition* (expType):type //is access missing here
     ;
@@ -576,12 +577,14 @@ stm {-> package='org.overture.ast.statements'
     |   {skip}
     |   {specification} [externals]:clause.external* [precondition]:exp [postcondition]:exp [errors]:case.error*
     |   {start} [obj]:exp
+    |   {stop} [obj]:exp
     |   {subclassResponsibility}
     |   {tixe} [traps]:stmtAlternative.tixe* [body]:stm
     //|   {traceVariable} //TODO why does this have a value inside?
     |   {trap} [patternBind]:patternBind.def [with]:stm [body]:stm
     |   {while} [exp]:exp [statement]:stm
     |   {periodic} [opname]:LexNameToken [args]:exp* (period):java_Long (jitter):java_Long (delay):java_Long (offset):java_Long
+    |   {sporadic} [opname]:LexNameToken [args]:exp* (minDelay):java_Long (maxDelay):java_Long (offset):java_Long
     ; 
     
 #SimpleBlock {-> package='org.overture.ast.statements'

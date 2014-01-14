@@ -1381,7 +1381,9 @@ public class TypeCheckerExpVisitor extends AbstractTypeCheckVisitor
 							}
 						}
 
-						fixed.add(question.assistantFactory.createPTypeAssistant().typeResolve(ptype, null, THIS, question));
+						ptype = question.assistantFactory.createPTypeAssistant().typeResolve(ptype, null, THIS, question);
+						fixed.add(ptype);
+						TypeComparator.checkComposeTypes(ptype, question.env, false);
 					}
 
 					node.setActualTypes(fixed);
@@ -1549,6 +1551,7 @@ public class TypeCheckerExpVisitor extends AbstractTypeCheckVisitor
 		if (basictype != null)
 		{
 			basictype = question.assistantFactory.createPTypeAssistant().typeResolve(basictype, null, THIS, question);
+			TypeComparator.checkComposeTypes(basictype, question.env, false);
 		}
 
 		ILexNameToken typename = node.getTypeName();
@@ -1653,6 +1656,7 @@ public class TypeCheckerExpVisitor extends AbstractTypeCheckVisitor
 		def.apply(THIS, question);
 		Environment local = new FlatCheckedEnvironment(question.assistantFactory, def, question.env, question.scope);
 		TypeCheckInfo newInfo = new TypeCheckInfo(question.assistantFactory, local, question.scope);
+		local.setEnclosingDefinition(def); 	// Prevent recursive checks
 
 		PType result = node.getExpression().apply(THIS, newInfo);
 		local.unusedCheck();
@@ -1882,19 +1886,13 @@ public class TypeCheckerExpVisitor extends AbstractTypeCheckVisitor
 		PType rec = null;
 		if (typeDef instanceof ATypeDefinition)
 		{
-			rec = ((ATypeDefinition) typeDef).getInvType();
+			rec = ((ATypeDefinition) typeDef).getType();
 		} else if (typeDef instanceof AStateDefinition)
 		{
 			rec = ((AStateDefinition) typeDef).getRecordType();
 		} else
 		{
 			rec = question.assistantFactory.createPDefinitionAssistant().getType(typeDef);
-		}
-
-		while (rec instanceof ANamedInvariantType)
-		{
-			ANamedInvariantType nrec = (ANamedInvariantType) rec;
-			rec = nrec.getType();
 		}
 
 		if (!(rec instanceof ARecordInvariantType))
@@ -2023,6 +2021,7 @@ public class TypeCheckerExpVisitor extends AbstractTypeCheckVisitor
 
 			node.setBasicType(question.assistantFactory.createPTypeAssistant().typeResolve(node.getBasicType(), null, THIS, question));
 			result = node.getBasicType();
+			TypeComparator.checkComposeTypes(result, question.env, false);
 		} else
 		{
 			node.setTypedef(question.env.findType(node.getTypeName(), node.getLocation().getModule()));
@@ -2444,7 +2443,7 @@ public class TypeCheckerExpVisitor extends AbstractTypeCheckVisitor
 				question.qualifiers = null;
 				PType rhs = ee.getRight().apply(THIS, question);
 
-				if (PTypeAssistantTC.isRecord(rhs))
+				if (PTypeAssistantTC.isTag(rhs))
 				{
 					ARecordInvariantType rt = PTypeAssistantTC.getRecord(rhs);
 					canBeExecuted = rt.getName().getName().equals(node.getState().getName().getName());

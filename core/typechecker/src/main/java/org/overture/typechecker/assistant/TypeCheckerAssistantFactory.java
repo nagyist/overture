@@ -10,6 +10,7 @@ import org.overture.ast.analysis.intf.IAnswer;
 import org.overture.ast.analysis.intf.IQuestion;
 import org.overture.ast.analysis.intf.IQuestionAnswer;
 import org.overture.ast.assistant.AstAssistantFactory;
+import org.overture.ast.assistant.pattern.PTypeList;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.intf.lex.ILexNameToken;
@@ -99,6 +100,7 @@ import org.overture.typechecker.assistant.type.AUnionTypeAssistantTC;
 import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 import org.overture.typechecker.assistant.type.SNumericBasicTypeAssistantTC;
 import org.overture.typechecker.utilities.CallableOperationChecker;
+import org.overture.typechecker.utilities.ComposeTypeCollector;
 import org.overture.typechecker.utilities.DefinitionCollector;
 import org.overture.typechecker.utilities.DefinitionEqualityChecker;
 import org.overture.typechecker.utilities.DefinitionFinder;
@@ -155,6 +157,7 @@ import org.overture.typechecker.utilities.type.SeqBasisChecker;
 import org.overture.typechecker.utilities.type.SeqTypeFinder;
 import org.overture.typechecker.utilities.type.SetBasisChecker;
 import org.overture.typechecker.utilities.type.SetTypeFinder;
+import org.overture.typechecker.utilities.type.TagBasisChecker;
 import org.overture.typechecker.utilities.type.TypeDisplayer;
 import org.overture.typechecker.utilities.type.TypeEqualityChecker;
 import org.overture.typechecker.utilities.type.TypeUnresolver;
@@ -890,6 +893,12 @@ public class TypeCheckerAssistantFactory extends AstAssistantFactory implements
 	}
 
 	@Override
+	public AnswerAdaptor<Boolean> getTagBasisChecker()
+	{
+		return new TagBasisChecker(this);
+	}
+
+	@Override
 	public IAnswer<ARecordInvariantType> getRecordTypeFinder()
 	{
 		return new RecordTypeFinder(this);
@@ -1085,5 +1094,11 @@ public class TypeCheckerAssistantFactory extends AstAssistantFactory implements
 	public IQuestionAnswer<AModuleModules, List<PDefinition>> getImportDefinitionFinder()
 	{
 		return new ImportDefinitionFinder(this);
+	}
+
+	@Override
+	public IAnswer<PTypeList> getComposeTypeCollector()
+	{
+		return new ComposeTypeCollector();
 	}
 }
