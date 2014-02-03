@@ -13,8 +13,6 @@ import org.overture.ast.patterns.ATuplePattern;
 import org.overture.ast.patterns.AUnionPattern;
 import org.overture.ast.patterns.PPattern;
 import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
-import org.overture.typechecker.assistant.pattern.AMapletPatternMapletAssistantTC;
-import org.overture.typechecker.assistant.pattern.PPatternListAssistantTC;
 
 /**
  * This class set a pattern to unresolved.
@@ -50,14 +48,14 @@ public class PatternUnresolver extends AnalysisAdaptor
 	@Override
 	public void caseASeqPattern(ASeqPattern pattern) throws AnalysisException
 	{
-		PPatternListAssistantTC.unResolve(pattern.getPlist());
+		af.createPPatternListAssistant().unResolve(pattern.getPlist());
 		pattern.setResolved(false);
 	}
 
 	@Override
 	public void caseASetPattern(ASetPattern pattern) throws AnalysisException
 	{
-		PPatternListAssistantTC.unResolve(pattern.getPlist());
+		af.createPPatternListAssistant().unResolve(pattern.getPlist());
 		pattern.setResolved(false);
 	}
 
@@ -65,7 +63,7 @@ public class PatternUnresolver extends AnalysisAdaptor
 	public void caseATuplePattern(ATuplePattern pattern)
 			throws AnalysisException
 	{
-		PPatternListAssistantTC.unResolve(pattern.getPlist());
+		af.createPPatternListAssistant().unResolve(pattern.getPlist());
 		pattern.setResolved(false);
 	}
 
@@ -92,10 +90,9 @@ public class PatternUnresolver extends AnalysisAdaptor
 	{
 		for (AMapletPatternMaplet mp : pattern.getMaplets())
 		{
-			AMapletPatternMapletAssistantTC.unResolve(mp);
+			//af.createAMapletPatternMapletAssistant().unResolve(mp);
+			mp.apply(THIS);
 		}
-
-		// pattern.setResolved(false);
 		pattern.setResolved(false);
 	}
 

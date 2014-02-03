@@ -14,21 +14,11 @@ import org.overture.ast.patterns.ASetPattern;
 import org.overture.ast.patterns.ATuplePattern;
 import org.overture.ast.patterns.AUnionPattern;
 import org.overture.ast.patterns.PPattern;
+import org.overture.ast.typechecker.NameScope;
 import org.overture.ast.types.PType;
 import org.overture.typechecker.TypeCheckException;
 import org.overture.typechecker.TypeCheckInfo;
 import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
-import org.overture.typechecker.assistant.pattern.AConcatenationPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.AExpressionPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.AMapPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.AMapUnionPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.AMapletPatternMapletAssistantTC;
-import org.overture.typechecker.assistant.pattern.ARecordPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.ASeqPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.ASetPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.ATuplePatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.AUnionPatternAssistantTC;
-import org.overture.typechecker.assistant.pattern.PPatternListAssistantTC;
 
 /**
  * This class set a pattern to resolved.
@@ -81,7 +71,7 @@ public class PatternResolver extends
 			pattern.getRight().apply(THIS, question);
 		} catch (TypeCheckException e)
 		{
-			AConcatenationPatternAssistantTC.unResolve(pattern);
+			af.createPPatternAssistant().unResolve(pattern);
 			throw e;
 		}
 	}
@@ -90,9 +80,26 @@ public class PatternResolver extends
 	public void caseAExpressionPattern(AExpressionPattern pattern,
 			NewQuestion question) throws AnalysisException
 	{
-		AExpressionPatternAssistantTC.typeResolve(pattern, question.rootVisitor, question.question);
-		// Have to ask how is it done.
+		//af.createAExpressionPatternAssistant().typeResolve(pattern, question.rootVisitor, question.question);
+		//Have to ask how is it done.
+		if (pattern.getResolved())
+		{
+			return;
+		} else
+		{
+			pattern.setResolved(true);
+		}
 
+		try
+		{
+			question.question.qualifiers = null;
+			question.question.scope = NameScope.NAMESANDSTATE;
+			pattern.getExp().apply(question.rootVisitor, question.question);
+		} catch (TypeCheckException e)
+		{
+			af.createPPatternAssistant().unResolve(pattern);
+			throw e;
+		}
 	}
 
 	@Override
@@ -109,11 +116,11 @@ public class PatternResolver extends
 
 		try
 		{
-			PPatternListAssistantTC.typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
+			af.createPPatternListAssistant().typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
 			pattern.setType(af.createPTypeAssistant().typeResolve(pattern.getType(), null, question.rootVisitor, question.question));
 		} catch (TypeCheckException e)
 		{
-			ARecordPatternAssistantTC.unResolve(pattern);
+			af.createPPatternAssistant().unResolve(pattern);
 			throw e;
 		}
 	}
@@ -132,10 +139,10 @@ public class PatternResolver extends
 
 		try
 		{
-			PPatternListAssistantTC.typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
+			af.createPPatternListAssistant().typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
 		} catch (TypeCheckException e)
 		{
-			ASeqPatternAssistantTC.unResolve(pattern);
+			af.createPPatternAssistant().unResolve(pattern);
 			throw e;
 		}
 	}
@@ -154,10 +161,10 @@ public class PatternResolver extends
 
 		try
 		{
-			PPatternListAssistantTC.typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
+			af.createPPatternListAssistant().typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
 		} catch (TypeCheckException e)
 		{
-			ASetPatternAssistantTC.unResolve(pattern);
+			af.createPPatternAssistant().unResolve(pattern);
 			throw e;
 		}
 	}
@@ -176,10 +183,10 @@ public class PatternResolver extends
 
 		try
 		{
-			PPatternListAssistantTC.typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
+			af.createPPatternListAssistant().typeResolve(pattern.getPlist(), question.rootVisitor, question.question);
 		} catch (TypeCheckException e)
 		{
-			ATuplePatternAssistantTC.unResolve(pattern);
+			af.createPPatternAssistant().unResolve(pattern);
 			throw e;
 		}
 	}
@@ -202,7 +209,8 @@ public class PatternResolver extends
 			pattern.getRight().apply(THIS, question);
 		} catch (TypeCheckException e)
 		{
-			AUnionPatternAssistantTC.unResolve(pattern);
+			//AUnionPatternAssistantTC.unResolve(pattern);
+			af.createPPatternAssistant().unResolve(pattern);
 			throw e;
 		}
 	}
@@ -223,11 +231,13 @@ public class PatternResolver extends
 		{
 			for (AMapletPatternMaplet mp : pattern.getMaplets())
 			{
-				AMapletPatternMapletAssistantTC.typeResolve(mp, question.rootVisitor, question.question);
+				//af.createAMapletPatternMapletAssistant().typeResolve(mp, question.rootVisitor, question.question);
+				mp.apply(THIS, question);
 			}
 		} catch (TypeCheckException e)
 		{
-			AMapPatternAssistantTC.unResolve(pattern);
+			//af.createAMapPatternAssistant().unResolve(pattern);
+			pattern.apply(af.getPatternUnresolver());
 			throw e;
 		}
 	}
@@ -250,7 +260,8 @@ public class PatternResolver extends
 			pattern.getRight().apply(THIS, question);
 		} catch (TypeCheckException e)
 		{
-			AMapUnionPatternAssistantTC.unResolve(pattern);
+			//af.createAMapUnionPatternAssistant().unResolve(pattern);
+			pattern.apply(af.getPatternUnresolver());
 			throw e;
 		}
 	}

@@ -34,9 +34,6 @@ import org.overture.ast.node.INode;
 import org.overture.ast.types.AUnionType;
 import org.overture.ast.types.PType;
 import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
-import org.overture.typechecker.assistant.definition.AValueDefinitionAssistantTC;
-import org.overture.typechecker.assistant.definition.PDefinitionAssistantTC;
-import org.overture.typechecker.assistant.definition.SClassDefinitionAssistantTC;
 
 /**
  * This class implements a way to collect definitions from a node in the AST
@@ -50,7 +47,7 @@ import org.overture.typechecker.assistant.definition.SClassDefinitionAssistantTC
 public class DefinitionTypeFinder extends AnswerAdaptor<PType>
 {
 
-	protected ITypeCheckerAssistantFactory af;
+	protected static ITypeCheckerAssistantFactory af;
 
 	public DefinitionTypeFinder(ITypeCheckerAssistantFactory af)
 	{
@@ -68,7 +65,7 @@ public class DefinitionTypeFinder extends AnswerAdaptor<PType>
 	public PType defaultSClassDefinition(SClassDefinition node)
 			throws AnalysisException
 	{
-		return SClassDefinitionAssistantTC.getType((SClassDefinition) node);
+		return af.createSClassDefinitionAssistant().getType((SClassDefinition) node);
 	}
 
 	@Override
@@ -108,15 +105,15 @@ public class DefinitionTypeFinder extends AnswerAdaptor<PType>
 	}
 
 	@Override
-	public PType caseAImplicitFunctionDefinition(
-			AImplicitFunctionDefinition node) throws AnalysisException
+	public PType caseAImplicitFunctionDefinition(AImplicitFunctionDefinition node) 
+			throws AnalysisException
 	{
 		return node.getType();
 	}
 
 	@Override
-	public PType caseAImplicitOperationDefinition(
-			AImplicitOperationDefinition node) throws AnalysisException
+	public PType caseAImplicitOperationDefinition(AImplicitOperationDefinition node) 
+			throws AnalysisException
 	{
 		return node.getType();
 	}
@@ -135,12 +132,12 @@ public class DefinitionTypeFinder extends AnswerAdaptor<PType>
 		// LocalDefinition. It would be better to somehow list the
 		// inherited definitions that refer to a LocalDefinition and update
 		// them...
-
+ 
 		if (d.getSuperdef() instanceof AUntypedDefinition)
 		{
 			if (d.getClassDefinition() != null)
 			{
-				d.setSuperdef(PDefinitionAssistantTC.findName(d.getClassDefinition(), d.getSuperdef().getName(), d.getNameScope()));
+				d.setSuperdef(af.createPDefinitionAssistant().findName(d.getClassDefinition(), d.getSuperdef().getName(), d.getNameScope()));
 			}
 		}
 	}
@@ -149,6 +146,7 @@ public class DefinitionTypeFinder extends AnswerAdaptor<PType>
 	public PType caseAInheritedDefinition(AInheritedDefinition node)
 			throws AnalysisException
 	{
+
 		checkSuperDefinition(node);
 		return af.createPDefinitionAssistant().getType(node.getSuperdef());
 	}
@@ -244,7 +242,10 @@ public class DefinitionTypeFinder extends AnswerAdaptor<PType>
 	public PType caseAValueDefinition(AValueDefinition node)
 			throws AnalysisException
 	{
-		return AValueDefinitionAssistantTC.getType((AValueDefinition) node);
+		//return AValueDefinitionAssistantTC.getType((AValueDefinition) node);
+		return node.getType() != null ? node.getType()
+				: (node.getExpType() != null ? node.getExpType()
+						: AstFactory.newAUnknownType(node.getLocation()));
 	}
 
 	@Override

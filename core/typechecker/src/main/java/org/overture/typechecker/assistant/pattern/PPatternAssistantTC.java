@@ -33,11 +33,11 @@ public class PPatternAssistantTC extends PPatternAssistant
 	 * Get a set of definitions for the pattern's variables. Note that if the pattern includes duplicate variable names,
 	 * these are collapse into one.
 	 */
-	public static List<PDefinition> getDefinitions(PPattern rp, PType ptype,
+	public List<PDefinition> getDefinitions(PPattern rp, PType ptype,
 			NameScope scope)
 	{
 		PDefinitionSet set = af.createPDefinitionSet();
-		set.addAll(getAllDefinitions(rp, ptype, scope));
+		set.addAll(af.createPPatternAssistant().getAllDefinitions(rp, ptype, scope));
 		List<PDefinition> result = new Vector<PDefinition>(set);
 		return result;
 	}
@@ -45,7 +45,7 @@ public class PPatternAssistantTC extends PPatternAssistant
 	/**
 	 * Get a complete list of all definitions, including duplicates. This method should only be used only by PP
 	 */
-	private static List<PDefinition> getAllDefinitions(PPattern pattern,
+	private List<PDefinition> getAllDefinitions(PPattern pattern,
 			PType ptype, NameScope scope)
 	{
 		try
@@ -58,7 +58,7 @@ public class PPatternAssistantTC extends PPatternAssistant
 
 	}
 
-	public static void typeResolve(PPattern pattern,
+	public void typeResolve(PPattern pattern,
 			IQuestionAnswer<TypeCheckInfo, PType> rootVisitor,
 			TypeCheckInfo question) throws AnalysisException
 	{
@@ -71,7 +71,7 @@ public class PPatternAssistantTC extends PPatternAssistant
 		}
 	}
 
-	public static void unResolve(PPattern pattern)
+	public void unResolve(PPattern pattern)
 	{
 		try
 		{
@@ -82,7 +82,7 @@ public class PPatternAssistantTC extends PPatternAssistant
 		}
 	}
 
-	public static PType getPossibleType(PPattern pattern)
+	public PType getPossibleType(PPattern pattern)
 	{
 		try
 		{
@@ -93,12 +93,12 @@ public class PPatternAssistantTC extends PPatternAssistant
 		}
 	}
 
-	public static boolean matches(PPattern pattern, PType expType)
+	public boolean matches(PPattern pattern, PType expType)
 	{
-		return TypeComparator.compatible(getPossibleType(pattern), expType);
+		return TypeComparator.compatible(af.createPPatternAssistant().getPossibleType(pattern), expType);
 	}
 
-	public static PExp getMatchingExpression(PPattern pattern)
+	public PExp getMatchingExpression(PPattern pattern)
 	{
 		try
 		{
@@ -109,7 +109,7 @@ public class PPatternAssistantTC extends PPatternAssistant
 		}
 	}
 
-	public static boolean isSimple(PPattern pattern)
+	public boolean isSimple(PPattern pattern)
 	{
 		try
 		{
@@ -120,7 +120,7 @@ public class PPatternAssistantTC extends PPatternAssistant
 		}
 	}
 
-	public static boolean alwaysMatches(PPattern pattern)
+	public boolean alwaysMatches(PPattern pattern)
 	{
 		try
 		{

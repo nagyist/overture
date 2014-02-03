@@ -19,8 +19,6 @@ import org.overture.ast.types.PType;
 import org.overture.ast.types.SInvariantType;
 import org.overture.ast.types.SSeqType;
 import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
-import org.overture.typechecker.assistant.definition.PAccessSpecifierAssistantTC;
-import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 
 /**
  * Checks if a type is smaller than a specifier type.
@@ -145,7 +143,7 @@ public class NarrowerThanComparator extends
 		{
 			for (PDefinition d : type.getDefinitions())
 			{
-				if (PAccessSpecifierAssistantTC.narrowerThan(d.getAccess(), accessSpecifier))
+				if (af.createPAccessSpecifierAssistant().narrowerThan(d.getAccess(), accessSpecifier))
 				{
 					result = true;
 					break;
@@ -153,14 +151,14 @@ public class NarrowerThanComparator extends
 			}
 		} else if (type.getType().getDefinitions().size() == 0)
 		{
-			result = type.apply(this, accessSpecifier)
-					|| PTypeAssistantTC.narrowerThanBaseCase(type, accessSpecifier);// PTypeAssistantTC.narrowerThan(type,
-																					// accessSpecifier)
-		} else
+			result = type.apply(this, accessSpecifier) || af.createPTypeAssistant().narrowerThanBaseCase(type, accessSpecifier);//PTypeAssistantTC.narrowerThan(type, accessSpecifier)
+		}
+		else
 		{
 			for (PDefinition d : type.getType().getDefinitions())
 			{
-				if (PAccessSpecifierAssistantTC.narrowerThan(d.getAccess(), accessSpecifier))
+				if(af.createPAccessSpecifierAssistant().narrowerThan(d.getAccess(), accessSpecifier))
+
 				{
 					result = true;
 					break;
@@ -192,7 +190,7 @@ public class NarrowerThanComparator extends
 		{
 			for (PDefinition d : type.getDefinitions())
 			{
-				if (PAccessSpecifierAssistantTC.narrowerThan(d.getAccess(), accessSpecifier))
+				if (af.createPAccessSpecifierAssistant().narrowerThan(d.getAccess(), accessSpecifier))
 				{
 					result = true;
 					break;
@@ -215,7 +213,6 @@ public class NarrowerThanComparator extends
 		return result;
 	}
 
-	// FIXME: IN PTypeAssistantTC the SInvariatType is SInvariantTypeBase. ASK
 	@Override
 	public Boolean defaultSInvariantType(SInvariantType type,
 			AAccessSpecifierAccessSpecifier accessSpecifier)

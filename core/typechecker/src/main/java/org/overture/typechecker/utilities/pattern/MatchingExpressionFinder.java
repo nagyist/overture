@@ -80,8 +80,8 @@ public class MatchingExpressionFinder extends AnswerAdaptor<PExp>
 			throws AnalysisException
 	{
 		LexToken op = new LexKeywordToken(VDMToken.CONCATENATE, pattern.getLocation());
-		PExp le = PPatternAssistantTC.getMatchingExpression(pattern.getLeft());
-		PExp re = PPatternAssistantTC.getMatchingExpression(pattern.getRight());
+		PExp le = af.createPPatternAssistant().getMatchingExpression(pattern.getLeft());
+		PExp re = af.createPPatternAssistant().getMatchingExpression(pattern.getRight());
 		return AstFactory.newASeqConcatBinaryExp(le, op, re);
 	}
 
@@ -151,7 +151,7 @@ public class MatchingExpressionFinder extends AnswerAdaptor<PExp>
 
 		for (PPattern p : pattern.getPlist())
 		{
-			list.add(PPatternAssistantTC.getMatchingExpression(p));
+			list.add(af.createPPatternAssistant().getMatchingExpression(p));
 		}
 
 		ILexNameToken tpName = pattern.getTypename();
@@ -161,13 +161,13 @@ public class MatchingExpressionFinder extends AnswerAdaptor<PExp>
 	@Override
 	public PExp caseASeqPattern(ASeqPattern pattern) throws AnalysisException
 	{
-		return AstFactory.newASeqEnumSeqExp(pattern.getLocation(), PPatternListAssistantTC.getMatchingExpressionList(pattern.getPlist()));
+		return AstFactory.newASeqEnumSeqExp(pattern.getLocation(), af.createPPatternListAssistant().getMatchingExpressionList(pattern.getPlist()));
 	}
 
 	@Override
 	public PExp caseASetPattern(ASetPattern pattern) throws AnalysisException
 	{
-		return AstFactory.newASetEnumSetExp(pattern.getLocation(), PPatternListAssistantTC.getMatchingExpressionList(pattern.getPlist()));
+		return AstFactory.newASetEnumSetExp(pattern.getLocation(), af.createPPatternListAssistant().getMatchingExpressionList(pattern.getPlist()));
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class MatchingExpressionFinder extends AnswerAdaptor<PExp>
 	public PExp caseATuplePattern(ATuplePattern pattern)
 			throws AnalysisException
 	{
-		return AstFactory.newATupleExp(pattern.getLocation(), PPatternListAssistantTC.getMatchingExpressionList(pattern.getPlist()));
+		return AstFactory.newATupleExp(pattern.getLocation(), af.createPPatternListAssistant().getMatchingExpressionList(pattern.getPlist()));
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class MatchingExpressionFinder extends AnswerAdaptor<PExp>
 			throws AnalysisException
 	{
 		LexToken op = new LexKeywordToken(VDMToken.UNION, pattern.getLocation());
-		return AstFactory.newASetUnionBinaryExp(PPatternAssistantTC.getMatchingExpression(pattern.getLeft()), op, PPatternAssistantTC.getMatchingExpression(pattern.getRight()));
+		return AstFactory.newASetUnionBinaryExp(af.createPPatternAssistant().getMatchingExpression(pattern.getLeft()), op, af.createPPatternAssistant().getMatchingExpression(pattern.getRight()));
 	}
 
 	@Override
