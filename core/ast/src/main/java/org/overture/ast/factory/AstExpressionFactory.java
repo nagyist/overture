@@ -29,6 +29,13 @@ public class AstExpressionFactory {
 		return result;
 	}
 	
+	public static ABooleanConstExp newATrueConstExp() {
+		ABooleanConstExp result = new ABooleanConstExp();
+		result.setValue(new LexBooleanToken(true, null));
+		result.setLocation(null);
+		return result;
+	}
+	
 	public static AEqualsBinaryExp newAEqualsBinaryExp(PExp left, PExp right) {
 		AEqualsBinaryExp result = new AEqualsBinaryExp();
 		ILexToken op = new LexToken(null, VDMToken.EQUALS);
