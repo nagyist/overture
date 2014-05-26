@@ -46,7 +46,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
-import org.overture.ast.assistant.definition.PAccessSpecifierAssistant;
 import org.overture.ast.definitions.AExplicitFunctionDefinition;
 import org.overture.ast.definitions.AExplicitOperationDefinition;
 import org.overture.ast.node.INode;
@@ -55,10 +54,13 @@ import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.debug.core.IDebugConstants;
 import org.overture.ide.debug.core.VdmDebugPlugin;
 import org.overture.ide.ui.utility.ast.AstNameUtil;
-
+import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
+import org.overture.typechecker.assistant.TypeCheckerAssistantFactory;
 
 public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 {
+	public final ITypeCheckerAssistantFactory assistantFactory = new TypeCheckerAssistantFactory();
+
 	/**
 	 * Returns the type of configuration this shortcut is applicable to.
 	 * 
@@ -140,15 +142,15 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 		try
 		{
 			project = findProject(scope, PlatformUI.getWorkbench().getProgressService());
-			
-			ILaunchConfiguration config =findLaunchConfiguration(project.getName(),getConfigurationType());
-			if(config!=null)
+
+			ILaunchConfiguration config = findLaunchConfiguration(project.getName(), getConfigurationType());
+			if (config != null)
 			{
-				//config already exists for the project.
+				// config already exists for the project.
 				launch(config, mode);
 				return;
 			}
-			
+
 			types = findTypes(scope, PlatformUI.getWorkbench().getProgressService());
 
 		} catch (InterruptedException e)
@@ -204,7 +206,7 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 
 	private void launch(INode type, String mode, String projectName)
 	{
-		ILaunchConfiguration config = findLaunchConfiguration( projectName, getConfigurationType());
+		ILaunchConfiguration config = findLaunchConfiguration(projectName, getConfigurationType());
 		if (config == null)
 		{
 			config = createConfiguration(type, projectName);
@@ -212,7 +214,7 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 		launch(config, mode);
 
 	}
-	
+
 	private void launch(ILaunchConfiguration config, String mode)
 	{
 		if (config != null)
@@ -227,7 +229,8 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 	 * 
 	 * @return a configuration to use for launching the given type or <code>null</code> if none
 	 */
-	protected ILaunchConfiguration findLaunchConfiguration(String projectName, ILaunchConfigurationType configType)
+	protected ILaunchConfiguration findLaunchConfiguration(String projectName,
+			ILaunchConfigurationType configType)
 	{
 		List<ILaunchConfiguration> candidateConfigs = Collections.emptyList();
 		try
@@ -238,15 +241,15 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 			{
 				ILaunchConfiguration config = configs[i];
 
-//				String defaultModule = config.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_DEFAULT, "");
+				// String defaultModule = config.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_DEFAULT, "");
 				String pName = config.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_PROJECT, "");
-//				String operation = config.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_OPERATION, "");
+				// String operation = config.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_OPERATION, "");
 
-				if (//defaultModule.equals(getModuleName(type).toString())
-						//&&
-						pName.equalsIgnoreCase(projectName)
-						//&& operation.equals(getOperationName(type) + "()")
-						)
+				if (// defaultModule.equals(getModuleName(type).toString())
+					// &&
+				pName.equalsIgnoreCase(projectName)
+				// && operation.equals(getOperationName(type) + "()")
+				)
 				{ //$NON-NLS-1$
 					candidateConfigs.add(config);
 				}
@@ -288,7 +291,7 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 		if (node instanceof AExplicitFunctionDefinition)
 		{
 			name = ((AExplicitFunctionDefinition) node).getLocation().getModule();
-			if (!PAccessSpecifierAssistant.isStatic(((AExplicitFunctionDefinition) node).getAccess()))
+			if (!assistantFactory.createPAccessSpecifierAssistant().isStatic(((AExplicitFunctionDefinition) node).getAccess()))
 			{
 				name += "()";
 			}
@@ -297,7 +300,7 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 		if (node instanceof AExplicitOperationDefinition)
 		{
 			name = ((AExplicitOperationDefinition) node).getLocation().getModule();
-			if (!PAccessSpecifierAssistant.isStatic(((AExplicitOperationDefinition) node).getAccess()))
+			if (!assistantFactory.createPAccessSpecifierAssistant().isStatic(((AExplicitOperationDefinition) node).getAccess()))
 			{
 				name += "()";
 			}
@@ -315,11 +318,11 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 	{
 		if (node instanceof AExplicitFunctionDefinition)
 		{
-			return PAccessSpecifierAssistant.isStatic(((AExplicitFunctionDefinition) node).getAccess());
+			return assistantFactory.createPAccessSpecifierAssistant().isStatic(((AExplicitFunctionDefinition) node).getAccess());
 		}
 		if (node instanceof AExplicitOperationDefinition)
 		{
-			return PAccessSpecifierAssistant.isStatic(((AExplicitOperationDefinition) node).getAccess());
+			return assistantFactory.createPAccessSpecifierAssistant().isStatic(((AExplicitOperationDefinition) node).getAccess());
 		}
 
 		return true;
@@ -371,11 +374,11 @@ public abstract class VdmLaunchShortcut implements ILaunchShortcut2
 		// IEditorInput input = editor.getEditorInput();
 		// IJavaElement je = (IJavaElement) input.getAdapter(IJavaElement.class);
 		// TODO get ISourceUnit from editor
-//		IVdmSourceUnit je = null;
-//		if (je != null)
-//		{
-//			searchAndLaunch(new Object[] { je }, mode, getTypeSelectionTitle(), getEditorEmptyMessage());
-//		}
+		// IVdmSourceUnit je = null;
+		// if (je != null)
+		// {
+		// searchAndLaunch(new Object[] { je }, mode, getTypeSelectionTitle(), getEditorEmptyMessage());
+		// }
 	}
 
 	public void launch(ISelection selection, String mode)

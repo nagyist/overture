@@ -3,7 +3,7 @@ package org.overture.typechecker.visitor;
 import java.util.List;
 import java.util.Vector;
 
-import org.overture.ast.analysis.QuestionAnswerAdaptor;
+import org.overture.ast.analysis.intf.IQuestionAnswer;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.factory.AstFactory;
 import org.overture.ast.intf.lex.ILexNameToken;
@@ -20,22 +20,14 @@ import org.overture.typechecker.FlatCheckedEnvironment;
 import org.overture.typechecker.TypeCheckInfo;
 import org.overture.typechecker.TypeCheckerErrors;
 import org.overture.typechecker.TypeComparator;
-import org.overture.typechecker.assistant.definition.PDefinitionAssistantTC;
-import org.overture.typechecker.assistant.definition.PDefinitionListAssistantTC;
 
 public class TypeCheckerImportsVisitor extends AbstractTypeCheckVisitor
 {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6883311293059829368L;
-	final private QuestionAnswerAdaptor<TypeCheckInfo, PType> rootVisitor;
-
 	public TypeCheckerImportsVisitor(
-			QuestionAnswerAdaptor<TypeCheckInfo, PType> typeCheckVisitor)
+			IQuestionAnswer<TypeCheckInfo, PType> typeCheckVisitor)
 	{
-		this.rootVisitor = typeCheckVisitor;
+		super(typeCheckVisitor);
 	}
 
 	@Override
@@ -52,12 +44,12 @@ public class TypeCheckerImportsVisitor extends AbstractTypeCheckVisitor
 			PDefinition def = node.getDef();
 			ILexNameToken name = node.getName();
 			AModuleModules from = node.getFrom();
-			def.setType((SInvariantType) question.assistantFactory.createPTypeAssistant().typeResolve(question.assistantFactory.createPDefinitionAssistant().getType(def), null, rootVisitor, question));
-			PDefinition expdef = PDefinitionListAssistantTC.findType(from.getExportdefs(), name, null);
+			def.setType((SInvariantType) question.assistantFactory.createPTypeAssistant().typeResolve(question.assistantFactory.createPDefinitionAssistant().getType(def), null, THIS, question));
+			PDefinition expdef = question.assistantFactory.createPDefinitionListAssistant().findType(from.getExportdefs(), name, null);
 
 			if (expdef != null)
 			{
-				PType exptype = question.assistantFactory.createPTypeAssistant().typeResolve(expdef.getType(), null, rootVisitor, question);
+				PType exptype = question.assistantFactory.createPTypeAssistant().typeResolve(expdef.getType(), null, THIS, question);
 
 				if (!TypeComparator.compatible(def.getType(), exptype))
 				{
@@ -81,12 +73,12 @@ public class TypeCheckerImportsVisitor extends AbstractTypeCheckVisitor
 
 		if (type != null && from != null)
 		{
-			type = question.assistantFactory.createPTypeAssistant().typeResolve(type, null, rootVisitor, question);
-			PDefinition expdef = PDefinitionListAssistantTC.findName(from.getExportdefs(), name, NameScope.NAMES);
+			type = question.assistantFactory.createPTypeAssistant().typeResolve(type, null, THIS, question);
+			PDefinition expdef = question.assistantFactory.createPDefinitionListAssistant().findName(from.getExportdefs(), name, NameScope.NAMES);
 
 			if (expdef != null)
 			{
-				PType exptype = question.assistantFactory.createPTypeAssistant().typeResolve(expdef.getType(), null, rootVisitor, question);
+				PType exptype = question.assistantFactory.createPTypeAssistant().typeResolve(expdef.getType(), null, THIS, question);
 
 				if (!TypeComparator.compatible(type, exptype))
 				{
@@ -120,7 +112,7 @@ public class TypeCheckerImportsVisitor extends AbstractTypeCheckVisitor
 				ILexNameToken pnameClone = pname.clone();
 				PDefinition p = AstFactory.newALocalDefinition(pname.getLocation(), pnameClone, NameScope.NAMES, AstFactory.newAParameterType(pnameClone));
 
-				PDefinitionAssistantTC.markUsed(p);
+				question.assistantFactory.createPDefinitionAssistant().markUsed(p);
 				defs.add(p);
 			}
 

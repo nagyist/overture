@@ -18,13 +18,13 @@
  *******************************************************************************/
 package org.overture.ide.debug.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.overture.ide.debug.core.IDebugPreferenceConstants;
 import org.overture.ide.debug.core.VdmDebugPlugin;
-
 
 public class WorkbenchPreferencePage1 extends
 		org.eclipse.jface.preference.FieldEditorPreferencePage implements
@@ -37,11 +37,13 @@ public class WorkbenchPreferencePage1 extends
 		IntegerFieldEditor portField = new IntegerFieldEditor(IDebugPreferenceConstants.PREF_DBGP_PORT, "Debug port", getFieldEditorParent());
 		portField.setValidRange(-1, Integer.MAX_VALUE);
 		addField(portField);
-		
+
 		IntegerFieldEditor commTimeoutField = new IntegerFieldEditor(IDebugPreferenceConstants.PREF_DBGP_CONNECTION_TIMEOUT, "Connection timeout", getFieldEditorParent());
 		commTimeoutField.setValidRange(0, Integer.MAX_VALUE);
 		addField(commTimeoutField);
-		
+
+		BooleanFieldEditor modelCheckerField = new BooleanFieldEditor(IDebugPreferenceConstants.PREF_DBGP_ENABLE_EXPERIMENTAL_MODELCHECKER, "Enable experimental model checker", getFieldEditorParent());
+		addField(modelCheckerField);
 	}
 
 	@Override

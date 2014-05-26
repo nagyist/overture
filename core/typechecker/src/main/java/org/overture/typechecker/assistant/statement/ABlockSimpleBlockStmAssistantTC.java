@@ -10,15 +10,15 @@ import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
 
 public class ABlockSimpleBlockStmAssistantTC
 {
-	protected static ITypeCheckerAssistantFactory af;
+	protected ITypeCheckerAssistantFactory af;
 
-	@SuppressWarnings("static-access")
 	public ABlockSimpleBlockStmAssistantTC(ITypeCheckerAssistantFactory af)
 	{
 		this.af = af;
 	}
 
-	public static void addOne(Set<PType> rtypes, PType add)
+	//TODO: Used in the TypeCheckerStmVisitor.
+	public void addOne(Set<PType> rtypes, PType add)
 	{
 		if (add instanceof AVoidReturnType)
 		{

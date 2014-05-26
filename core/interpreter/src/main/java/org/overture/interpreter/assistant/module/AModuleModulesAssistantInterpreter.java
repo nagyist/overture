@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.ARenamedDefinition;
 import org.overture.ast.definitions.AStateDefinition;
 import org.overture.ast.definitions.PDefinition;
@@ -13,14 +14,12 @@ import org.overture.ast.statements.PStm;
 import org.overture.interpreter.assistant.IInterpreterAssistantFactory;
 import org.overture.interpreter.assistant.definition.AStateDefinitionAssistantInterpreter;
 import org.overture.interpreter.assistant.definition.PDefinitionAssistantInterpreter;
-import org.overture.interpreter.assistant.definition.PDefinitionListAssistantInterpreter;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.ContextException;
 import org.overture.interpreter.runtime.StateContext;
 import org.overture.interpreter.util.ModuleListInterpreter;
-import org.overture.pog.assistant.PogAssistantFactory;
-import org.overture.pog.obligation.POContextStack;
-import org.overture.pog.obligation.ProofObligationList;
+import org.overture.pog.pub.IProofObligationList;
+import org.overture.pog.pub.ProofObligationGenerator;
 import org.overture.typechecker.assistant.module.AModuleModulesAssistantTC;
 
 public class AModuleModulesAssistantInterpreter extends
@@ -35,7 +34,7 @@ public class AModuleModulesAssistantInterpreter extends
 		this.af = af;
 	}
 
-	public static PStm findStatement(ModuleListInterpreter modules, File file,
+	public PStm findStatement(ModuleListInterpreter modules, File file,
 			int lineno)
 	{
 		for (AModuleModules m : modules)
@@ -54,12 +53,12 @@ public class AModuleModulesAssistantInterpreter extends
 		return null;
 	}
 
-	public static PStm findStatement(AModuleModules m, int lineno)
+	public PStm findStatement(AModuleModules m, int lineno)
 	{
-		return PDefinitionAssistantInterpreter.findStatement(m.getDefs(), lineno);
+		return af.createPDefinitionAssistant().findStatement(m.getDefs(), lineno);
 	}
 
-	public static PExp findExpression(ModuleListInterpreter modules, File file,
+	public PExp findExpression(ModuleListInterpreter modules, File file,
 			int lineno)
 	{
 		for (AModuleModules m : modules)
@@ -78,14 +77,14 @@ public class AModuleModulesAssistantInterpreter extends
 		return null;
 	}
 
-	public static PExp findExpression(AModuleModules d, int lineno)
+	public PExp findExpression(AModuleModules d, int lineno)
 	{
-		return PDefinitionListAssistantInterpreter.findExpression(d.getDefs(), lineno);
+		return af.createPDefinitionListAssistant().findExpression(d.getDefs(), lineno);
 	}
 
-	public static Context getStateContext(AModuleModules defaultModule)
+	public Context getStateContext(AModuleModules defaultModule)
 	{
-		AStateDefinition sdef = PDefinitionListAssistantInterpreter.findStateDefinition(defaultModule.getDefs());
+		AStateDefinition sdef = af.createPDefinitionListAssistant().findStateDefinition(defaultModule.getDefs());
 
 		if (sdef != null)
 		{
@@ -114,7 +113,7 @@ public class AModuleModulesAssistantInterpreter extends
 			{
 				try
 				{
-					initialContext.putList(PDefinitionAssistantInterpreter.getNamedValues(d, initialContext));
+					initialContext.putList(af.createPDefinitionAssistant().getNamedValues(d, initialContext));
 				} catch (ContextException e)
 				{
 					trouble.add(e); // Carry on...
@@ -126,7 +125,7 @@ public class AModuleModulesAssistantInterpreter extends
 		{
 			try
 			{
-				initialContext.putList(PDefinitionAssistantInterpreter.getNamedValues(d, initialContext));
+				initialContext.putList(af.createPDefinitionAssistant().getNamedValues(d, initialContext));
 			} catch (ContextException e)
 			{
 				trouble.add(e); // Carry on...
@@ -135,7 +134,7 @@ public class AModuleModulesAssistantInterpreter extends
 
 		try
 		{
-			AStateDefinition sdef = PDefinitionListAssistantInterpreter.findStateDefinition(m.getDefs());
+			AStateDefinition sdef = af.createPDefinitionListAssistant().findStateDefinition(m.getDefs());
 
 			if (sdef != null)
 			{
@@ -150,9 +149,9 @@ public class AModuleModulesAssistantInterpreter extends
 
 	}
 
-	public static ProofObligationList getProofObligations(AModuleModules m)
+	public static IProofObligationList getProofObligations(AModuleModules m) throws AnalysisException
 	{
-		return PDefinitionListAssistantInterpreter.getProofObligations(m.getDefs(), new POContextStack(new PogAssistantFactory()));
+		return ProofObligationGenerator.generateProofObligations(m);
 	}
 
 }

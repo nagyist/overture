@@ -82,15 +82,15 @@ import org.overture.ast.types.SNumericBasicType;
 import org.overture.ast.types.SSeqType;
 import org.overture.ast.util.PTypeSet;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
+import org.overture.pog.pub.IPogAssistantFactory;
 import org.overture.typechecker.TypeComparator;
-import org.overture.typechecker.assistant.pattern.PPatternAssistantTC;
-import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 import org.overture.typechecker.assistant.type.SNumericBasicTypeAssistantTC;
 
 public class SubTypeObligation extends ProofObligation
 {
 	private static final long serialVersionUID = 1108478780469068741L;
+	
+	public final IPogAssistantFactory assistantFactory;
 
 	/**
 	 * Factory Method since we need to return null STOs (which should be discarded
@@ -106,10 +106,10 @@ public class SubTypeObligation extends ProofObligation
 	 * @return
 	 */
 	public static SubTypeObligation newInstance(PExp exp, PType etype,
-			PType atype, IPOContextStack ctxt)
+			PType atype, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 
-		SubTypeObligation sto = new SubTypeObligation(exp, etype, atype, ctxt);
+		SubTypeObligation sto = new SubTypeObligation(exp, etype, atype, ctxt,assistantFactory);
 		if (sto.getValueTree() != null)
 		{
 			return sto;
@@ -120,9 +120,9 @@ public class SubTypeObligation extends ProofObligation
 
 	public static SubTypeObligation newInstance(
 			AExplicitFunctionDefinition func, PType etype, PType atype,
-			IPOContextStack ctxt)
+			IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
-		SubTypeObligation sto = new SubTypeObligation(func, etype, atype, ctxt);
+		SubTypeObligation sto = new SubTypeObligation(func, etype, atype, ctxt, assistantFactory);
 		if (sto.getValueTree() != null)
 		{
 			return sto;
@@ -133,9 +133,9 @@ public class SubTypeObligation extends ProofObligation
 
 	public static SubTypeObligation newInstance(
 			AImplicitFunctionDefinition func, PType etype, PType atype,
-			IPOContextStack ctxt)
+			IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
-		SubTypeObligation sto = new SubTypeObligation(func, etype, atype, ctxt);
+		SubTypeObligation sto = new SubTypeObligation(func, etype, atype, ctxt, assistantFactory);
 		if (sto.getValueTree() != null)
 		{
 			return sto;
@@ -146,9 +146,9 @@ public class SubTypeObligation extends ProofObligation
 
 	public static SubTypeObligation newInstance(
 			AExplicitOperationDefinition def, PType actualResult,
-			IPOContextStack ctxt)
+			IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
-		SubTypeObligation sto = new SubTypeObligation(def, actualResult, ctxt);
+		SubTypeObligation sto = new SubTypeObligation(def, actualResult, ctxt,assistantFactory);
 		if (sto.getValueTree() != null)
 		{
 			return sto;
@@ -159,9 +159,9 @@ public class SubTypeObligation extends ProofObligation
 
 	public static SubTypeObligation newInstance(
 			AImplicitOperationDefinition def, PType actualResult,
-			IPOContextStack ctxt)
+			IPOContextStack ctxt, IPogAssistantFactory af)
 	{
-		SubTypeObligation sto = new SubTypeObligation(def, actualResult, ctxt);
+		SubTypeObligation sto = new SubTypeObligation(def, actualResult, ctxt,af);
 		if (sto.getValueTree() != null)
 		{
 			return sto;
@@ -184,18 +184,18 @@ public class SubTypeObligation extends ProofObligation
 	 */
 	protected SubTypeObligation(INode root, ILexLocation loc, PExp resultexp,
 			PType deftype, PType actualtype
-			, IPOContextStack ctxt)
+			, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(root, POType.SUB_TYPE, ctxt, loc);
+		this.assistantFactory = assistantFactory;
 		valuetree.setPredicate(ctxt.getPredWithContext(oneType(false, resultexp, deftype, actualtype)));
-
 	}
 	
 	private SubTypeObligation(PExp exp, PType etype, PType atype,
-			IPOContextStack ctxt)
+			IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(exp, POType.SUB_TYPE, ctxt, exp.getLocation());
-
+		this.assistantFactory = assistantFactory;
 		// valuetree.setContext(ctxt.getContextNodeList());
 		PExp onetype_exp = oneType(false, exp.clone(), etype.clone(), atype.clone());
 
@@ -209,9 +209,10 @@ public class SubTypeObligation extends ProofObligation
 	}
 
 	private SubTypeObligation(AExplicitFunctionDefinition func, PType etype,
-			PType atype, IPOContextStack ctxt)
+			PType atype, IPOContextStack ctxt , IPogAssistantFactory assistantFactory)
 	{
 		super(func, POType.SUB_TYPE, ctxt, func.getLocation());
+		this.assistantFactory = assistantFactory;
 		PExp body = null;
 
 		if (func.getBody() instanceof ANotYetSpecifiedExp
@@ -223,7 +224,7 @@ public class SubTypeObligation extends ProofObligation
 
 			for (PPattern p : func.getParamPatternList().get(0))
 			{
-				args.add(PPatternAssistantTC.getMatchingExpression(p));
+				args.add(assistantFactory.createPPatternAssistant().getMatchingExpression(p));
 			}
 
 			body = AstFactory.newAApplyExp(root, args);
@@ -237,9 +238,10 @@ public class SubTypeObligation extends ProofObligation
 	}
 
 	private SubTypeObligation(AImplicitFunctionDefinition func, PType etype,
-			PType atype, IPOContextStack ctxt)
+			PType atype, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(func, POType.SUB_TYPE, ctxt, func.getLocation());
+		this.assistantFactory = assistantFactory;
 		PExp body = null;
 
 		if (func.getBody() instanceof ANotYetSpecifiedExp
@@ -253,7 +255,7 @@ public class SubTypeObligation extends ProofObligation
 			{
 				for (PPattern p : pltp.getPatterns())
 				{
-					args.add(PPatternAssistantTC.getMatchingExpression(p));
+					args.add(assistantFactory.createPPatternAssistant().getMatchingExpression(p));
 				}
 			}
 
@@ -268,9 +270,10 @@ public class SubTypeObligation extends ProofObligation
 	}
 
 	private SubTypeObligation(AExplicitOperationDefinition def,
-			PType actualResult, IPOContextStack ctxt)
+			PType actualResult, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(def, POType.SUB_TYPE, ctxt, def.getLocation());
+		this.assistantFactory = assistantFactory;
 
 		AVariableExp result = AstFactory.newAVariableExp(new LexNameToken(def.getName().getModule(), "RESULT", def.getLocation()));
 
@@ -279,9 +282,10 @@ public class SubTypeObligation extends ProofObligation
 	}
 
 	private SubTypeObligation(AImplicitOperationDefinition def,
-			PType actualResult, IPOContextStack ctxt)
+			PType actualResult, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(def, POType.SUB_TYPE, ctxt, def.getLocation());
+		this.assistantFactory = assistantFactory;
 		PExp result = null;
 
 		if (def.getResult().getPattern() instanceof AIdentifierPattern)
@@ -310,14 +314,14 @@ public class SubTypeObligation extends ProofObligation
 	{
 		if (atype != null && rec)
 		{
-			if (TypeComparator.isSubType(atype, etype))
+			if (TypeComparator.isSubType(atype, etype, assistantFactory))
 			{
 				return null; // Means a sub-comparison is OK without PO checks
 			}
 		}
 
 		PExp po = null;
-		etype = PTypeAssistantTC.deBracket(etype);
+		etype = assistantFactory.createPTypeAssistant().deBracket(etype);
 
 		if (etype instanceof AUnionType)
 		{
@@ -663,7 +667,7 @@ public class SubTypeObligation extends ProofObligation
 		AIsExp isExp = new AIsExp();
 		isExp.setBasicType(type);
 		isExp.setType(new ABooleanBasicType());
-		isExp.setTest(exp);
+		isExp.setTest(exp.clone());
 		return isExp;
 	}
 }

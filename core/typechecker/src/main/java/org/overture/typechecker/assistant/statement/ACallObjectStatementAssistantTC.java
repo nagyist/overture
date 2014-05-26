@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.ast.analysis.AnalysisException;
-import org.overture.ast.analysis.QuestionAnswerAdaptor;
+import org.overture.ast.analysis.intf.IQuestionAnswer;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.types.PType;
 import org.overture.typechecker.TypeCheckInfo;
@@ -14,16 +14,15 @@ import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
 
 public class ACallObjectStatementAssistantTC
 {
-	protected static ITypeCheckerAssistantFactory af;
+	protected ITypeCheckerAssistantFactory af;
 
-	@SuppressWarnings("static-access")
 	public ACallObjectStatementAssistantTC(ITypeCheckerAssistantFactory af)
 	{
 		this.af = af;
 	}
 
-	public static List<PType> getArgTypes(LinkedList<PExp> args,
-			QuestionAnswerAdaptor<TypeCheckInfo, PType> rootVisitor,
+	public List<PType> getArgTypes(LinkedList<PExp> args,
+			IQuestionAnswer<TypeCheckInfo, PType> rootVisitor,
 			TypeCheckInfo question) throws AnalysisException
 	{
 		List<PType> types = new LinkedList<PType>();
@@ -36,7 +35,7 @@ public class ACallObjectStatementAssistantTC
 		return types;
 	}
 
-	public static void checkArgTypes(PType type, List<PType> ptypes,
+	public void checkArgTypes(PType type, List<PType> ptypes,
 			List<PType> atypes)
 	{
 		if (ptypes.size() != atypes.size())

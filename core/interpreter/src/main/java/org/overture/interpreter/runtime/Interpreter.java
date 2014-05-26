@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.ANamedTraceDefinition;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.expressions.PExp;
@@ -65,7 +66,7 @@ import org.overture.parser.lex.LexException;
 import org.overture.parser.lex.LexTokenReader;
 import org.overture.parser.messages.VDMErrorsException;
 import org.overture.parser.syntax.ParserException;
-import org.overture.pog.obligation.ProofObligationList;
+import org.overture.pog.pub.IProofObligationList;
 import org.overture.typechecker.Environment;
 import org.overture.typechecker.TypeCheckInfo;
 import org.overture.typechecker.TypeChecker;
@@ -78,7 +79,7 @@ import org.overture.typechecker.visitor.TypeCheckVisitor;
 
 abstract public class Interpreter
 {
-	protected IInterpreterAssistantFactory assistantFactory = new InterpreterAssistantFactory();
+	final public IInterpreterAssistantFactory assistantFactory = new InterpreterAssistantFactory();
 	
 	/** The main thread scheduler */
 	public ResourceScheduler scheduler;
@@ -325,7 +326,7 @@ abstract public class Interpreter
 	 * @return A list of POs.
 	 */
 
-	abstract public ProofObligationList getProofObligations();
+	abstract public IProofObligationList getProofObligations() throws AnalysisException;
 
 	/**
 	 * Find a statement by file name and line number.
@@ -661,7 +662,7 @@ abstract public class Interpreter
 			else
 			{
 				// Initialize completely between every run...
-    			traceInit(ctxt.threadState.dbgp);
+    			init(ctxt.threadState.dbgp);
     			List<Object> result = runOneTrace(tracedef, test, debug);
     			tests.filter(result, test, n);
 
@@ -677,7 +678,7 @@ abstract public class Interpreter
 			n++;
 		}
 
-		traceInit(null);
+		init(null);
 		Settings.usingCmdLine = wasCMD;
 		Settings.usingDBGP = wasDBGP;
 		
@@ -685,8 +686,8 @@ abstract public class Interpreter
 	}
 
 	abstract public List<Object> runOneTrace(
-			ANamedTraceDefinition tracedef, CallSequence test, boolean debug);
+			ANamedTraceDefinition tracedef, CallSequence test, boolean debug) throws AnalysisException;
 
 
-	abstract public Context getInitialTraceContext(ANamedTraceDefinition tracedef, boolean debug) throws ValueException;
+	abstract public Context getInitialTraceContext(ANamedTraceDefinition tracedef, boolean debug) throws ValueException, AnalysisException;
 }

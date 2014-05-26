@@ -39,7 +39,6 @@ import org.overture.ast.patterns.PMultipleBind;
 import org.overture.ast.patterns.PPattern;
 import org.overture.ast.types.PType;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
 
 
 public class ValueBindingObligation extends ProofObligation
@@ -63,7 +62,7 @@ public class ValueBindingObligation extends ProofObligation
 		AExistsExp existsExp = new AExistsExp();
 		
 		List<PPattern> patternList = new Vector<PPattern>();
-		patternList.add(pattern);
+		patternList.add(pattern.clone());
 		ATypeMultipleBind typeBind = new ATypeMultipleBind();
 		typeBind.setPlist(patternList);
 		typeBind.setType(type.clone());
@@ -75,6 +74,7 @@ public class ValueBindingObligation extends ProofObligation
 		equals.setLeft(patternToExp(pattern.clone()));
 		equals.setOp(new LexKeywordToken(VDMToken.EQUALS, null));
 		equals.setRight(exp.clone());
+		existsExp.setPredicate(equals);
 
 		valuetree.setPredicate(ctxt.getPredWithContext(existsExp));
 //    	valuetree.setContext(ctxt.getContextNodeList());

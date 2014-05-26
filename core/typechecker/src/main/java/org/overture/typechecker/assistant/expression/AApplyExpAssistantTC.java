@@ -22,15 +22,14 @@ import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 
 public class AApplyExpAssistantTC
 {
-	protected static ITypeCheckerAssistantFactory af;
+	protected ITypeCheckerAssistantFactory af;
 
-	@SuppressWarnings("static-access")
 	public AApplyExpAssistantTC(ITypeCheckerAssistantFactory af)
 	{
 		this.af = af;
 	}
 
-	public static PType functionApply(AApplyExp node, boolean isSimple,
+	public PType functionApply(AApplyExp node, boolean isSimple,
 			AFunctionType ft)
 	{
 		List<PType> ptypes = ft.getParameters();
@@ -66,7 +65,7 @@ public class AApplyExpAssistantTC
 		return ft.getResult();
 	}
 
-	public static PType operationApply(AApplyExp node, boolean isSimple,
+	public PType operationApply(AApplyExp node, boolean isSimple,
 			AOperationType ot)
 	{
 		List<PType> ptypes = ot.getParameters();
@@ -102,13 +101,13 @@ public class AApplyExpAssistantTC
 		return ot.getResult();
 	}
 
-	public static PType sequenceApply(AApplyExp node, boolean isSimple,
+	public PType sequenceApply(AApplyExp node, boolean isSimple,
 			SSeqType seq)
 	{
 		if (node.getArgs().size() != 1)
 		{
 			TypeCheckerErrors.concern(isSimple, 3055, "Sequence selector must have one argument", node.getLocation(), node);
-		} else if (!PTypeAssistantTC.isNumeric(node.getArgtypes().get(0)))
+		} else if (!af.createPTypeAssistant().isNumeric(node.getArgtypes().get(0)))
 		{
 			TypeCheckerErrors.concern(isSimple, 3056, "Sequence application argument must be numeric", node.getLocation(), node);
 		} else if (seq.getEmpty())
@@ -119,7 +118,7 @@ public class AApplyExpAssistantTC
 		return seq.getSeqof();
 	}
 
-	public static PType mapApply(AApplyExp node, boolean isSimple, SMapType map)
+	public PType mapApply(AApplyExp node, boolean isSimple, SMapType map)
 	{
 		if (node.getArgs().size() != 1)
 		{
@@ -140,7 +139,7 @@ public class AApplyExpAssistantTC
 		return map.getTo();
 	}
 
-	public static PDefinition getRecursiveDefinition(AApplyExp node,
+	public PDefinition getRecursiveDefinition(AApplyExp node,
 			TypeCheckInfo question)
 	{
 		ILexNameToken fname = null;
@@ -176,16 +175,16 @@ public class AApplyExpAssistantTC
 		}
 	}
 
-	public static String getMeasureApply(AApplyExp node, ILexNameToken measure)
+	public String getMeasureApply(AApplyExp node, ILexNameToken measure)
 	{
-		return getMeasureApply(node, measure, true);
+		return af.createAApplyExpAssistant().getMeasureApply(node, measure, true);
 	}
 
 	/**
 	 * Create a measure application string from this apply, turning the root function name into the measure name passed,
 	 * and collapsing curried argument sets into one.
 	 */
-	public static String getMeasureApply(AApplyExp node, ILexNameToken measure,
+	public String getMeasureApply(AApplyExp node, ILexNameToken measure,
 			boolean close)
 	{
 		String start = null;

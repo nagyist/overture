@@ -46,7 +46,7 @@ public class GraphViz
 	{
 		if (isWindowsPlatform())
 		{
-			dotPath = "c:/Program Files/Graphviz 2.28/bin/dot.exe";
+			dotPath = "\"c:/Program Files/Graphviz 2.28/bin/dot.exe\"".replace('/', '\\');
 		} else
 		{
 			dotPath = "/usr/bin/dot";
@@ -55,7 +55,7 @@ public class GraphViz
 
 	public GraphViz(File dotPath)
 	{
-		this.dotPath = dotPath.getAbsolutePath();
+		this.dotPath = dotPath.getPath();
 	}
 
 	public static boolean isWindowsPlatform()

@@ -30,11 +30,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.lex.LexLocation;
 import org.overture.ast.messages.InternalException;
@@ -44,6 +44,7 @@ import org.overture.interpreter.commands.ClassCommandReader;
 import org.overture.interpreter.commands.CommandReader;
 import org.overture.interpreter.messages.Console;
 import org.overture.interpreter.messages.rtlog.RTLogger;
+import org.overture.interpreter.messages.rtlog.RTTextLogger;
 import org.overture.interpreter.messages.rtlog.nextgen.NextGenRTLogger;
 import org.overture.interpreter.runtime.ClassInterpreter;
 import org.overture.interpreter.runtime.ContextException;
@@ -55,8 +56,6 @@ import org.overture.pog.obligation.ProofObligationList;
 import org.overture.typechecker.ClassTypeChecker;
 import org.overture.typechecker.TypeChecker;
 
-
-
 /**
  * The main class of the VDM++ and VICE parser/checker/interpreter.
  */
@@ -67,6 +66,7 @@ public class VDMPP extends VDMJ
 
 	public VDMPP()
 	{
+		super();
 		Settings.dialect = Dialect.VDM_PP;
 	}
 
@@ -79,96 +79,91 @@ public class VDMPP extends VDMJ
 	{
 		classes.clear();
 		LexLocation.resetLocations();
-   		int perrs = 0;
-   		int pwarn = 0;
-   		long duration = 0;
+		int perrs = 0;
+		int pwarn = 0;
+		long duration = 0;
 
-   		for (File file: files)
-   		{
-   			ClassReader reader = null;
+		for (File file : files)
+		{
+			ClassReader reader = null;
 
-   			try
-   			{
-   				if (file.getName().endsWith(".lib"))
-   				{
-   					FileInputStream fis = new FileInputStream(file);
-   	    	        GZIPInputStream gis = new GZIPInputStream(fis);
-   	    	        ObjectInputStream ois = new ObjectInputStream(gis);
-
-   	    	        ClassListInterpreter loaded = null;
-   	    	        long begin = System.currentTimeMillis();
-
-   	    	        try
-   	    	        {
-   	    	        	loaded = new ClassListInterpreter((ClassList)ois.readObject());
-   	    	        }
-       	 			catch (Exception e)
-       				{
-       	   				println(file + " is not a valid VDM++ library");
-       	   				perrs++;
-       	   				continue;
-       				}
-       	 			finally
-       	 			{
-       	 				ois.close();
-       	 			}
-
-   	    	        long end = System.currentTimeMillis();
-   	    	        loaded.setLoaded();
-   	    	        classes.addAll(loaded);
-   	    	        classes.remap();
-
-   	    	   		infoln("Loaded " + plural(loaded.size(), "class", "es") +
-   	    	   			" from " + file + " in " + (double)(end-begin)/1000 + " secs");
-   				}
-   				else
-   				{
-   					long before = System.currentTimeMillis();
-    				LexTokenReader ltr =
-    					new LexTokenReader(file, Settings.dialect, filecharset);
-        			reader = new ClassReader(ltr);
-        			classes.addAll(reader.readClasses());
-        	   		long after = System.currentTimeMillis();
-        	   		duration += (after - before);
-   				}
-    		}
-			catch (InternalException e)
+			try
 			{
-   				println(e.toString());
-   				perrs++;
-			}
-			catch (Throwable e)
+				if (file.getName().endsWith(".lib"))
+				{
+					FileInputStream fis = new FileInputStream(file);
+					GZIPInputStream gis = new GZIPInputStream(fis);
+					ObjectInputStream ois = new ObjectInputStream(gis);
+
+					ClassListInterpreter loaded = null;
+					long begin = System.currentTimeMillis();
+
+					try
+					{
+						loaded = new ClassListInterpreter((ClassList) ois.readObject());
+					} catch (Exception e)
+					{
+						println(file + " is not a valid VDM++ library");
+						perrs++;
+						continue;
+					} finally
+					{
+						ois.close();
+					}
+
+					long end = System.currentTimeMillis();
+					loaded.setLoaded();
+					classes.addAll(loaded);
+					classes.remap();
+
+					infoln("Loaded " + plural(loaded.size(), "class", "es")
+							+ " from " + file + " in " + (double) (end - begin)
+							/ 1000 + " secs");
+				} else
+				{
+					long before = System.currentTimeMillis();
+					LexTokenReader ltr = new LexTokenReader(file, Settings.dialect, filecharset);
+					reader = new ClassReader(ltr);
+					classes.addAll(reader.readClasses());
+					long after = System.currentTimeMillis();
+					duration += (after - before);
+				}
+			} catch (InternalException e)
 			{
-   				println(e.toString());
-   				perrs++;
+				println(e.toString());
+				perrs++;
+			} catch (Throwable e)
+			{
+				println(e.toString());
+				perrs++;
 			}
 
 			if (reader != null && reader.getErrorCount() > 0)
 			{
-    			perrs += reader.getErrorCount();
-    			reader.printErrors(Console.out);
+				perrs += reader.getErrorCount();
+				reader.printErrors(Console.out);
 			}
 
 			if (reader != null && reader.getWarningCount() > 0)
 			{
 				pwarn += reader.getWarningCount();
-    			reader.printWarnings(Console.out);
+				reader.printWarnings(Console.out);
 			}
-   		}
+		}
 
-   		int n = classes.notLoaded();
+		int n = classes.notLoaded();
 
-   		if (n > 0)
-   		{
-       		info("Parsed " + plural(n, "class", "es") + " in " +
-       			(double)(duration)/1000 + " secs. ");
-       		info(perrs == 0 ? "No syntax errors" :
-       			"Found " + plural(perrs, "syntax error", "s"));
-    		infoln(pwarn == 0 ? "" : " and " +
-    			(warnings ? "" : "suppressed ") + plural(pwarn, "warning", "s"));
-   		}
+		if (n > 0)
+		{
+			info("Parsed " + plural(n, "class", "es") + " in "
+					+ (double) (duration) / 1000 + " secs. ");
+			info(perrs == 0 ? "No syntax errors" : "Found "
+					+ plural(perrs, "syntax error", "s"));
+			infoln(pwarn == 0 ? "" : " and " + (warnings ? "" : "suppressed ")
+					+ plural(pwarn, "warning", "s"));
+		}
 
-   		return perrs == 0 ? ExitStatus.EXIT_OK : ExitStatus.EXIT_ERRORS;
+		return perrs == 0 ? ExitStatus.EXIT_OK : ExitStatus.EXIT_ERRORS;
 	}
 
 	/**
@@ -181,16 +176,14 @@ public class VDMPP extends VDMJ
 		int terrs = 0;
 		long before = System.currentTimeMillis();
 
-   		try
-   		{
-   			TypeChecker typeChecker = new ClassTypeChecker(classes);
-   			typeChecker.typeCheck();
-   		}
-		catch (InternalException e)
+		try
+		{
+			TypeChecker typeChecker = new ClassTypeChecker(classes, assistantFactory);
+			typeChecker.typeCheck();
+		} catch (InternalException e)
 		{
 			println(e.toString());
-		}
-		catch (Throwable e)
+		} catch (Throwable e)
 		{
 			println(e.toString());
 
@@ -210,43 +203,42 @@ public class VDMPP extends VDMJ
 			TypeChecker.printErrors(Console.out);
 		}
 
-  		int twarn = TypeChecker.getWarningCount();
+		int twarn = TypeChecker.getWarningCount();
 
 		if (twarn > 0 && warnings)
 		{
 			TypeChecker.printWarnings(Console.out);
 		}
 
-   		int n = classes.notLoaded();
+		int n = classes.notLoaded();
 
-   		if (n > 0)
-   		{
-    		info("Type checked " + plural(n, "class", "es") + " in " +
-    			(double)(after-before)/1000 + " secs. ");
-      		info(terrs == 0 ? "No type errors" :
-      			"Found " + plural(terrs, "type error", "s"));
-    		infoln(twarn == 0 ? "" : " and " +
-    			(warnings ? "" : "suppressed ") + plural(twarn, "warning", "s"));
-   		}
+		if (n > 0)
+		{
+			info("Type checked " + plural(n, "class", "es") + " in "
+					+ (double) (after - before) / 1000 + " secs. ");
+			info(terrs == 0 ? "No type errors" : "Found "
+					+ plural(terrs, "type error", "s"));
+			infoln(twarn == 0 ? "" : " and " + (warnings ? "" : "suppressed ")
+					+ plural(twarn, "warning", "s"));
+		}
 
 		if (outfile != null && terrs == 0)
 		{
 			try
 			{
 				before = System.currentTimeMillis();
-    	        FileOutputStream fos = new FileOutputStream(outfile);
-    	        GZIPOutputStream gos = new GZIPOutputStream(fos);
-    	        ObjectOutputStream oos = new ObjectOutputStream(gos);
+				FileOutputStream fos = new FileOutputStream(outfile);
+				GZIPOutputStream gos = new GZIPOutputStream(fos);
+				ObjectOutputStream oos = new ObjectOutputStream(gos);
 
-    	        oos.writeObject(classes);
-    	        oos.close();
-    	   		after = System.currentTimeMillis();
+				oos.writeObject(classes);
+				oos.close();
+				after = System.currentTimeMillis();
 
-    	   		infoln("Saved " + plural(classes.size(), "class", "es") +
-    	   			" to " + outfile + " in " +
-    	   			(double)(after-before)/1000 + " secs. ");
-			}
-			catch (IOException e)
+				infoln("Saved " + plural(classes.size(), "class", "es")
+						+ " to " + outfile + " in " + (double) (after - before)
+						/ 1000 + " secs. ");
+			} catch (IOException e)
 			{
 				infoln("Cannot write " + outfile + ": " + e.getMessage());
 				terrs++;
@@ -255,21 +247,29 @@ public class VDMPP extends VDMJ
 
 		if (pog && terrs == 0)
 		{
-			ProofObligationList list = classes.getProofObligations();
+			ProofObligationList list;
+			try
+			{
+				list = classes.getProofObligations(assistantFactory);
 
-			if (list.isEmpty())
+				if (list.isEmpty())
+				{
+					println("No proof obligations generated");
+				} else
+				{
+					println("Generated "
+							+ plural(list.size(), "proof obligation", "s")
+							+ ":\n");
+					print(list.toString());
+				}
+			} catch (AnalysisException e)
 			{
-				println("No proof obligations generated");
+				println(e.toString());
 			}
-			else
-			{
-    			println("Generated " +
-    				plural(list.size(), "proof obligation", "s") + ":\n");
-    			print(list.toString());
-			}
+
 		}
 
-   		return terrs == 0 ? ExitStatus.EXIT_OK : ExitStatus.EXIT_ERRORS;
+		return terrs == 0 ? ExitStatus.EXIT_OK : ExitStatus.EXIT_ERRORS;
 	}
 
 	/**
@@ -283,45 +283,43 @@ public class VDMPP extends VDMJ
 
 		if (logfile != null)
 		{
-    		try
-    		{
-    			PrintWriter p = new PrintWriter(new FileOutputStream(logfile, false));
-    			RTLogger.setLogfile(p);
-    			NextGenRTLogger.getInstance().setLogfile(new File(logfile));
-    			println("RT events now logged to " + logfile);
-    		}
-    		catch (FileNotFoundException e)
-    		{
-    			println("Cannot create RT event log: " + e.getMessage());
-    			return ExitStatus.EXIT_ERRORS;
-    		}
+			try
+			{
+				RTLogger.setLogfile(RTTextLogger.class, new File(logfile));
+				RTLogger.setLogfile(NextGenRTLogger.class, new File(logfile));
+				println("RT events now logged to " + logfile);
+			} catch (FileNotFoundException e)
+			{
+				println("Cannot create RT event log: " + e.getMessage());
+				return ExitStatus.EXIT_ERRORS;
+			}
 		}
 
 		try
 		{
-   			long before = System.currentTimeMillis();
-   			interpreter = getInterpreter();
-   			interpreter.init(null);
+			long before = System.currentTimeMillis();
+			interpreter = getInterpreter();
+			interpreter.init(null);
 
-   			if (defaultName != null)
-   			{
-   				interpreter.setDefaultName(defaultName);
-   			}
+			if (defaultName != null)
+			{
+				interpreter.setDefaultName(defaultName);
+			}
 
-   			long after = System.currentTimeMillis();
+			long after = System.currentTimeMillis();
 
-   	   		infoln("Initialized " + plural(classes.size(), "class", "es") + " in " +
-   	   			(double)(after-before)/1000 + " secs. ");
-		}
-		catch (ContextException e)
+			infoln("Initialized " + plural(classes.size(), "class", "es")
+					+ " in " + (double) (after - before) / 1000 + " secs. ");
+		} catch (ContextException e)
 		{
 			println("Initialization: " + e);
 			e.ctxt.printStackTrace(Console.out, true);
+			dumpLogs();
 			return ExitStatus.EXIT_ERRORS;
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			println("Initialization: " + e.getMessage());
+			dumpLogs();
 			return ExitStatus.EXIT_ERRORS;
 		}
 
@@ -333,8 +331,7 @@ public class VDMPP extends VDMJ
 			{
 				println(interpreter.execute(script, null).toString());
 				status = ExitStatus.EXIT_OK;
-			}
-			else
+			} else
 			{
 				infoln("Interpreter started");
 				CommandReader reader = new ClassCommandReader(interpreter, "> ");
@@ -348,16 +345,16 @@ public class VDMPP extends VDMJ
 			}
 
 			return status;
-		}
-		catch (ContextException e)
+		} catch (ContextException e)
 		{
 			println("Execution: " + e);
 			e.ctxt.printStackTrace(Console.out, true);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			println("Execution: " + e);
 		}
+
+		dumpLogs();
 
 		return ExitStatus.EXIT_ERRORS;
 	}

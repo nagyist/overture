@@ -12,19 +12,18 @@ import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
 
 public class ABusClassDefinitionAssistantTC
 {
-	protected static ITypeCheckerAssistantFactory af;
+	protected ITypeCheckerAssistantFactory af;
 
-	@SuppressWarnings("static-access")
 	public ABusClassDefinitionAssistantTC(ITypeCheckerAssistantFactory af)
 	{
 		this.af = af;
 	}
 
-	private static String defs = "operations "
+	private String defs = "operations "
 			+ "public BUS:(<FCFS>|<CSMACD>) * real * set of CPU ==> BUS "
 			+ "	BUS(policy, speed, cpus) == is not yet specified;";
 
-	public static List<PDefinition> operationDefs() throws ParserException,
+	public List<PDefinition> operationDefs() throws ParserException,
 			LexException
 	{
 		LexTokenReader ltr = new LexTokenReader(defs, Dialect.VDM_PP);

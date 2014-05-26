@@ -1,12 +1,9 @@
 import java.util.List;
 import java.util.Vector;
 
-import org.overture.ast.assistant.definition.PDefinitionAssistant;
 import org.overture.ast.definitions.AExplicitOperationDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.types.AOperationType;
-import org.overture.interpreter.assistant.definition.SClassDefinitionAssistantInterpreter;
-import org.overture.interpreter.assistant.type.PTypeAssistantInterpreter;
 import org.overture.interpreter.runtime.ClassInterpreter;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.Interpreter;
@@ -18,8 +15,6 @@ import org.overture.interpreter.values.OperationValue;
 import org.overture.interpreter.values.SeqValue;
 import org.overture.interpreter.values.Value;
 import org.overture.interpreter.values.ValueList;
-import org.overture.typechecker.assistant.definition.PAccessSpecifierAssistantTC;
-import org.overture.typechecker.assistant.definition.PDefinitionAssistantTC;
 
 public class TestSuite
 {
@@ -74,7 +69,7 @@ public class TestSuite
 						AExplicitOperationDefinition ctor = getTestConstructor(instance);
 						if (ctor == null
 								|| (!ctor.getName().getModule().equals(instance.type.getName().getLocation().getModule()) && ctor.getParamDefinitions().isEmpty())
-								|| !(PAccessSpecifierAssistantTC.isPublic(ctor.getAccess())))
+								|| !(ClassInterpreter.getInstance().getAssistantFactory().createPAccessSpecifierAssistant().isPublic(ctor.getAccess())))
 						{
 							throw new Exception("Class "
 									+ p.name.getModule()
@@ -91,7 +86,7 @@ public class TestSuite
 						{
 							boolean foundSetName = false;
 							// check that we have setName and that it is accesiable
-							for (PDefinition def : PDefinitionAssistantTC.getDefinitions(instance.type.getClassdef()))
+							for (PDefinition def : Interpreter.getInstance().initialContext.assistantFactory.createPDefinitionAssistant().getDefinitions(instance.type.getClassdef()))
 							{
 								if (def.getName().getName().equals("setName"))
 								{
@@ -159,7 +154,7 @@ public class TestSuite
 							defaultSuperCtor = op.expldef;
 						}
 					} else if (((AOperationType) op.expldef.getType()).getParameters().size() == 1
-							&& PTypeAssistantInterpreter.isType(((AOperationType) op.expldef.getType()).getParameters().get(0),typeName) != null
+							&& Interpreter.getInstance().getAssistantFactory().createPTypeAssistant().isType(((AOperationType) op.expldef.getType()).getParameters().get(0),typeName) != null
 							&& op.expldef.getName().equals(instance.type.getName().getName()))
 					{
 						return op.expldef;

@@ -23,18 +23,19 @@ import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.jface.operation.IRunnableContext;
-import org.overture.ast.assistant.definition.PAccessSpecifierAssistant;
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AExplicitFunctionDefinition;
 import org.overture.ast.definitions.AExplicitOperationDefinition;
 import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.ASubclassResponsibilityStm;
+import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
+import org.overture.typechecker.assistant.TypeCheckerAssistantFactory;
 import org.overture.typechecker.assistant.pattern.PatternListTC;
-
 
 public class MethodSearchEngine
 {
+	public final ITypeCheckerAssistantFactory assistantFactory = new TypeCheckerAssistantFactory();
 	public final static int MAIN_ONLY = 1;
 	public final static int EXPLICIT_FUNCTION = 2;
 	public final static int EXPLICIT_OPERATION = 4;
@@ -43,8 +44,8 @@ public class MethodSearchEngine
 	public static final int WORLD_CLASS = 32;
 	public static final int RUN = 64;
 
-	public INode[] searchMainMethods(IRunnableContext context,
-			Object[] nodes, int constraints)
+	public INode[] searchMainMethods(IRunnableContext context, Object[] nodes,
+			int constraints)
 	{
 		boolean onlyMain = (constraints & MAIN_ONLY) == MAIN_ONLY;
 		boolean onlyExplicitFunction = (constraints & EXPLICIT_FUNCTION) == EXPLICIT_FUNCTION;
@@ -71,25 +72,29 @@ public class MethodSearchEngine
 				AExplicitOperationDefinition exop = (AExplicitOperationDefinition) iAstNode;
 				if (isConstructor(exop))
 				{
-					continue;//is constructor
+					continue;// is constructor
 				}
-				
-				if(onlyRun && !exop.getName().getSimpleName().equalsIgnoreCase(RUN_NAME))
-				{
-					continue;
-				}
-				
-				if(onlyWorldClass && (exop.getClassDefinition()==null || !exop.getClassDefinition().getName().getSimpleName().equalsIgnoreCase(WORLD_NAME)))
+
+				if (onlyRun
+						&& !exop.getName().getSimpleName().equalsIgnoreCase(RUN_NAME))
 				{
 					continue;
 				}
 
-				if (onlyStatic && !PAccessSpecifierAssistant.isStatic(exop.getAccess()))
+				if (onlyWorldClass
+						&& (exop.getClassDefinition() == null || !exop.getClassDefinition().getName().getSimpleName().equalsIgnoreCase(WORLD_NAME)))
 				{
 					continue;
 				}
 
-				if (!PAccessSpecifierAssistant.isStatic(exop.getAccess()) && exop.getClassDefinition() != null)
+				if (onlyStatic
+						&& !assistantFactory.createPAccessSpecifierAssistant().isStatic(exop.getAccess()))
+				{
+					continue;
+				}
+
+				if (!assistantFactory.createPAccessSpecifierAssistant().isStatic(exop.getAccess())
+						&& exop.getClassDefinition() != null)
 				{
 					// check for empty constructor
 					boolean ok = false;
@@ -113,7 +118,7 @@ public class MethodSearchEngine
 								ok = false;
 								break;
 							}
-							if ( ctor.getParameterPatterns() != null
+							if (ctor.getParameterPatterns() != null
 									&& ctor.getParameterPatterns().size() > 0)
 							{
 								ok = true;
@@ -133,12 +138,12 @@ public class MethodSearchEngine
 					continue;
 				}
 				if (onlyPublicAccess
-						&& !PAccessSpecifierAssistant.isPublic(exop.getAccess()))
+						&& !assistantFactory.createPAccessSpecifierAssistant().isPublic(exop.getAccess()))
 				{
 					continue;
 				}
 
-				if ( exop.getParameterPatterns() != null
+				if (exop.getParameterPatterns() != null
 						&& exop.getParameterPatterns().size() > 0)
 				{
 					continue;
@@ -150,34 +155,39 @@ public class MethodSearchEngine
 					&& iAstNode instanceof AExplicitFunctionDefinition)
 			{
 				AExplicitFunctionDefinition exfu = (AExplicitFunctionDefinition) iAstNode;
-				if (onlyStatic && !PAccessSpecifierAssistant.isStatic(exfu.getAccess()))
+				if (onlyStatic
+						&& !assistantFactory.createPAccessSpecifierAssistant().isStatic(exfu.getAccess()))
 				{
 					continue;
 				}
-				
-				if(onlyRun && !exfu.getName().getSimpleName().equalsIgnoreCase(RUN_NAME))
+
+				if (onlyRun
+						&& !exfu.getName().getSimpleName().equalsIgnoreCase(RUN_NAME))
 				{
 					continue;
 				}
-				
-				if(onlyWorldClass && (exfu.getClassDefinition()==null || !exfu.getClassDefinition().getName().getSimpleName().equalsIgnoreCase(WORLD_NAME)))
+
+				if (onlyWorldClass
+						&& (exfu.getClassDefinition() == null || !exfu.getClassDefinition().getName().getSimpleName().equalsIgnoreCase(WORLD_NAME)))
 				{
 					continue;
 				}
-				
+
 				if (onlyMain
 						&& !exfu.getName().getSimpleName().toLowerCase().equals(MAIN_NAME))
 				{
 					continue;
 				}
 				if (onlyPublicAccess
-						&& !PAccessSpecifierAssistant.isPublic(exfu.getAccess()))
+						&& !assistantFactory.createPAccessSpecifierAssistant().isPublic(exfu.getAccess()))
 				{
 					continue;
 				}
 
 				if (exfu.getParamPatternList() != null
-						&& (exfu.getParamPatternList().size() > 0 && exfu.getParamPatternList().get(0) instanceof PatternListTC && ((PatternListTC)exfu.getParamPatternList().get(0)).size()>0))
+						&& exfu.getParamPatternList().size() > 0
+						&& exfu.getParamPatternList().get(0) instanceof PatternListTC
+						&& ((PatternListTC) exfu.getParamPatternList().get(0)).size() > 0)
 				{
 					continue;
 				}
@@ -203,11 +213,12 @@ public class MethodSearchEngine
 		}
 		return matched.toArray(new INode[matched.size()]);
 	}
-	
-	
+
 	public static boolean isConstructor(AExplicitOperationDefinition op)
 	{
-		if (op.getIsConstructor()||op.getClassDefinition()!=null && op.getName().getSimpleName().equalsIgnoreCase(op.getClassDefinition().getLocation().getModule()))
+		if (op.getIsConstructor()
+				|| op.getClassDefinition() != null
+				&& op.getName().getSimpleName().equalsIgnoreCase(op.getClassDefinition().getLocation().getModule()))
 		{
 			return true;
 		}

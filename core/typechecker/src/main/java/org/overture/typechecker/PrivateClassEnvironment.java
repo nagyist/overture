@@ -23,7 +23,6 @@
 
 package org.overture.typechecker;
 
-
 import java.util.List;
 import java.util.Set;
 
@@ -33,12 +32,9 @@ import org.overture.ast.definitions.AStateDefinition;
 import org.overture.ast.definitions.ASystemClassDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinition;
-import org.overture.ast.intf.lex.ILexIdentifierToken;
 import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.typechecker.NameScope;
 import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
-import org.overture.typechecker.assistant.definition.PDefinitionAssistantTC;
-import org.overture.typechecker.assistant.definition.SClassDefinitionAssistantTC;
 
 /**
  * Define the type checking environment for a class as observed from inside.
@@ -50,63 +46,57 @@ public class PrivateClassEnvironment extends Environment
 	{
 		return classdef.getDefinitions();
 	}
+
 	private final SClassDefinition classdef;
 
-	public PrivateClassEnvironment(ITypeCheckerAssistantFactory af,SClassDefinition classdef) {
-		super(af,null,null);
-		this.classdef = classdef;
-	}
-	
-	public PrivateClassEnvironment(ITypeCheckerAssistantFactory af,SClassDefinition classdef, EnvironmentSearchStrategy ess)
+	public PrivateClassEnvironment(ITypeCheckerAssistantFactory af,
+			SClassDefinition classdef)
 	{
-		super(af,null,ess);
+		super(af, null);
 		this.classdef = classdef;
 	}
 
-	public PrivateClassEnvironment(ITypeCheckerAssistantFactory af,SClassDefinition classdef, Environment env)
+	public PrivateClassEnvironment(ITypeCheckerAssistantFactory af,
+			SClassDefinition classdef, Environment env)
 	{
-		super(af,env,env.searchStrategy);
+		super(af, env);
 		this.classdef = classdef;
 	}
 
 	@Override
-	public PDefinition findName( ILexNameToken sought, NameScope scope)
+	public PDefinition findName(ILexNameToken sought, NameScope scope)
 	{
-		PDefinition def = SClassDefinitionAssistantTC.findName(classdef,sought, scope);
+		PDefinition def = af.createPDefinitionAssistant().findName(classdef, sought, scope);
 
 		if (def != null)
 		{
 			return def;
 		}
-		
-		def = searchStrategy != null ? searchStrategy.findName(sought, scope, classdef, outer, classdef.getDefinitions()) : null;
-		if (def != null) return def;
 
-		return (outer == null) ? null : outer.findName(sought, scope);
+		return outer == null ? null : outer.findName(sought, scope);
 	}
 
 	@Override
 	public PDefinition findType(ILexNameToken name, String fromModule)
 	{
-		//FIXME: Here the SClassDefinitionAssistantTC is used so I can't delete the method from the assistant
-		//What is the strategy in this case?
-		PDefinition def = SClassDefinitionAssistantTC.findType(classdef,name, null);
+		// FIXME: Here the SClassDefinitionAssistantTC is used so I can't delete the method from the assistant
+		// What is the strategy in this case?
+		PDefinition def = af.createPDefinitionAssistant().findType(classdef, name, null);
+		//classdef.apply(af.getDefinitionFinder(),new DefinitionFinder.Newquestion(name, null));
+		//SClassDefinitionAssistantTC.findType(classdef, name, null);
 
 		if (def != null)
 		{
 			return def;
 		}
-		
-		def = searchStrategy != null ? searchStrategy.findType(name, fromModule, classdef, outer, getDefinitions()) : null;
-		if (def != null) return def;
 
-		return (outer == null) ? null : outer.findType(name, null);
+		return outer == null ? null : outer.findType(name, null);
 	}
 
 	@Override
-	public Set<PDefinition> findMatches( ILexNameToken name)
+	public Set<PDefinition> findMatches(ILexNameToken name)
 	{
-		Set<PDefinition> defs = SClassDefinitionAssistantTC.findMatches(classdef,name);
+		Set<PDefinition> defs = af.createSClassDefinitionAssistant().findMatches(classdef, name);
 
 		if (outer != null)
 		{
@@ -119,7 +109,7 @@ public class PrivateClassEnvironment extends Environment
 	@Override
 	public void unusedCheck()
 	{
-		PDefinitionAssistantTC.unusedCheck(classdef);
+		af.createPDefinitionAssistant().unusedCheck(classdef);
 	}
 
 	@Override
@@ -137,9 +127,9 @@ public class PrivateClassEnvironment extends Environment
 	@Override
 	public boolean isSystem()
 	{
-		return (classdef instanceof ASystemClassDefinition ||
-				classdef instanceof ACpuClassDefinition ||
-				classdef instanceof ABusClassDefinition);
+		return classdef instanceof ASystemClassDefinition
+				|| classdef instanceof ACpuClassDefinition
+				|| classdef instanceof ABusClassDefinition;
 	}
 
 	@Override
@@ -154,10 +144,4 @@ public class PrivateClassEnvironment extends Environment
 		return false;
 	}
 
-	@Override
-	public PDefinition find(ILexIdentifierToken name) {
-		if (super.searchStrategy != null)
-			return searchStrategy.find(name, classdef, outer, classdef.getDefinitions());
-		return null;
-	}
 }

@@ -40,8 +40,9 @@ import org.overture.ast.patterns.PPattern;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.POType;
 import org.overture.typechecker.assistant.pattern.PPatternAssistantTC;
+import org.overture.pog.pub.IPogAssistantFactory;
 
-public class CasesExhaustiveLPF extends ProofObligation
+public class CasesExhaustiveObligation extends ProofObligation
 {
 	/**
 	 * VDM bit:
@@ -53,44 +54,42 @@ public class CasesExhaustiveLPF extends ProofObligation
 	 */
 	private static final long serialVersionUID = -2266396606434510800L;
 
-	public CasesExhaustiveLPF(ACasesExp exp, IPOContextStack ctxt) throws AnalysisException
+	public CasesExhaustiveLPF(ACasesExp exp, IPOContextStack ctxt, IPogAssistantFactory assistantFactory) throws AnalysisException
 	{
 		super(exp, POType.CASES_EXHAUSTIVE, ctxt, exp.getLocation());
 		
-		PExp initialExp = alt2Exp(exp.getCases().getFirst(), exp);
+		PExp initialExp = alt2Exp(exp.getCases().getFirst(), exp, assistantFactory );
 		List<ACaseAlternative> initialCases= new LinkedList<ACaseAlternative>(exp.getCases());
 		initialCases.remove(0);
 		
-		PExp pred = recOnExp(exp.clone(), initialCases, initialExp);
-		
-		stitch = pred;
-		
+		PExp pred = recOnExp(exp.clone(), initialCases, initialExp, assistantFactory);
+			stitch = pred;
 		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 	}
 	
 	
-	private PExp recOnExp(ACasesExp exp, List<ACaseAlternative> cases, PExp r) throws AnalysisException{
+	private PExp recOnExp(ACasesExp exp, List<ACaseAlternative> cases, PExp r, IPogAssistantFactory assistantFactory) throws AnalysisException{
 		if (cases.isEmpty()){
 			return r;
 		}
 		
-		AOrBooleanBinaryExp orExp = AstExpressionFactory.newAOrBooleanBinaryExp(r, alt2Exp(cases.get(0), exp));
+		AOrBooleanBinaryExp orExp = AstExpressionFactory.newAOrBooleanBinaryExp(r, alt2Exp(cases.get(0), exp.clone(), assistantFactory));
 		
 		List<ACaseAlternative> newCases = new LinkedList<ACaseAlternative>(cases);
 		newCases.remove(0);
 		
-		return recOnExp(exp, newCases, orExp);
+		return recOnExp(exp, newCases, orExp, assistantFactory);
 	}
 
-	private PExp alt2Exp(ACaseAlternative alt, ACasesExp exp) throws AnalysisException
+	private PExp alt2Exp(ACaseAlternative alt, ACasesExp exp, IPogAssistantFactory assistantFactory) throws AnalysisException
 	{
-		if (PPatternAssistantTC.isSimple(alt.getPattern()))
+		if (assistantFactory.createPPatternAssistant().isSimple(alt.getPattern()))
 		{
-			AEqualsBinaryExp equalsExp = AstExpressionFactory.newAEqualsBinaryExp(exp.getExpression().clone(), patternToExp(alt.getPattern()));
+			AEqualsBinaryExp equalsExp = AstExpressionFactory.newAEqualsBinaryExp(exp.getExpression().clone(), patternToExp(alt.getPattern().clone()));
 			return equalsExp;
 		} else
 		{
-			PExp matching = PPatternAssistantTC.getMatchingExpression(alt.getPattern().clone());
+			PExp matching = assistantFactory.createPPatternAssistant().getMatchingExpression(alt.getPattern().clone());
 
 			AExistsExp existsExp = new AExistsExp();
 
@@ -103,7 +102,7 @@ public class CasesExhaustiveLPF extends ProofObligation
 			bindList.add(tbind);
 			existsExp.setBindList(bindList);
 
-			AEqualsBinaryExp equalsExp = AstExpressionFactory.newAEqualsBinaryExp(exp.getExpression(), matching);
+			AEqualsBinaryExp equalsExp = AstExpressionFactory.newAEqualsBinaryExp(exp.getExpression().clone(), matching);
 			existsExp.setPredicate(equalsExp);
 
 			return existsExp;

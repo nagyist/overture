@@ -19,13 +19,13 @@ import org.overture.ast.statements.AForIndexStm;
 import org.overture.ast.statements.AForPatternBindStm;
 import org.overture.ast.statements.AIfStm;
 import org.overture.ast.statements.ALetBeStStm;
+import org.overture.ast.statements.ALetStm;
 import org.overture.ast.statements.AReturnStm;
 import org.overture.ast.statements.ATixeStm;
 import org.overture.ast.statements.ATixeStmtAlternative;
 import org.overture.ast.statements.ATrapStm;
 import org.overture.ast.statements.AWhileStm;
 import org.overture.ast.statements.PStm;
-import org.overture.ast.statements.SLetDefStm;
 import org.overture.ast.statements.SSimpleBlockStm;
 import org.overture.ast.types.PType;
 import org.overture.ast.util.PTypeSet;
@@ -38,10 +38,6 @@ import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
  */
 public class ExitTypeCollector extends AnswerAdaptor<PTypeSet>
 {
-	/**
-	 * Generated serial version
-	 */
-	private static final long serialVersionUID = 1L;
 
 	protected ITypeCheckerAssistantFactory af;
 
@@ -174,8 +170,7 @@ public class ExitTypeCollector extends AnswerAdaptor<PTypeSet>
 	}
 
 	@Override
-	public PTypeSet defaultSLetDefStm(SLetDefStm statement)
-			throws AnalysisException
+	public PTypeSet caseALetStm(ALetStm statement) throws AnalysisException
 	{
 		return statement.getStatement().apply(THIS);
 	}

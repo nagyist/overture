@@ -36,6 +36,7 @@ import org.overture.ast.types.PType;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.POType;
 import org.overture.typechecker.assistant.type.PTypeAssistantTC;
+import org.overture.pog.pub.IPogAssistantFactory;
 
 
 public class FuncComposeLPF extends ProofObligation
@@ -43,7 +44,7 @@ public class FuncComposeLPF extends ProofObligation
 	private static final long serialVersionUID = 8813166638915813635L;
 
 	public FuncComposeLPF(
-		ACompBinaryExp exp, ILexNameToken pref1, ILexNameToken pref2, IPOContextStack ctxt)
+		ACompBinaryExp exp, ILexNameToken pref1, ILexNameToken pref2, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(exp, POType.FUNC_COMPOSE, ctxt, exp.getLocation());
 		
@@ -66,7 +67,7 @@ public class FuncComposeLPF extends ProofObligation
 		ILexNameToken arg = getUnique("arg");
 		
 		AForAllExp forallExp = new AForAllExp();
-		PType leftPType = PTypeAssistantTC.getFunction(exp.getLeft().getType()).getParameters().get(0).clone();
+		PType leftPType = assistantFactory.createPTypeAssistant().getFunction(exp.getLeft().getType()).getParameters().get(0).clone();
 		forallExp.setBindList(getMultipleTypeBindList(leftPType, arg));
 		PExp firstPart = null;
 		

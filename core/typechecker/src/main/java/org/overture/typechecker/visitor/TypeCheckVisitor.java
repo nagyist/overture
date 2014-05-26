@@ -7,6 +7,7 @@ import org.overture.ast.definitions.traces.PTraceDefinition;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.modules.PImport;
+import org.overture.ast.node.INode;
 import org.overture.ast.patterns.PMultipleBind;
 import org.overture.ast.patterns.PPatternBind;
 import org.overture.ast.statements.PAlternativeStm;
@@ -21,10 +22,6 @@ import org.overture.typechecker.TypeCheckerErrors;
 public class TypeCheckVisitor extends AbstractTypeCheckVisitor
 {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7872917857726484626L;
 	private AbstractTypeCheckVisitor tcStm = new TypeCheckerStmVisitor(this);
 	private AbstractTypeCheckVisitor tcExp = new TypeCheckerExpVisitor(this);
 	private AbstractTypeCheckVisitor tcDefinition = new TypeCheckerDefinitionVisitor(this);
@@ -126,5 +123,12 @@ public class TypeCheckVisitor extends AbstractTypeCheckVisitor
 			TypeCheckInfo question) throws AnalysisException
 	{
 		return node.apply(tcDefinition, question);
+	}
+
+	@Override
+	public PType defaultINode(INode node, TypeCheckInfo question)
+			throws AnalysisException
+	{
+		return null;// we dont want an infinit loop
 	}
 }

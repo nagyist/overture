@@ -35,12 +35,17 @@ import java.util.Map.Entry;
 import org.overture.ast.lex.Dialect;
 import org.overture.config.Release;
 import org.overture.config.Settings;
+import org.overture.interpreter.assistant.IInterpreterAssistantFactory;
+import org.overture.interpreter.assistant.InterpreterAssistantFactory;
 import org.overture.interpreter.debug.RemoteControl;
 import org.overture.interpreter.debug.RemoteInterpreter;
 import org.overture.interpreter.messages.Console;
+import org.overture.interpreter.messages.rtlog.RTLogger;
 import org.overture.interpreter.runtime.Interpreter;
 import org.overture.interpreter.util.ExitStatus;
 import org.overture.parser.config.Properties;
+import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
+import org.overture.typechecker.assistant.TypeCheckerAssistantFactory;
 
 /**
  * The main class of the VDMJ parser/checker/interpreter.
@@ -56,7 +61,15 @@ abstract public class VDMJ
 	protected static String outfile = null;
 	protected static String logfile = null;
 
+	
 	public static String filecharset = Charset.defaultCharset().name();
+
+	final protected IInterpreterAssistantFactory assistantFactory ;//= new TypeCheckerAssistantFactory();
+	
+	public VDMJ()
+	{
+		this.assistantFactory = new InterpreterAssistantFactory();
+	}
 
 	/**
 	 * The main method. This validates the arguments, then parses and type
@@ -500,6 +513,18 @@ abstract public class VDMJ
 	 */
 
 	abstract protected ExitStatus interpret(List<File> filenames, String defaultName);
+	
+	/**
+	 * Dump log files
+	 */
+	protected void dumpLogs()
+	{
+		if (logfile != null)
+		{
+			RTLogger.dump(true);
+			infoln("RT events dumped to " + logfile);
+		}
+	}
 
 	public void setWarnings(boolean w)
 	{

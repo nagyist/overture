@@ -37,12 +37,14 @@ import org.overture.ast.expressions.ALetDefExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.statements.AAssignmentStm;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
-import org.overture.typechecker.assistant.definition.SClassDefinitionAssistantTC;
+import org.overture.pog.pub.IPogAssistantFactory;
+import org.overture.pog.utility.PogAssistantFactory;
 
 public class StateInvariantObligation extends ProofObligation
 {
 	private static final long serialVersionUID = -5828298910806421399L;
+	
+	public final IPogAssistantFactory assistantFactory = new PogAssistantFactory();
 
 	public StateInvariantObligation(AAssignmentStm ass, IPOContextStack ctxt)
 	{
@@ -50,7 +52,7 @@ public class StateInvariantObligation extends ProofObligation
 		
 		if (ass.getClassDefinition() != null)
 		{
-			valuetree.setPredicate(ctxt.getPredWithContext(invDefs(ass.getClassDefinition().clone())));
+			valuetree.setPredicate(ctxt.getPredWithContext(invDefs(ass.getClassDefinition())));
 		}
 		else
 		{
@@ -61,6 +63,7 @@ public class StateInvariantObligation extends ProofObligation
 			AEqualsDefinition local = new AEqualsDefinition();
 			local.setPattern(def.getInvPattern().clone());
 			local.setName(def.getName().clone());
+			local.setTest(getVarExp(def.getName()));
 			invDefs.add(local);
 			letExp.setLocalDefs(invDefs);
 			letExp.setExpression(def.getInvExpression().clone());
@@ -75,7 +78,7 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		super(def, POType.STATE_INVARIANT, ctxt, def.getLocation());
 		// After instance variable initializers
-		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition().clone())));
+		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition())));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}
 
@@ -83,7 +86,7 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		super(def, POType.STATE_INVARIANT, ctxt, def.getLocation());
 		// After def.getName() constructor body
-		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition().clone())));
+		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition())));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}
 
@@ -91,7 +94,7 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		super(def, POType.STATE_INVARIANT, ctxt, def.getLocation());
 		// After def.getName() constructor body
-		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition().clone())));
+		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition())));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}
 
@@ -99,10 +102,10 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		PExp root = null;
 		
-		for (PDefinition d: SClassDefinitionAssistantTC.getInvDefs(def))
+		for (PDefinition d: assistantFactory.createSClassDefinitionAssistant().getInvDefs(def.clone()))
 		{
 			AClassInvariantDefinition cid = (AClassInvariantDefinition)d;
-			root = makeAnd(root, cid.getExpression());
+			root = makeAnd(root, cid.getExpression().clone());
 		}
 
     	return root;

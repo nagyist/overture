@@ -51,8 +51,6 @@ import org.overture.ast.types.AUnknownType;
 import org.overture.ast.types.PType;
 import org.overture.ide.plugins.uml2.UmlConsole;
 import org.overture.interpreter.assistant.pattern.PPatternAssistantInterpreter;
-import org.overture.interpreter.assistant.type.PTypeAssistantInterpreter;
-import org.overture.typechecker.assistant.definition.PAccessSpecifierAssistantTC;
 
 public class Vdm2Uml
 {
@@ -97,6 +95,11 @@ public class Vdm2Uml
 		}
 		console.out.println("#\n# Starting translation of project: " + name
 				+ "\n#");
+		console.out.println("# Properties:");
+		console.out.println("# \tPrefer associations: "
+				+ (extendedAssociationMapping ? "yes" : "no"));
+		console.out.println("# \tDisable nested artifacts in deployment diagrams: "
+				+ (deployArtifactsOutsideNodes ? "yes" : "no"));
 		// console.out.println("# Into: "+outputDir+"\n#");
 		console.out.println("-------------------------------------------------------------------------");
 
@@ -117,7 +120,7 @@ public class Vdm2Uml
 		}
 		buildUml(onlyClasses);
 
-		new UmlDeploymentCreator(modelWorkingCopy, console, deployArtifactsOutsideNodes,utc).buildDeployment(classes);
+		new UmlDeploymentCreator(modelWorkingCopy, console, deployArtifactsOutsideNodes, utc).buildDeployment(classes);
 
 		return modelWorkingCopy;
 	}
@@ -215,11 +218,13 @@ public class Vdm2Uml
 				+ sClass.getName().getName());
 		for (PDefinition def : sClass.getDefinitions())
 		{
-			if (def instanceof ATypeDefinition) {
+			if (def instanceof ATypeDefinition)
+			{
 				PType type = Vdm2UmlUtil.assistantFactory.createPDefinitionAssistant().getType(def);
 				console.out.println("\tConverting type: " + type);
 				utc.create(class_, type);
-			} else {
+			} else
+			{
 			}
 		}
 
@@ -231,15 +236,20 @@ public class Vdm2Uml
 				+ sClass.getName().getName());
 		for (PDefinition def : sClass.getDefinitions())
 		{
-			if (def instanceof AInstanceVariableDefinition) {
+			if (def instanceof AInstanceVariableDefinition)
+			{
 				addInstanceVariableToClass(class_, (AInstanceVariableDefinition) def);
-			} else if (def instanceof AExplicitOperationDefinition) {
+			} else if (def instanceof AExplicitOperationDefinition)
+			{
 				addExplicitOperationToClass(class_, (AExplicitOperationDefinition) def);
-			} else if (def instanceof AExplicitFunctionDefinition) {
+			} else if (def instanceof AExplicitFunctionDefinition)
+			{
 				addExplicitFunctionToClass(class_, (AExplicitFunctionDefinition) def);
-			} else if (def instanceof AValueDefinition) {
+			} else if (def instanceof AValueDefinition)
+			{
 				addValueToClass(class_, (AValueDefinition) def);
-			} else {
+			} else
+			{
 			}
 		}
 
@@ -252,9 +262,11 @@ public class Vdm2Uml
 		utc.create(class_, defType);
 		Type umlType = utc.getUmlType(defType);
 
-		if ((PTypeAssistantInterpreter.isClass(defType)
-				&& !(defType instanceof AUnknownType) && !extendedAssociationMapping)
-				|| (Vdm2UmlAssociationUtil.validType(defType) && extendedAssociationMapping))
+		if (Vdm2UmlUtil.assistantFactory.createPTypeAssistant().isClass(defType)
+				&& !(defType instanceof AUnknownType)
+				&& !extendedAssociationMapping
+				|| Vdm2UmlAssociationUtil.validType(defType)
+				&& extendedAssociationMapping)
 		{
 			console.out.println("\tAdding association for value: " + name);
 
@@ -263,7 +275,7 @@ public class Vdm2Uml
 		{
 			console.out.println("\tAdding property for value: " + name);
 			Property s = class_.createOwnedAttribute(name, umlType);
-			s.setIsStatic(PAccessSpecifierAssistantTC.isStatic(def.getAccess()));
+			s.setIsStatic(Vdm2UmlUtil.assistantFactory.createPAccessSpecifierAssistant().isStatic(def.getAccess()));
 			s.setVisibility(Vdm2UmlUtil.convertAccessSpecifierToVisibility(def.getAccess()));
 			s.setIsReadOnly(true);
 
@@ -282,14 +294,16 @@ public class Vdm2Uml
 
 	private String getDefName(PDefinition def)
 	{
-		if (def instanceof AValueDefinition) {
+		if (def instanceof AValueDefinition)
+		{
 			AValueDefinition valueDef = (AValueDefinition) def;
 			PPattern expression = valueDef.getPattern();
 			if (expression instanceof AIdentifierPattern)
 			{
 				return ((AIdentifierPattern) expression).getName().getName();
 			}
-		} else {
+		} else
+		{
 			return def.getName().getName();
 		}
 		return "null";
@@ -312,8 +326,6 @@ public class Vdm2Uml
 
 		}
 
-		private static final long serialVersionUID = 1L;
-
 		TemplateSignature sig = null;
 		Map<String, Classifier> templateParameters = new HashMap<String, Classifier>();
 
@@ -326,15 +338,17 @@ public class Vdm2Uml
 				sig = question.operation.createOwnedTemplateSignature(UMLPackage.Literals.TEMPLATE_SIGNATURE);
 			}
 
-			/*
-			 * Modelio doesnt support Classifier template parameters so the lines: <br/>TemplateParameter tp =
-			 * sig.createOwnedParameter(UMLPackage.Literals.CLASSIFIER_TEMPLATE_PARAMETER);<br/>Class sss = (Class)
-			 * tp.createOwnedParameteredElement(UMLPackage.Literals.CLASS);<br/>have been replaced with an alternative
-			 * solution that it can import.<br/>The lines:<br/>LiteralString literalStringDefault =(LiteralString)
+			/**
+			 * Modelio doesnt support Classifier template parameters so the lines: <br/>
+			 * TemplateParameter tp = sig.createOwnedParameter(UMLPackage.Literals.CLASSIFIER_TEMPLATE_PARAMETER);<br/>
+			 * Class sss = (Class) tp.createOwnedParameteredElement(UMLPackage.Literals.CLASS);<br/>
+			 * have been replaced with an alternative solution that it can import.<br/>
+			 * The lines:<br/>
+			 * LiteralString literalStringDefault =(LiteralString)
 			 * tp.createOwnedDefault(UMLPackage.Literals.LITERAL_STRING);
-			 * literalStringDefault.setName(UmlTypeCreatorBase.getName(t));<br/>are also not needed but makes it look
-			 * better in ModelioThe proper solution is described here: http://www.eclipse.org/modeling/mdt/uml2/docs/
-			 * articles/Defining_Generics_with_UML_Templates/article.html
+			 * literalStringDefault.setName(UmlTypeCreatorBase.getName(t));<br/>
+			 * are also not needed but makes it look better in ModelioThe proper solution is described here:
+			 * http://www.eclipse.org/modeling/mdt/uml2/docs/ articles/Defining_Generics_with_UML_Templates/article.html
 			 */
 
 			String pName = UmlTypeCreatorBase.getName(t);
@@ -346,11 +360,28 @@ public class Vdm2Uml
 				LiteralString literalStringDefault = (LiteralString) tp.createOwnedDefault(UMLPackage.Literals.LITERAL_STRING);
 				literalStringDefault.setName(UmlTypeCreatorBase.getName(t));
 
-				Class sss = (Class) question.class_.createNestedClassifier(pName, UMLPackage.Literals.CLASS);
+				Class sss = null;
+				Object c = question.class_.getNestedClassifier(pName);
+				if (c instanceof Class)
+				{
+					sss = (Class) c;
+				} else
+				{
+
+					sss = (Class) question.class_.createNestedClassifier(pName, UMLPackage.Literals.CLASS);
+				}
+
 				sss.setName(pName);
 				templateParameters.put(pName, sss);
 			}
 			// else sorry we only support unique template parameter names
+		}
+
+		@Override
+		public void caseAClassClassDefinition(AClassClassDefinition node,
+				OperationContext question) throws AnalysisException
+		{
+			// stop visiting childreb
 		}
 
 		public Map<String, Classifier> apply(List<PType> nodes,
@@ -379,7 +410,8 @@ public class Vdm2Uml
 		EList<String> names = new BasicEList<String>();
 		for (PPattern p : def.getParamPatternList().get(0))
 		{
-			List<AIdentifierPattern> ids = PPatternAssistantInterpreter.findIdentifiers(p);
+			// HERE SEE: Downcast the assistantFactory here. Narrowing it to interpreter assistant.
+			List<AIdentifierPattern> ids = Vdm2UmlUtil.assistantFactory.createPPatternAssistant().findIdentifiers(p);
 			if (!ids.isEmpty())
 			{
 				names.add(ids.get(0).toString());
@@ -469,7 +501,7 @@ public class Vdm2Uml
 		// Operation operation = class_.createOwnedOperation(def.getName().name, names, types, returnUmlType);
 		operation.setVisibility(Vdm2UmlUtil.convertAccessSpecifierToVisibility(def.getAccess()));
 
-		operation.setIsStatic(PAccessSpecifierAssistantTC.isStatic(def.getAccess()));
+		operation.setIsStatic(Vdm2UmlUtil.assistantFactory.createPAccessSpecifierAssistant().isStatic(def.getAccess()));
 		operation.setIsQuery(true);
 	}
 
@@ -482,7 +514,8 @@ public class Vdm2Uml
 
 		for (PPattern p : def.getParameterPatterns())
 		{
-			List<AIdentifierPattern> ids = PPatternAssistantInterpreter.findIdentifiers(p);
+			// Downcast the assistantFactory here. Narrowing it to interpreter assistant.
+			List<AIdentifierPattern> ids = ((PPatternAssistantInterpreter) Vdm2UmlUtil.assistantFactory.createPPatternAssistant()).findIdentifiers(p);
 			if (!ids.isEmpty())
 			{
 				String name = ids.get(0).toString();
@@ -522,7 +555,7 @@ public class Vdm2Uml
 		Operation operation = class_.createOwnedOperation(def.getName().getName(), names, types, returnUmlType);
 		operation.setVisibility(Vdm2UmlUtil.convertAccessSpecifierToVisibility(def.getAccess()));
 
-		operation.setIsStatic(PAccessSpecifierAssistantTC.isStatic(def.getAccess()));
+		operation.setIsStatic(Vdm2UmlUtil.assistantFactory.createPAccessSpecifierAssistant().isStatic(def.getAccess()));
 		operation.setIsQuery(false);
 	}
 
@@ -536,9 +569,11 @@ public class Vdm2Uml
 		utc.create(class_, defType);
 		Type type = utc.getUmlType(defType);
 
-		if ((PTypeAssistantInterpreter.isClass(defType)
-				&& !(defType instanceof AUnknownType) && !extendedAssociationMapping)
-				|| (Vdm2UmlAssociationUtil.validType(defType) && extendedAssociationMapping))
+		if (Vdm2UmlUtil.assistantFactory.createPTypeAssistant().isClass(defType)
+				&& !(defType instanceof AUnknownType)
+				&& !extendedAssociationMapping
+				|| Vdm2UmlAssociationUtil.validType(defType)
+				&& extendedAssociationMapping)
 		{
 			console.out.println("\tAdding association for instance variable: "
 					+ def.getName().getName());
@@ -550,7 +585,7 @@ public class Vdm2Uml
 			console.out.println("\tAdding property for instance variable: "
 					+ def.getName().getName());
 			Property attribute = class_.createOwnedAttribute(name, type);
-			attribute.setIsStatic(PAccessSpecifierAssistantTC.isStatic(def.getAccess()));
+			attribute.setIsStatic(Vdm2UmlUtil.assistantFactory.createPAccessSpecifierAssistant().isStatic(def.getAccess()));
 			attribute.setVisibility(Vdm2UmlUtil.convertAccessSpecifierToVisibility(def.getAccess()));
 
 			if (Vdm2UmlUtil.isOptional(defType))
