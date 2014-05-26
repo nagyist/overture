@@ -53,7 +53,7 @@ public class BugRegressionTest {
 		
 		List<INode> ast = TestHelper.getAstFromName(modelPath);
 		IProofObligationList ipol = ProofObligationGenerator
-				.generateProofObligations(ast);
+				.generateMcCarthyProofObligations(ast);
 		
 		Gson gson = new Gson();
 		String json = IOUtils.toString(new FileReader(resultPath));

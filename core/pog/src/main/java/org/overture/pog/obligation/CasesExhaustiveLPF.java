@@ -38,11 +38,9 @@ import org.overture.ast.patterns.ATypeMultipleBind;
 import org.overture.ast.patterns.PMultipleBind;
 import org.overture.ast.patterns.PPattern;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
-import org.overture.typechecker.assistant.pattern.PPatternAssistantTC;
 import org.overture.pog.pub.IPogAssistantFactory;
 
-public class CasesExhaustiveObligation extends ProofObligation
+public class CasesExhaustiveLPF extends ProofObligation
 {
 	/**
 	 * VDM bit:

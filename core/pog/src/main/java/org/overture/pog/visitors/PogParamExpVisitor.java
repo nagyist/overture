@@ -10,7 +10,122 @@ import org.overture.ast.analysis.QuestionAnswerAdaptor;
 import org.overture.ast.definitions.AExplicitFunctionDefinition;
 import org.overture.ast.definitions.AImplicitFunctionDefinition;
 import org.overture.ast.definitions.PDefinition;
-import org.overture.ast.expressions.*;
+import org.overture.ast.expressions.AAbsoluteUnaryExp;
+import org.overture.ast.expressions.AAndBooleanBinaryExp;
+import org.overture.ast.expressions.AApplyExp;
+import org.overture.ast.expressions.ABooleanConstExp;
+import org.overture.ast.expressions.ACardinalityUnaryExp;
+import org.overture.ast.expressions.ACaseAlternative;
+import org.overture.ast.expressions.ACasesExp;
+import org.overture.ast.expressions.ACharLiteralExp;
+import org.overture.ast.expressions.ACompBinaryExp;
+import org.overture.ast.expressions.ADefExp;
+import org.overture.ast.expressions.ADistConcatUnaryExp;
+import org.overture.ast.expressions.ADistIntersectUnaryExp;
+import org.overture.ast.expressions.ADistMergeUnaryExp;
+import org.overture.ast.expressions.ADistUnionUnaryExp;
+import org.overture.ast.expressions.ADivNumericBinaryExp;
+import org.overture.ast.expressions.ADivideNumericBinaryExp;
+import org.overture.ast.expressions.ADomainResByBinaryExp;
+import org.overture.ast.expressions.ADomainResToBinaryExp;
+import org.overture.ast.expressions.AElementsUnaryExp;
+import org.overture.ast.expressions.AElseIfExp;
+import org.overture.ast.expressions.AEquivalentBooleanBinaryExp;
+import org.overture.ast.expressions.AExists1Exp;
+import org.overture.ast.expressions.AExistsExp;
+import org.overture.ast.expressions.AFieldExp;
+import org.overture.ast.expressions.AFieldNumberExp;
+import org.overture.ast.expressions.AFloorUnaryExp;
+import org.overture.ast.expressions.AForAllExp;
+import org.overture.ast.expressions.AFuncInstatiationExp;
+import org.overture.ast.expressions.AGreaterEqualNumericBinaryExp;
+import org.overture.ast.expressions.AGreaterNumericBinaryExp;
+import org.overture.ast.expressions.AHeadUnaryExp;
+import org.overture.ast.expressions.AHistoryExp;
+import org.overture.ast.expressions.AIfExp;
+import org.overture.ast.expressions.AImpliesBooleanBinaryExp;
+import org.overture.ast.expressions.AInSetBinaryExp;
+import org.overture.ast.expressions.AIndicesUnaryExp;
+import org.overture.ast.expressions.AIntLiteralExp;
+import org.overture.ast.expressions.AIotaExp;
+import org.overture.ast.expressions.AIsExp;
+import org.overture.ast.expressions.AIsOfBaseClassExp;
+import org.overture.ast.expressions.AIsOfClassExp;
+import org.overture.ast.expressions.ALambdaExp;
+import org.overture.ast.expressions.ALenUnaryExp;
+import org.overture.ast.expressions.ALessEqualNumericBinaryExp;
+import org.overture.ast.expressions.ALessNumericBinaryExp;
+import org.overture.ast.expressions.ALetBeStExp;
+import org.overture.ast.expressions.ALetDefExp;
+import org.overture.ast.expressions.AMapCompMapExp;
+import org.overture.ast.expressions.AMapDomainUnaryExp;
+import org.overture.ast.expressions.AMapEnumMapExp;
+import org.overture.ast.expressions.AMapInverseUnaryExp;
+import org.overture.ast.expressions.AMapRangeUnaryExp;
+import org.overture.ast.expressions.AMapUnionBinaryExp;
+import org.overture.ast.expressions.AMapletExp;
+import org.overture.ast.expressions.AMkBasicExp;
+import org.overture.ast.expressions.AMkTypeExp;
+import org.overture.ast.expressions.AModNumericBinaryExp;
+import org.overture.ast.expressions.AMuExp;
+import org.overture.ast.expressions.ANarrowExp;
+import org.overture.ast.expressions.ANewExp;
+import org.overture.ast.expressions.ANilExp;
+import org.overture.ast.expressions.ANotEqualBinaryExp;
+import org.overture.ast.expressions.ANotInSetBinaryExp;
+import org.overture.ast.expressions.ANotUnaryExp;
+import org.overture.ast.expressions.ANotYetSpecifiedExp;
+import org.overture.ast.expressions.AOrBooleanBinaryExp;
+import org.overture.ast.expressions.APlusNumericBinaryExp;
+import org.overture.ast.expressions.APlusPlusBinaryExp;
+import org.overture.ast.expressions.APostOpExp;
+import org.overture.ast.expressions.APowerSetUnaryExp;
+import org.overture.ast.expressions.APreExp;
+import org.overture.ast.expressions.APreOpExp;
+import org.overture.ast.expressions.AProperSubsetBinaryExp;
+import org.overture.ast.expressions.AQuoteLiteralExp;
+import org.overture.ast.expressions.ARangeResByBinaryExp;
+import org.overture.ast.expressions.ARangeResToBinaryExp;
+import org.overture.ast.expressions.ARealLiteralExp;
+import org.overture.ast.expressions.ARecordModifier;
+import org.overture.ast.expressions.ARemNumericBinaryExp;
+import org.overture.ast.expressions.AReverseUnaryExp;
+import org.overture.ast.expressions.ASameBaseClassExp;
+import org.overture.ast.expressions.ASameClassExp;
+import org.overture.ast.expressions.ASelfExp;
+import org.overture.ast.expressions.ASeqCompSeqExp;
+import org.overture.ast.expressions.ASeqConcatBinaryExp;
+import org.overture.ast.expressions.ASeqEnumSeqExp;
+import org.overture.ast.expressions.ASetCompSetExp;
+import org.overture.ast.expressions.ASetDifferenceBinaryExp;
+import org.overture.ast.expressions.ASetEnumSetExp;
+import org.overture.ast.expressions.ASetIntersectBinaryExp;
+import org.overture.ast.expressions.ASetRangeSetExp;
+import org.overture.ast.expressions.ASetUnionBinaryExp;
+import org.overture.ast.expressions.AStarStarBinaryExp;
+import org.overture.ast.expressions.AStateInitExp;
+import org.overture.ast.expressions.AStringLiteralExp;
+import org.overture.ast.expressions.ASubclassResponsibilityExp;
+import org.overture.ast.expressions.ASubseqExp;
+import org.overture.ast.expressions.ASubsetBinaryExp;
+import org.overture.ast.expressions.ASubtractNumericBinaryExp;
+import org.overture.ast.expressions.ATailUnaryExp;
+import org.overture.ast.expressions.AThreadIdExp;
+import org.overture.ast.expressions.ATimeExp;
+import org.overture.ast.expressions.ATimesNumericBinaryExp;
+import org.overture.ast.expressions.ATupleExp;
+import org.overture.ast.expressions.AUnaryMinusUnaryExp;
+import org.overture.ast.expressions.AUnaryPlusUnaryExp;
+import org.overture.ast.expressions.AUndefinedExp;
+import org.overture.ast.expressions.AVariableExp;
+import org.overture.ast.expressions.PExp;
+import org.overture.ast.expressions.SBinaryExp;
+import org.overture.ast.expressions.SBooleanBinaryExp;
+import org.overture.ast.expressions.SMapExp;
+import org.overture.ast.expressions.SNumericBinaryExp;
+import org.overture.ast.expressions.SSeqExp;
+import org.overture.ast.expressions.SSetExp;
+import org.overture.ast.expressions.SUnaryExp;
 import org.overture.ast.factory.AstFactory;
 import org.overture.ast.intf.lex.ILexIdentifierToken;
 import org.overture.ast.intf.lex.ILexNameToken;
@@ -32,7 +147,7 @@ import org.overture.pog.obligation.CasesExhaustiveLPF;
 import org.overture.pog.obligation.FiniteMapLPF;
 import org.overture.pog.obligation.FuncComposeLPF;
 import org.overture.pog.obligation.FunctionApplyObligation;
-import org.overture.pog.obligation.LPFAndPO;
+import org.overture.pog.obligation.LPFForAllPO;
 import org.overture.pog.obligation.LetBeExistsObligation;
 import org.overture.pog.obligation.MapApplyObligation;
 import org.overture.pog.obligation.MapCompatibleObligation;
@@ -59,31 +174,33 @@ import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.IPogAssistantFactory;
 import org.overture.pog.pub.IProofObligation;
 import org.overture.pog.pub.IProofObligationList;
+import org.overture.pog.strategies.IPogStrategy;
 import org.overture.pog.utility.PogAssistantFactory;
 import org.overture.typechecker.TypeComparator;
-import org.overture.typechecker.assistant.definition.PDefinitionAssistantTC;
 import org.overture.typechecker.assistant.expression.PExpAssistantTC;
-import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 
-public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofObligationList>
+public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofObligationList>
 		extends QuestionAnswerAdaptor<IPOContextStack, IProofObligationList>
 {
 
 	final private QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> rootVisitor;
-	final private QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> mainVisitor;
+	final private QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> mainVisitor;
 
 	final private IPogAssistantFactory assistantFactory;
+	
+	final private IPogStrategy strats;
 
 	// Added a mainVisitor hack to enable use from the compassVisitors -ldc
 
 	public PogParamExpVisitor(
 			QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> parentVisitor,
-			QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> mainVisitor,
-			IPogAssistantFactory assistantFactory)
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> mainVisitor,
+			IPogAssistantFactory assistantFactory, IPogStrategy strats)
 	{
 		this.rootVisitor = parentVisitor;
 		this.mainVisitor = mainVisitor;
 		this.assistantFactory = assistantFactory;
+		this.strats=strats;
 	}
 
 	/**
@@ -94,11 +211,12 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 	 * @param parentVisitor
 	 */
 	public PogParamExpVisitor(
-			QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> parentVisitor)
+			QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> parentVisitor, IPogStrategy strats)
 	{
 		this.rootVisitor = parentVisitor;
 		this.mainVisitor = this;
 		this.assistantFactory = new PogAssistantFactory();
+		this.strats=strats;
 	}
 
 	@Override
@@ -1369,46 +1487,7 @@ public class PogParamExpVisitor<Q extends IPOContextStack, A extends IProofOblig
 			AAndBooleanBinaryExp node, IPOContextStack question)
 			throws AnalysisException
 	{
-		IProofObligationList obligations = new ProofObligationList();
-
-		PExp lExp = node.getLeft();
-		PType lType = lExp.getType();
-		PExp rExp = node.getRight();
-		PType rType = rExp.getType();
-
-		if (assistantFactory.createPTypeAssistant().isUnion(lType))
-		{
-			SubTypeObligation stol = SubTypeObligation.newInstance(lExp, AstFactory.newABooleanBasicType(lExp.getLocation()), lType, question, assistantFactory);
-			if (stol != null)
-			{
-				obligations.add(stol);
-			}
-			SubTypeObligation stor = SubTypeObligation.newInstance(rExp, AstFactory.newABooleanBasicType(rExp.getLocation()), rType, question, assistantFactory);
-			if (stor != null)
-			{
-				obligations.add(stor);
-			}
-		}
-
-		IProofObligationList lobligations = new ProofObligationList();
-		IProofObligationList robligations = new ProofObligationList();
-		
-		
-		lobligations.addAll(lExp.apply(mainVisitor, question));
-		robligations.addAll(rExp.apply(mainVisitor, question));
-
-		if (!lobligations.isEmpty() || !robligations.isEmpty()){
-			List<PExp> definedPredicates = new LinkedList<PExp>();
-			for (IProofObligation po : lobligations){
-				definedPredicates.add(po.getStitch());
-			}
-			for (IProofObligation po : robligations){
-				definedPredicates.add(po.getStitch());
-			}
-			obligations.add(new LPFAndPO(node, lExp, rExp, definedPredicates, question));
-		}
-	
-		return obligations;
+		return strats.executeAnd(node, question, mainVisitor, assistantFactory);
 	}
 
 	private <T> IProofObligationList handleBinaryBooleanExp(T node,

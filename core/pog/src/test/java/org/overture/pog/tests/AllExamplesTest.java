@@ -72,7 +72,7 @@ public class AllExamplesTest {
 
 		List<INode> ast = TestHelper.getAstFromName(modelpath);
 		IProofObligationList ipol = ProofObligationGenerator
-				.generateProofObligations(ast);
+				.generateMcCarthyProofObligations(ast);
 		assertNotNull(ipol);
 	}
 
@@ -83,7 +83,7 @@ public class AllExamplesTest {
 
 		try {
 			IProofObligationList polist = ProofObligationGenerator
-					.generateProofObligations(ast);
+					.generateMcCarthyProofObligations(ast);
 
 			if (polist.isEmpty()) {
 				System.out.println("No proof obligations.");

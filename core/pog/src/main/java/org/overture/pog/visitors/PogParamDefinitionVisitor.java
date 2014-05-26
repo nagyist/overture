@@ -61,10 +61,6 @@ import org.overture.typechecker.TypeComparator;
 public class PogParamDefinitionVisitor<Q extends IPOContextStack, A extends IProofObligationList>
 		extends QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3086193431700309588L;
 	final private QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> rootVisitor;
 	final private QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> mainVisitor;
 

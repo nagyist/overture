@@ -52,10 +52,6 @@ public class PogParamStmVisitor<Q extends IPOContextStack, A extends IProofOblig
 		extends QuestionAnswerAdaptor<IPOContextStack, IProofObligationList>
 {
 
-	/**
-     * 
-     */
-	private static final long serialVersionUID = -7303385814876083304L;
 	final private QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> rootVisitor;
 	final private QuestionAnswerAdaptor<IPOContextStack, ? extends IProofObligationList> mainVisitor;
 

@@ -12,6 +12,7 @@ import org.overture.parser.messages.VDMError;
 import org.overture.parser.messages.VDMWarning;
 import org.overture.pog.obligation.POContextStack;
 import org.overture.pog.obligation.ProofObligationList;
+import org.overture.pog.strategies.MccStrategy;
 import org.overture.pog.visitors.PogVisitor;
 import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
@@ -63,7 +64,7 @@ public class PogUtil
 			for (INode aModule : typeCheckResult.result) {
 				try
 				{
-					proofObligations.addAll(aModule.apply(new PogVisitor(), new POContextStack()));
+					proofObligations.addAll(aModule.apply(new PogVisitor(new MccStrategy()), new POContextStack()));
 					proofObligations.renumber();
 				} catch (AnalysisException e)
 				{

@@ -151,7 +151,7 @@ public class AModuleModulesAssistantInterpreter extends
 
 	public static IProofObligationList getProofObligations(AModuleModules m) throws AnalysisException
 	{
-		return ProofObligationGenerator.generateProofObligations(m);
+		return ProofObligationGenerator.generateMcCarthyProofObligations(m);
 	}
 
 }

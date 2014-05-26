@@ -48,7 +48,7 @@ public class Playground {
 		List<INode> ast = TestHelper.getAstFromName(model);
 
 		IProofObligationList ipol = ProofObligationGenerator
-				.generateProofObligations(ast);
+				.generateMcCarthyProofObligations(ast);
 
 		System.out.println("ACTUAL POs:");
 		for (IProofObligation po : ipol) {

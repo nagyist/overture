@@ -7,7 +7,7 @@ import org.overture.ast.factory.AstExpressionFactory;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.ast.node.INode;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
+import org.overture.pog.obligation.POType;
 
 /**
  * Main class to mark LPF-style proof obligations. It's an intermediate

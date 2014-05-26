@@ -146,7 +146,7 @@ public class ClassListInterpreter extends ClassList
 		for (SClassDefinition c : this)
 		{
 			
-			obligations.addAll(ProofObligationGenerator.generateProofObligations(c));
+			obligations.addAll(ProofObligationGenerator.generateMcCarthyProofObligations(c));
 		}
 		obligations.trivialCheck();
 		return obligations;

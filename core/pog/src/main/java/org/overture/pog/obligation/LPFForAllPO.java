@@ -1,4 +1,4 @@
-package org.overture.pog.visitors;
+package org.overture.pog.obligation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,10 +9,8 @@ import org.overture.ast.expressions.AForAllExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.factory.AstExpressionFactory;
 import org.overture.ast.patterns.PMultipleBind;
-import org.overture.pog.obligation.LPFProofObligation;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.IProofObligation;
-import org.overture.pog.pub.POType;
 
 public class LPFForAllPO extends LPFProofObligation implements IProofObligation
 {

@@ -14,6 +14,7 @@ import org.overture.parser.messages.VDMWarning;
 import org.overture.pog.obligation.POContextStack;
 import org.overture.pog.obligation.ProofObligationList;
 import org.overture.pog.pub.IProofObligation;
+import org.overture.pog.strategies.MccStrategy;
 import org.overture.pog.visitors.PogVisitor;
 import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
@@ -70,7 +71,7 @@ public class TestPogUtil
 			{
 				try
 				{
-					proofObligations.addAll(aModule.apply(new PogVisitor(), new POContextStack()));
+					proofObligations.addAll(aModule.apply(new PogVisitor(new MccStrategy()), new POContextStack()));
 					for (IProofObligation ipo : proofObligations){
 						stringPOs.add(PogTestHelper.makePoString(ipo));
 					}

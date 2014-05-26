@@ -5,7 +5,7 @@ import java.util.List;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.factory.AstExpressionFactory;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
+import org.overture.pog.obligation.POType;
 
 /**
  * Class representing a LPF-aware proof obligation for a composite

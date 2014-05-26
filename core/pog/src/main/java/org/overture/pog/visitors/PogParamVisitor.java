@@ -37,6 +37,7 @@ import org.overture.pog.obligation.SeqApplyObligation;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.IPogAssistantFactory;
 import org.overture.pog.pub.IProofObligationList;
+import org.overture.pog.strategies.IPogStrategy;
 import org.overture.pog.utility.POException;
 import org.overture.pog.utility.PogAssistantFactory;
 
@@ -55,30 +56,23 @@ import org.overture.pog.utility.PogAssistantFactory;
 public class PogParamVisitor<Q extends IPOContextStack, A extends IProofObligationList>
 		extends QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> {
 
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 1671456307479822942L;
-	private PogExpVisitor pogExpVisitor = new PogExpVisitor(this);
-	private PogStmVisitor pogStmVisitor = new PogStmVisitor(this);
-	private PogDefinitionVisitor pogDefinitionVisitor = new PogDefinitionVisitor(
-			this);
-
+	final private PogParamExpVisitor<IPOContextStack, IProofObligationList> pogExpVisitor;
+	final private PogStmVisitor pogStmVisitor = new PogStmVisitor(this);
+	final private PogDefinitionVisitor pogDefinitionVisitor = new PogDefinitionVisitor(
+			this);	
+	
     final private IPogAssistantFactory assistantFactory;
     
- 
-	public PogParamVisitor()
-	{
-		this.assistantFactory = new PogAssistantFactory();
-	}
+
     
 	/**
 	 * <b>Warning!</b> This constructor is not for use with Overture extensions as it sets several customisable
 	 * fields to Overture defaults. Use  {@link #PogParamVisitor(IPogAssistantFactory)} instead
 	 * @param parentVisitor
 	 */
-	public PogParamVisitor(IPogAssistantFactory assistantFactory)
+	public PogParamVisitor(IPogAssistantFactory assistantFactory, IPogStrategy strats)
 	{
+		this.pogExpVisitor = new PogExpVisitor(this, strats);
 		this.assistantFactory = assistantFactory;
 	}
 

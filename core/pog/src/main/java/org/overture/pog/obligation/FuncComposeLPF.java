@@ -34,8 +34,6 @@ import org.overture.ast.factory.AstExpressionFactory;
 import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.types.PType;
 import org.overture.pog.pub.IPOContextStack;
-import org.overture.pog.pub.POType;
-import org.overture.typechecker.assistant.type.PTypeAssistantTC;
 import org.overture.pog.pub.IPogAssistantFactory;
 
 
