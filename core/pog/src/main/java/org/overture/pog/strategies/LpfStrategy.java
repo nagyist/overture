@@ -6,6 +6,10 @@ import java.util.List;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.QuestionAnswerAdaptor;
 import org.overture.ast.expressions.AAndBooleanBinaryExp;
+import org.overture.ast.expressions.AExistsExp;
+import org.overture.ast.expressions.AForAllExp;
+import org.overture.ast.expressions.AImpliesBooleanBinaryExp;
+import org.overture.ast.expressions.AOrBooleanBinaryExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.factory.AstFactory;
 import org.overture.ast.types.PType;
@@ -64,6 +68,50 @@ public class LpfStrategy implements IPogStrategy
 		}
 	
 		return obligations;
+	}
+
+	@Override
+	public IProofObligationList executeOr(
+			AOrBooleanBinaryExp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IProofObligationList executeImplies(
+			AImpliesBooleanBinaryExp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IProofObligationList executeForall(
+			AForAllExp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IProofObligationList executeExists(
+			AExistsExp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

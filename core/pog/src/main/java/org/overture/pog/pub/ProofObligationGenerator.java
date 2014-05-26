@@ -7,7 +7,7 @@ import org.overture.ast.node.INode;
 import org.overture.pog.obligation.POContextStack;
 import org.overture.pog.obligation.ProofObligationList;
 import org.overture.pog.strategies.LpfStrategy;
-import org.overture.pog.strategies.MccStrategy;
+import org.overture.pog.strategies.MctStrategy;
 import org.overture.pog.visitors.PogVisitor;
 
 public class ProofObligationGenerator
@@ -15,7 +15,7 @@ public class ProofObligationGenerator
 	public static IProofObligationList generateMcCarthyProofObligations(INode root)
 			throws AnalysisException
 	{
-		PogVisitor pog = new PogVisitor(new MccStrategy());
+		PogVisitor pog = new PogVisitor(new MctStrategy());
 		IProofObligationList r = root.apply(pog, new POContextStack());
 		return r;
 	}
@@ -26,7 +26,7 @@ public class ProofObligationGenerator
 		IProofObligationList r = new ProofObligationList();
 		for (INode node : sources)
 		{
-			r.addAll(node.apply(new PogVisitor(new LpfStrategy()), new POContextStack()));
+			r.addAll(node.apply(new PogVisitor(new MctStrategy()), new POContextStack()));
 		}
 
 		return r;
@@ -35,7 +35,7 @@ public class ProofObligationGenerator
 	public static IProofObligationList generateLPFProofObligations(INode root)
 			throws AnalysisException
 	{
-		PogVisitor pog = new PogVisitor(new MccStrategy());
+		PogVisitor pog = new PogVisitor(new LpfStrategy());
 		IProofObligationList r = root.apply(pog, new POContextStack());
 		return r;
 	}
