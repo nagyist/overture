@@ -40,7 +40,7 @@ import org.overture.ast.types.ANatNumericBasicType;
 import org.overture.ast.types.ASetType;
 import org.overture.pog.pub.IPOContextStack;
 
-public class FiniteSetLPF extends ProofObligation {
+public class FiniteSetObligation extends ProofObligation {
 
 	private static final long serialVersionUID = 4471304924561635823L;
 
@@ -48,7 +48,7 @@ public class FiniteSetLPF extends ProofObligation {
 	 * { f(a) | a:A & p(a) } yields exists m:map nat to map A to :f & forall a:A
 	 * & p(a) => exists idx in set dom m & m(idx) = f(a)
 	 */
-	public FiniteSetLPF(ASetCompSetExp exp, ASetType settype,
+	public FiniteSetObligation(ASetCompSetExp exp, ASetType settype,
 			IPOContextStack ctxt) {
 		super(exp, POType.FINITE_SET, ctxt, exp.getLocation());
 

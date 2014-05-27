@@ -47,6 +47,7 @@ public class MapApplyObligation extends ProofObligation
 		AInSetBinaryExp inSetExp = AstExpressionFactory.newAInSetBinaryExp(arg.clone(), dom_exp);
 		
 	//	valuetree.setContext(ctxt.getContextNodeList());
+		stitch=inSetExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(inSetExp));
 	}
 
@@ -61,6 +62,7 @@ public class MapApplyObligation extends ProofObligation
 		AInSetBinaryExp inSetExp = AstExpressionFactory.newAInSetBinaryExp(arg.clone(), dom_exp);
 
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=inSetExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(inSetExp));
 	}
 }

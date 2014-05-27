@@ -34,7 +34,7 @@ import org.overture.ast.statements.ATrapStm;
 import org.overture.ast.statements.AWhileStm;
 import org.overture.ast.statements.PStm;
 import org.overture.ast.statements.SSimpleBlockStm;
-import org.overture.pog.obligation.LetBeExistsObligation;
+import org.overture.pog.obligation.LetBeExistsPObligation;
 import org.overture.pog.obligation.PONameContext;
 import org.overture.pog.obligation.POScopeContext;
 import org.overture.pog.obligation.ProofObligationList;
@@ -383,7 +383,7 @@ public class PogParamStmVisitor<Q extends IPOContextStack, A extends IProofOblig
 		try
 		{
 			IProofObligationList obligations = new ProofObligationList();
-			obligations.add(new LetBeExistsObligation(node, question));
+			obligations.add(new LetBeExistsPObligation(node, question));
 			obligations.addAll(node.getBind().apply(rootVisitor, question));
 
 			if (node.getSuchThat() != null)

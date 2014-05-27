@@ -40,7 +40,7 @@ import org.overture.ast.patterns.PPattern;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.IPogAssistantFactory;
 
-public class CasesExhaustiveLPF extends ProofObligation
+public class CasesExhaustiveObligation extends ProofObligation
 {
 	/**
 	 * VDM bit:
@@ -52,7 +52,7 @@ public class CasesExhaustiveLPF extends ProofObligation
 	 */
 	private static final long serialVersionUID = -2266396606434510800L;
 
-	public CasesExhaustiveLPF(ACasesExp exp, IPOContextStack ctxt, IPogAssistantFactory assistantFactory) throws AnalysisException
+	public CasesExhaustiveObligation(ACasesExp exp, IPOContextStack ctxt, IPogAssistantFactory assistantFactory) throws AnalysisException
 	{
 		super(exp, POType.CASES_EXHAUSTIVE, ctxt, exp.getLocation());
 		
@@ -61,7 +61,7 @@ public class CasesExhaustiveLPF extends ProofObligation
 		initialCases.remove(0);
 		
 		PExp pred = recOnExp(exp.clone(), initialCases, initialExp, assistantFactory);
-			stitch = pred;
+		stitch = pred;
 		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 	}
 	

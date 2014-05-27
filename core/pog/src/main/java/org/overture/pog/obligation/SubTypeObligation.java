@@ -188,7 +188,9 @@ public class SubTypeObligation extends ProofObligation
 	{
 		super(root, POType.SUB_TYPE, ctxt, loc);
 		this.assistantFactory = assistantFactory;
-		valuetree.setPredicate(ctxt.getPredWithContext(oneType(false, resultexp, deftype, actualtype)));
+		PExp pred =oneType(false, resultexp, deftype, actualtype);
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 	}
 	
 	private SubTypeObligation(PExp exp, PType etype, PType atype,
@@ -204,6 +206,7 @@ public class SubTypeObligation extends ProofObligation
 			valuetree = null;
 		} else
 		{
+			stitch = onetype_exp;
 			valuetree.setPredicate(ctxt.getPredWithContext(onetype_exp));
 		}
 	}
@@ -234,7 +237,9 @@ public class SubTypeObligation extends ProofObligation
 		}
 
 		// valuetree.setContext(ctxt.getContextNodeList());
-		valuetree.setPredicate(ctxt.getPredWithContext(oneType(false, body, etype.clone(), atype.clone())));
+		PExp pred = oneType(false, body, etype.clone(), atype.clone());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 	}
 
 	private SubTypeObligation(AImplicitFunctionDefinition func, PType etype,
@@ -266,7 +271,9 @@ public class SubTypeObligation extends ProofObligation
 		}
 
 		// valuetree.setContext(ctxt.getContextNodeList());
-		valuetree.setPredicate(ctxt.getPredWithContext(oneType(false, body, etype.clone(), atype.clone())));
+		PExp pred = oneType(false, body, etype.clone(), atype.clone());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(stitch));
 	}
 
 	private SubTypeObligation(AExplicitOperationDefinition def,
@@ -278,7 +285,9 @@ public class SubTypeObligation extends ProofObligation
 		AVariableExp result = AstFactory.newAVariableExp(new LexNameToken(def.getName().getModule(), "RESULT", def.getLocation()));
 
 		// valuetree.setContext(ctxt.getContextNodeList());
-		valuetree.setPredicate(ctxt.getPredWithContext(oneType(false, result, ((AOperationType) def.getType()).getResult().clone(), actualResult.clone())));
+		PExp pred = oneType(false, result, ((AOperationType) def.getType()).getResult().clone(), actualResult.clone());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 	}
 
 	private SubTypeObligation(AImplicitOperationDefinition def,
@@ -307,7 +316,9 @@ public class SubTypeObligation extends ProofObligation
 		}
 
 		// valuetree.setContext(ctxt.getContextNodeList());
-		valuetree.setPredicate(ctxt.getPredWithContext(oneType(false, result, ((AOperationType) def.getType()).getResult().clone(), actualResult.clone())));
+		PExp pred = oneType(false, result, ((AOperationType) def.getType()).getResult().clone(), actualResult.clone());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 	}
 
 	private PExp oneType(boolean rec, PExp exp, PType etype, PType atype)

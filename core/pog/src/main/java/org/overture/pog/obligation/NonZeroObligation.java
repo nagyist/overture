@@ -30,14 +30,14 @@ import org.overture.ast.factory.AstExpressionFactory;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.pog.pub.IPOContextStack;
 
-public class NonZeroLPF extends ProofObligation
+public class NonZeroObligation extends ProofObligation
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5773921447005368923L;
 
-	public NonZeroLPF(
+	public NonZeroObligation(
 		ILexLocation location, PExp exp, IPOContextStack ctxt)
 	{
 		super(exp, POType.NON_ZERO, ctxt, location);

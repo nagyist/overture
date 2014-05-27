@@ -74,6 +74,7 @@ public class FuncIterationObligation extends ProofObligation {
 				.newAImpliesBooleanBinaryExp(gTExp, forAllExp);
 
 		// valuetree.setContext(ctxt.getContextNodeList());
+		stitch = impliesExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(impliesExp));
 	}
 

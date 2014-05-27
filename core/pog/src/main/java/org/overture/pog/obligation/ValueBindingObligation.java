@@ -76,6 +76,7 @@ public class ValueBindingObligation extends ProofObligation
 		equals.setRight(exp.clone());
 		existsExp.setPredicate(equals);
 
+		stitch = existsExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(existsExp));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}

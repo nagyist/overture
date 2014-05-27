@@ -46,6 +46,7 @@ public class UniqueExistenceObligation extends ProofObligation
 		exists1Exp.setPredicate(iota.getPredicate().clone());
 		
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=exists1Exp;
 		valuetree.setPredicate(ctxt.getPredWithContext(exists1Exp));
 	}
 }

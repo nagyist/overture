@@ -55,6 +55,7 @@ public class MapSetOfCompatibleObligation extends ProofObligation
 		PExp predicate = buildPredicate(exp.clone());
 
 		// valuetree.setContext(ctxt.getContextNodeList());
+		stitch=predicate;
 		valuetree.setPredicate(ctxt.getPredWithContext(predicate));
 	}
 
@@ -65,6 +66,7 @@ public class MapSetOfCompatibleObligation extends ProofObligation
 		PExp predicate = buildPredicate(exp.clone());
 
 		// valuetree.setContext(ctxt.getContextNodeList());
+		stitch=predicate;
 		valuetree.setPredicate(ctxt.getPredWithContext(predicate));
 	}
 

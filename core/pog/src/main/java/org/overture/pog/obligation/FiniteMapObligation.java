@@ -45,11 +45,11 @@ import org.overture.ast.types.PType;
 import org.overture.pog.pub.IPOContextStack;
 
 
-public class FiniteMapLPF extends ProofObligation
+public class FiniteMapObligation extends ProofObligation
 {
 	private static final long serialVersionUID = -2891663568497319141L;
 
-	public FiniteMapLPF(AMapCompMapExp exp, PType mapType, IPOContextStack ctxt)
+	public FiniteMapObligation(AMapCompMapExp exp, PType mapType, IPOContextStack ctxt)
 	{
 		super(exp, POType.FINITE_MAP, ctxt, exp.getLocation());
 

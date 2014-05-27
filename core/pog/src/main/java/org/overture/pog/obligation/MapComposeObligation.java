@@ -50,6 +50,7 @@ public class MapComposeObligation extends ProofObligation
 		subset.setRight(dom);
 		
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=subset;
 		valuetree.setPredicate(ctxt.getPredWithContext(subset));
 	}
 }

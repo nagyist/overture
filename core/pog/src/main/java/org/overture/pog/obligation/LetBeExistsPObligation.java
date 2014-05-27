@@ -34,11 +34,11 @@ import org.overture.ast.patterns.PMultipleBind;
 import org.overture.ast.statements.ALetBeStStm;
 import org.overture.pog.pub.IPOContextStack;
 
-public class LetBeExistsObligation extends ProofObligation
+public class LetBeExistsPObligation extends ProofObligation
 {
 	private static final long serialVersionUID = 4190499967249305830L;
 
-	public LetBeExistsObligation(ALetBeStExp exp, IPOContextStack ctxt)
+	public LetBeExistsPObligation(ALetBeStExp exp, IPOContextStack ctxt)
 	{
 		super(exp, POType.LET_BE_EXISTS, ctxt, exp.getBind().getLocation());
 		
@@ -68,10 +68,11 @@ public class LetBeExistsObligation extends ProofObligation
 		}
 
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch = exists;
 		valuetree.setPredicate(ctxt.getPredWithContext(exists));
 	}
 
-	public LetBeExistsObligation(ALetBeStStm stmt, IPOContextStack ctxt)
+	public LetBeExistsPObligation(ALetBeStStm stmt, IPOContextStack ctxt)
 	{
 		super(stmt, POType.LET_BE_EXISTS, ctxt, stmt.getBind().getLocation());
 
@@ -86,6 +87,7 @@ public class LetBeExistsObligation extends ProofObligation
 		}
 
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=exists;
 		valuetree.setPredicate(ctxt.getPredWithContext(exists));
 	}
 }

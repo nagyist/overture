@@ -19,7 +19,7 @@ import org.overture.pog.obligation.POType;
  *
  */
 		
-public class LpfAndPo extends LpfProofObligation
+public class LpfAndObligation extends LpfProofObligation
 {
 
 	/**
@@ -37,7 +37,7 @@ public class LpfAndPo extends LpfProofObligation
 	 * @param definedPredicates a series of 1 or more predicates enforcing the definedness of the overall expression
 	 * @param ctxt contextual information (variable scopes) to help generate the final PO
 	 */
-	public LpfAndPo(PExp andExp, PExp lExp, PExp rExp, List<PExp> definedPredicates, IPOContextStack ctxt)
+	public LpfAndObligation(PExp andExp, PExp lExp, PExp rExp, List<PExp> definedPredicates, IPOContextStack ctxt)
 	{
 		super(andExp, POType.LPF_AND, ctxt, andExp.getLocation());
 		

@@ -10,12 +10,12 @@ import org.overture.ast.factory.AstExpressionFactory;
 import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.IProofObligation;
 
-public class LpfForAllPO extends LpfProofObligation implements IProofObligation
+public class LpfForAllObligation extends LpfProofObligation implements IProofObligation
 {
 
 	private static final long serialVersionUID = 1L;
 	
-	public LpfForAllPO(AForAllExp node, PExp predExp,
+	public LpfForAllObligation(AForAllExp node, PExp predExp,
 			List<PExp> definedPredicates, IPOContextStack ctxt)
 	{
 		super(node, POType.LPF_FORALL, ctxt, node.getLocation());

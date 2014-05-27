@@ -16,11 +16,10 @@ import org.overture.ast.factory.AstFactory;
 import org.overture.ast.patterns.PMultipleBind;
 import org.overture.ast.types.AUnionType;
 import org.overture.ast.types.PType;
-import org.overture.pog.obligation.LpfExists1Po;
-import org.overture.pog.obligation.LpfExistsPo;
-import org.overture.pog.obligation.LpfForAllPO;
-import org.overture.pog.obligation.LpfAndPo;
-import org.overture.pog.obligation.LpfOrPo;
+import org.overture.pog.obligation.LpfExistsObligation;
+import org.overture.pog.obligation.LpfForAllObligation;
+import org.overture.pog.obligation.LpfAndObligation;
+import org.overture.pog.obligation.LpfOrObligation;
 import org.overture.pog.obligation.ProofObligationList;
 import org.overture.pog.obligation.SubTypeObligation;
 import org.overture.pog.pub.IPOContextStack;
@@ -79,7 +78,7 @@ public class LpfStrategy implements IPogStrategy
 			{
 				definedPredicates.add(po.getStitch());
 			}
-			obligations.add(new LpfAndPo(node, lExp, rExp, definedPredicates, question));
+			obligations.add(new LpfAndObligation(node, lExp, rExp, definedPredicates, question));
 		}
 
 		return obligations;
@@ -134,7 +133,7 @@ public class LpfStrategy implements IPogStrategy
 			{
 				definedPredicates.add(po.getStitch());
 			}
-			obligations.add(new LpfOrPo(node, lExp, rExp, definedPredicates, question));
+			obligations.add(new LpfOrObligation(node, lExp, rExp, definedPredicates, question));
 		}
 
 		return obligations;
@@ -213,7 +212,7 @@ public class LpfStrategy implements IPogStrategy
 				definedPredicates.add(po.getStitch());
 			}
 
-			obligations.add(new LpfForAllPO(node, node.getPredicate(), definedPredicates, question));
+			obligations.add(new LpfForAllObligation(node, node.getPredicate(), definedPredicates, question));
 		}
 
 		return obligations;
@@ -244,7 +243,7 @@ public class LpfStrategy implements IPogStrategy
 				definedPredicates.add(po.getStitch());
 			}
 
-			obligations.add(new LpfExistsPo(node, definedPredicates, question));
+			obligations.add(new LpfExistsObligation(node, definedPredicates, question));
 		}
 
 		return obligations;
@@ -268,7 +267,7 @@ public class LpfStrategy implements IPogStrategy
 				definedPredicates.add(po.getStitch());
 			}
 
-			obligations.add(new LpfExists1Po(node, definedPredicates, question, assistantFactory));
+			obligations.add(new LpfExistsObligation(node, definedPredicates, question, assistantFactory));
 		}
 
 		return obligations;

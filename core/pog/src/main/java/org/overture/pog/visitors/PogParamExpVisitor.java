@@ -143,11 +143,12 @@ import org.overture.ast.types.ASeq1SeqType;
 import org.overture.ast.types.AUnionType;
 import org.overture.ast.types.PType;
 import org.overture.ast.types.SMapType;
-import org.overture.pog.obligation.CasesExhaustiveLPF;
-import org.overture.pog.obligation.FiniteMapLPF;
-import org.overture.pog.obligation.FuncComposeLPF;
+import org.overture.pog.obligation.CasesExhaustiveObligation;
+import org.overture.pog.obligation.FiniteMapObligation;
+import org.overture.pog.obligation.FuncComposeObligation;
+import org.overture.pog.obligation.FuncIterationObligation;
 import org.overture.pog.obligation.FunctionApplyObligation;
-import org.overture.pog.obligation.LetBeExistsObligation;
+import org.overture.pog.obligation.LetBeExistsPObligation;
 import org.overture.pog.obligation.MapApplyObligation;
 import org.overture.pog.obligation.MapCompatibleObligation;
 import org.overture.pog.obligation.MapComposeObligation;
@@ -155,7 +156,7 @@ import org.overture.pog.obligation.MapIterationObligation;
 import org.overture.pog.obligation.MapSeqOfCompatibleObligation;
 import org.overture.pog.obligation.MapSetOfCompatibleObligation;
 import org.overture.pog.obligation.NonEmptySeqObligation;
-import org.overture.pog.obligation.NonZeroLPF;
+import org.overture.pog.obligation.NonZeroObligation;
 import org.overture.pog.obligation.PODefContext;
 import org.overture.pog.obligation.POForAllContext;
 import org.overture.pog.obligation.POForAllPredicateContext;
@@ -374,7 +375,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 			question.pop();
 
 		if (node.getOthers() == null && !hasIgnore)
-			obligations.add(new CasesExhaustiveLPF(node, question, assistantFactory));
+			obligations.add(new CasesExhaustiveObligation(node, question, assistantFactory));
 
 		return obligations;
 	}
@@ -401,7 +402,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 		}
 
 		if (finiteTest)
-			obligations.add(new FiniteMapLPF(node, node.getType(), question));
+			obligations.add(new FiniteMapObligation(node, node.getType(), question));
 
 		PExp predicate = node.getPredicate();
 		if (predicate != null)
@@ -651,7 +652,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 			IPOContextStack question) throws AnalysisException
 	{
 		IProofObligationList obligations = new ProofObligationList();
-		obligations.add(new LetBeExistsObligation(node, question));
+		obligations.add(new LetBeExistsPObligation(node, question));
 		obligations.addAll(node.getBind().apply(rootVisitor, question));
 
 		PExp suchThat = node.getSuchThat();
@@ -1208,7 +1209,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 			ILexNameToken pref2 = assistantFactory.createPExpAssistant().getPreName(rExp);
 
 			if (pref1 == null || !pref1.equals(PExpAssistantTC.NO_PRECONDITION))
-				obligations.add(new FuncComposeLPF(node, pref1, pref2, question, assistantFactory));
+				obligations.add(new FuncComposeObligation(node, pref1, pref2, question, assistantFactory));
 		}
 
 		if (assistantFactory.createPTypeAssistant().isMap(lType))
@@ -1427,7 +1428,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 			if (preName == null
 					|| !preName.equals(PExpAssistantTC.NO_PRECONDITION))
 			{
-				obligations.add(new org.overture.pog.obligation.FuncIterationObligation(node, preName, question));
+				obligations.add(new FuncIterationObligation(node, preName, question));
 			}
 		}
 
@@ -1524,7 +1525,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 
 		if (!neverZero(rExp))
 		{
-			obligations.add(new NonZeroLPF(node.getLocation(), rExp, question));
+			obligations.add(new NonZeroObligation(node.getLocation(), rExp, question));
 		}
 
 		return obligations;
@@ -1763,7 +1764,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 
 		if (finiteTest)
 		{
-			obligations.add(new org.overture.pog.obligation.FiniteSetLPF(node, node.getSetType(), question));
+			obligations.add(new org.overture.pog.obligation.FiniteSetObligation(node, node.getSetType(), question));
 		}
 
 		if (predicate != null)

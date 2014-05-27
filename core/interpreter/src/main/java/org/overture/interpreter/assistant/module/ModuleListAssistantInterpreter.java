@@ -96,8 +96,6 @@ public class ModuleListAssistantInterpreter
 		{
 			obligations.addAll(AModuleModulesAssistantInterpreter.getProofObligations(m));
 		}
-
-		obligations.trivialCheck();
 		return obligations;
 	}
 

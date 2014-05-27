@@ -101,6 +101,7 @@ public class MapSeqOfCompatibleObligation extends ProofObligation
 		forallExp.setPredicate(domForallExp);
 		
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=forallExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(forallExp));
 	}
 }

@@ -72,6 +72,7 @@ public class MapCompatibleObligation extends ProofObligation {
 		forallExp.setPredicate(implies);
 
 		// valuetree.setContext(ctxt.getContextNodeList());
+		stitch=forallExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(forallExp));
 	}
 }

@@ -54,13 +54,6 @@ public class ProofObligationList extends Vector<IProofObligation> implements IPr
 		return sb.toString();
 	}
 
-	public void trivialCheck()
-	{
-
-		
-			// don't have trivial proofs anymore
-	}
-
 	public void renumber()
 	{
 		renumber(1);

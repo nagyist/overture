@@ -148,7 +148,6 @@ public class ClassListInterpreter extends ClassList
 			
 			obligations.addAll(ProofObligationGenerator.generateMcCarthyProofObligations(c));
 		}
-		obligations.trivialCheck();
 		return obligations;
 	}
 

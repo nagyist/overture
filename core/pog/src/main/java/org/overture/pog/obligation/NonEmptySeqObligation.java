@@ -51,6 +51,7 @@ public class NonEmptySeqObligation extends ProofObligation
 		ANotEqualBinaryExp notEqualsExp = AstExpressionFactory.newANotEqualBinaryExp(exp.clone(),seqExp);
 		
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=notEqualsExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(notEqualsExp));
 	}
 }

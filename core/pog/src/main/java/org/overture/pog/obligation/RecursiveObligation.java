@@ -68,10 +68,10 @@ public class RecursiveObligation extends ProofObligation
 
 		PExp lt_exp = buildStructuralComparison(measureLeft_exp, measureRight_exp, def.getMeasureLexical());
 
+		stitch=lt_exp;
 		valuetree.setPredicate(ctxt.getPredWithContext(lt_exp));
 	}
 
-	// Is this allowed? On hold for now
 	public RecursiveObligation(AImplicitFunctionDefinition def,
 			AApplyExp apply, IPOContextStack ctxt) throws AnalysisException
 	{
@@ -83,6 +83,7 @@ public class RecursiveObligation extends ProofObligation
 		PExp lt_exp = buildStructuralComparison(measureLeft_exp, measureRight_exp, def.getMeasureLexical());
 
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=lt_exp;
 		valuetree.setPredicate(ctxt.getPredWithContext(lt_exp));
 
 	}

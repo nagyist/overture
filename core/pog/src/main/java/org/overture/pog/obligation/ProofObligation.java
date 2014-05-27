@@ -58,10 +58,9 @@ import org.overture.pog.utility.PatternToExpVisitor;
 import org.overture.pog.utility.UniqueNameGenerator;
 
 /**
- * New class for Proof Obligatios with a an AST based representation (wip)
+ * New class for Proof Obligations with a an AST based representation
  * 
  * @author ldc
- * @param <A>
  */
 
 
@@ -82,7 +81,6 @@ abstract public class ProofObligation implements IProofObligation, Serializable 
 	// Not sure whether these will be still be needed
 	public final POType kind;
 	public int number;
-	public POTrivialProof proof;
 	private final UniqueNameGenerator generator;
 	private ILexLocation location;
 
@@ -106,21 +104,6 @@ abstract public class ProofObligation implements IProofObligation, Serializable 
 		this.name = context.getName();
 		this.status = POStatus.UNPROVED;
 		this.valuetree = new AVdmPoTree();
-		this.generator = new UniqueNameGenerator(rootNode);
-	}
-
-	public ProofObligation(INode rootNode, String name, AVdmPoTree valuetree,
-			POStatus status, POType kind, int number, POTrivialProof proof,
-			int var, ILexLocation location) {
-		super();
-		this.rootNode = rootNode;
-		this.location = location;
-		this.name = name;
-		this.valuetree = valuetree;
-		this.status = status;
-		this.kind = kind;
-		this.number = number;
-		this.proof = proof;
 		this.generator = new UniqueNameGenerator(rootNode);
 	}
 
@@ -198,11 +181,6 @@ abstract public class ProofObligation implements IProofObligation, Serializable 
 	@Override
 	public POStatus getStatus() {
 		return status;
-	}
-
-	@Override
-	public POTrivialProof getTrivialProof() {
-		return proof;
 	}
 
 	@Override

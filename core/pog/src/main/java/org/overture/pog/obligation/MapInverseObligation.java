@@ -54,6 +54,7 @@ public class MapInverseObligation extends ProofObligation
 		
 		
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=is_Exp;
 		valuetree.setPredicate(ctxt.getPredWithContext(is_Exp));
 
 	}

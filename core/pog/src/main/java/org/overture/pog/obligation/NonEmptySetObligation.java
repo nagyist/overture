@@ -52,6 +52,7 @@ public class NonEmptySetObligation extends ProofObligation
 		
 		notEqualsExp.setRight(setExp);
 	
+		stitch=notEqualsExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(notEqualsExp));
 //		valuetree.setContext(ctxt.getContextNodeList());
 	}

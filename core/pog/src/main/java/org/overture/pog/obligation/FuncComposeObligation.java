@@ -37,11 +37,11 @@ import org.overture.pog.pub.IPOContextStack;
 import org.overture.pog.pub.IPogAssistantFactory;
 
 
-public class FuncComposeLPF extends ProofObligation
+public class FuncComposeObligation extends ProofObligation
 {
 	private static final long serialVersionUID = 8813166638915813635L;
 
-	public FuncComposeLPF(
+	public FuncComposeObligation(
 		ACompBinaryExp exp, ILexNameToken pref1, ILexNameToken pref2, IPOContextStack ctxt, IPogAssistantFactory assistantFactory)
 	{
 		super(exp, POType.FUNC_COMPOSE, ctxt, exp.getLocation());

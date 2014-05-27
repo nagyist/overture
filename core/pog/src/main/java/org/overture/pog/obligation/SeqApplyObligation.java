@@ -53,6 +53,7 @@ public class SeqApplyObligation extends ProofObligation
 		indsExp.setExp(root.clone());
 	
 		AInSetBinaryExp inSetExp = AstExpressionFactory.newAInSetBinaryExp(arg.clone(), indsExp);
+		stitch=inSetExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(inSetExp));
 	}
 	
@@ -86,6 +87,7 @@ public class SeqApplyObligation extends ProofObligation
 
 
 //		valuetree.setContext(ctxt.getContextNodeList());
+		stitch=andExp;
 		valuetree.setPredicate(ctxt.getPredWithContext(andExp));
 	}
 }

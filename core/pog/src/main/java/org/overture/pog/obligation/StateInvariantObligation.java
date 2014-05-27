@@ -52,7 +52,9 @@ public class StateInvariantObligation extends ProofObligation
 		
 		if (ass.getClassDefinition() != null)
 		{
-			valuetree.setPredicate(ctxt.getPredWithContext(invDefs(ass.getClassDefinition())));
+			PExp pred = invDefs(ass.getClassDefinition());
+			stitch = pred;
+			valuetree.setPredicate(ctxt.getPredWithContext(pred));
 		}
 		else
 		{
@@ -67,7 +69,8 @@ public class StateInvariantObligation extends ProofObligation
 			invDefs.add(local);
 			letExp.setLocalDefs(invDefs);
 			letExp.setExpression(def.getInvExpression().clone());
-
+			
+			stitch = letExp;
 			valuetree.setPredicate(ctxt.getPredWithContext(letExp));
 		}
 
@@ -78,7 +81,9 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		super(def, POType.STATE_INVARIANT, ctxt, def.getLocation());
 		// After instance variable initializers
-		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition())));
+		PExp pred = invDefs(def.getClassDefinition());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}
 
@@ -86,7 +91,9 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		super(def, POType.STATE_INVARIANT, ctxt, def.getLocation());
 		// After def.getName() constructor body
-		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition())));
+		PExp pred = invDefs(def.getClassDefinition());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}
 
@@ -94,7 +101,9 @@ public class StateInvariantObligation extends ProofObligation
 	{
 		super(def, POType.STATE_INVARIANT, ctxt, def.getLocation());
 		// After def.getName() constructor body
-		valuetree.setPredicate(ctxt.getPredWithContext(invDefs(def.getClassDefinition())));
+		PExp pred = invDefs(def.getClassDefinition());
+		stitch = pred;
+		valuetree.setPredicate(ctxt.getPredWithContext(pred));
 //    	valuetree.setContext(ctxt.getContextNodeList());
 	}
 
