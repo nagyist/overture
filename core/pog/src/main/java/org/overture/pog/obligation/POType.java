@@ -58,9 +58,12 @@ public enum POType
 	OPERATION_PATTERNS("operation parameter patterns"),
 	OP_SATISFIABILITY("operation satisfiability"),
 	EXT("extension"),
-	LPF_FORALL("forall defined (LPF)"), 
-	LPF_AND("conjunction defined (LPF)");
-
+	LPF_AND("conjunction defined (LPF)"), 
+	LPF_OR("disjunction defined (LPF)"),
+	LPF_IMP("implication defined (LPF)"),
+	LPF_EXISTS("exists defined (LPF)"), 
+	LPF_FORALL("forall defined (LPF)");	
+	
 
 	private String kind;
 

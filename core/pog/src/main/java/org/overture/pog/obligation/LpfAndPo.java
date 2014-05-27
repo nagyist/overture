@@ -19,7 +19,7 @@ import org.overture.pog.obligation.POType;
  *
  */
 		
-public class LpfAndPo extends LPFProofObligation
+public class LpfAndPo extends LpfProofObligation
 {
 
 	/**

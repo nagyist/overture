@@ -16,7 +16,7 @@ import org.overture.pog.obligation.POType;
  * @author ldc
  *
  */
-public abstract class LPFProofObligation extends ProofObligation
+public abstract class LpfProofObligation extends ProofObligation
 {
 
 	/**
@@ -32,7 +32,7 @@ public abstract class LPFProofObligation extends ProofObligation
  * @param ctxt THe contextual information to be used when constructing the final predicate
  * @param loc The location of the node generating the PO
  */
-	public LPFProofObligation(INode node, POType kind,
+	public LpfProofObligation(INode node, POType kind,
 			IPOContextStack ctxt, ILexLocation loc)
 	{
 		super(node, kind,ctxt,loc);

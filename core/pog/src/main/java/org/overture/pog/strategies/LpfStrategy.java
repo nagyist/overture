@@ -6,14 +6,19 @@ import java.util.List;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.QuestionAnswerAdaptor;
 import org.overture.ast.expressions.AAndBooleanBinaryExp;
+import org.overture.ast.expressions.AExists1Exp;
 import org.overture.ast.expressions.AExistsExp;
 import org.overture.ast.expressions.AForAllExp;
 import org.overture.ast.expressions.AImpliesBooleanBinaryExp;
 import org.overture.ast.expressions.AOrBooleanBinaryExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.factory.AstFactory;
+import org.overture.ast.patterns.PMultipleBind;
 import org.overture.ast.types.AUnionType;
 import org.overture.ast.types.PType;
+import org.overture.pog.obligation.LpfExists1Po;
+import org.overture.pog.obligation.LpfExistsPo;
+import org.overture.pog.obligation.LpfForAllPO;
 import org.overture.pog.obligation.LpfAndPo;
 import org.overture.pog.obligation.LpfOrPo;
 import org.overture.pog.obligation.ProofObligationList;
@@ -149,7 +154,6 @@ public class LpfStrategy implements IPogStrategy
 		PType lType = lExp.getType();
 		PExp rExp = node.getRight();
 		PType rType = rExp.getType();
-	
 
 		if (assistantFactory.createPTypeAssistant().isUnion(lType))
 		{
@@ -191,8 +195,28 @@ public class LpfStrategy implements IPogStrategy
 			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
 			IPogAssistantFactory assistantFactory) throws AnalysisException
 	{
-		// TODO Auto-generated method stub
-		return null;
+
+		IProofObligationList obligations = new ProofObligationList();
+
+		for (PMultipleBind mb : node.getBindList())
+		{
+			obligations.addAll(mb.apply(visitor, question));
+		}
+
+		IProofObligationList fapos = node.getPredicate().apply(visitor, question);
+
+		if (!fapos.isEmpty())
+		{
+			List<PExp> definedPredicates = new LinkedList<PExp>();
+			for (IProofObligation po : fapos)
+			{
+				definedPredicates.add(po.getStitch());
+			}
+
+			obligations.add(new LpfForAllPO(node, node.getPredicate(), definedPredicates, question));
+		}
+
+		return obligations;
 	}
 
 	@Override
@@ -202,8 +226,52 @@ public class LpfStrategy implements IPogStrategy
 			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
 			IPogAssistantFactory assistantFactory) throws AnalysisException
 	{
-		// TODO Auto-generated method stub
-		return null;
+
+		IProofObligationList obligations = new ProofObligationList();
+
+		for (PMultipleBind mb : node.getBindList())
+		{
+			obligations.addAll(mb.apply(visitor, question));
+		}
+
+		IProofObligationList fapos = node.getPredicate().apply(visitor, question);
+
+		if (!fapos.isEmpty())
+		{
+			List<PExp> definedPredicates = new LinkedList<PExp>();
+			for (IProofObligation po : fapos)
+			{
+				definedPredicates.add(po.getStitch());
+			}
+
+			obligations.add(new LpfExistsPo(node, definedPredicates, question));
+		}
+
+		return obligations;
+	}
+
+	@Override
+	public IProofObligationList executeExists1(
+			AExists1Exp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException
+	{
+		IProofObligationList obligations = new ProofObligationList();
+		IProofObligationList fapos = node.getPredicate().apply(visitor, question);
+
+		if (!fapos.isEmpty())
+		{
+			List<PExp> definedPredicates = new LinkedList<PExp>();
+			for (IProofObligation po : fapos)
+			{
+				definedPredicates.add(po.getStitch());
+			}
+
+			obligations.add(new LpfExists1Po(node, definedPredicates, question, assistantFactory));
+		}
+
+		return obligations;
 	}
 
 }

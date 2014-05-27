@@ -466,11 +466,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 	public IProofObligationList caseAExists1Exp(AExists1Exp node,
 			IPOContextStack question) throws AnalysisException
 	{
-		IProofObligationList obligations = new ProofObligationList();
-		question.push(new POForAllContext(assistantFactory, node));
-		obligations.addAll(node.getPredicate().apply(mainVisitor, question));
-		question.pop();
-		return obligations;
+		return strats.executeExists1(node, question, mainVisitor, assistantFactory);
 	}
 
 	@Override

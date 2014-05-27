@@ -19,7 +19,7 @@ import org.overture.pog.obligation.POType;
  *
  */
 		
-public class LpfOrPo extends LPFProofObligation
+public class LpfOrPo extends LpfProofObligation
 {
 
 	/**
@@ -39,7 +39,7 @@ public class LpfOrPo extends LPFProofObligation
 	 */
 	public LpfOrPo(PExp andExp, PExp lExp, PExp rExp, List<PExp> definedPredicates, IPOContextStack ctxt)
 	{
-		super(andExp, POType.LPF_AND, ctxt, andExp.getLocation());
+		super(andExp, POType.LPF_OR, ctxt, andExp.getLocation());
 		
 		PExp ltrue_exp = AstExpressionFactory.newAEqualsBinaryExp(lExp.clone(), AstExpressionFactory.newATrueConstExp());
 		PExp rtue_exp = AstExpressionFactory.newAEqualsBinaryExp(rExp.clone(), AstExpressionFactory.newATrueConstExp());

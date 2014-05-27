@@ -3,6 +3,7 @@ package org.overture.pog.strategies;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.QuestionAnswerAdaptor;
 import org.overture.ast.expressions.AAndBooleanBinaryExp;
+import org.overture.ast.expressions.AExists1Exp;
 import org.overture.ast.expressions.AExistsExp;
 import org.overture.ast.expressions.AForAllExp;
 import org.overture.ast.expressions.AImpliesBooleanBinaryExp;
@@ -44,4 +45,9 @@ public interface IPogStrategy
 			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
 			IPogAssistantFactory assistantFactory) throws AnalysisException;
 
+	IProofObligationList executeExists1(
+			AExists1Exp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException;
 }

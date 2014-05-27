@@ -116,7 +116,7 @@ public abstract class TestHelper {
 				Settings.release = Release.DEFAULT;
 			}
 		}
-		// only needed to compile. will never it because of fail()
+		// only needed to compile. will never hit it because of fail()
 		return null;
 	}
 

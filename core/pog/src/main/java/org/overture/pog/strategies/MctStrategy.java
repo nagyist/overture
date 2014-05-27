@@ -3,6 +3,7 @@ package org.overture.pog.strategies;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.QuestionAnswerAdaptor;
 import org.overture.ast.expressions.AAndBooleanBinaryExp;
+import org.overture.ast.expressions.AExists1Exp;
 import org.overture.ast.expressions.AExistsExp;
 import org.overture.ast.expressions.AForAllExp;
 import org.overture.ast.expressions.AImpliesBooleanBinaryExp;
@@ -182,6 +183,20 @@ public class MctStrategy implements IPogStrategy
 		obligations.addAll(node.getPredicate().apply(visitor, question));
 		question.pop();
 
+		return obligations;
+	}
+	
+	@Override
+	public IProofObligationList executeExists1(
+			AExists1Exp node,
+			IPOContextStack question,
+			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
+			IPogAssistantFactory assistantFactory) throws AnalysisException
+	{
+		IProofObligationList obligations = new ProofObligationList();
+		question.push(new POForAllContext(assistantFactory, node));
+		obligations.addAll(node.getPredicate().apply(visitor, question));
+		question.pop();
 		return obligations;
 	}
 

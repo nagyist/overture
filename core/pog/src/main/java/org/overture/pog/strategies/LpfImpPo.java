@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.factory.AstExpressionFactory;
-import org.overture.pog.obligation.LPFProofObligation;
+import org.overture.pog.obligation.LpfProofObligation;
 import org.overture.pog.obligation.POType;
 import org.overture.pog.obligation.ProofObligation;
 import org.overture.pog.pub.IPOContextStack;
 
-public class LpfImpPo extends LPFProofObligation 
+public class LpfImpPo extends LpfProofObligation 
 {
 
 	/**
@@ -29,7 +29,7 @@ public class LpfImpPo extends LPFProofObligation
 	 */
 	public LpfImpPo(PExp andExp, PExp lExp, PExp rExp, List<PExp> definedPredicates, IPOContextStack ctxt)
 	{
-		super(andExp, POType.LPF_AND, ctxt, andExp.getLocation());
+		super(andExp, POType.LPF_IMP, ctxt, andExp.getLocation());
 		
 		PExp lfalse_exp = AstExpressionFactory.newAEqualsBinaryExp(lExp.clone(), AstExpressionFactory.newAFalseConstExp());
 		PExp rtrue_exp= AstExpressionFactory.newAEqualsBinaryExp(rExp.clone(), AstExpressionFactory.newATrueConstExp());
