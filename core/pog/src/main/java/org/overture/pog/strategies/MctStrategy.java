@@ -151,7 +151,6 @@ public class MctStrategy implements IPogStrategy
 			QuestionAnswerAdaptor<IPOContextStack, IProofObligationList> visitor,
 			IPogAssistantFactory assistantFactory) throws AnalysisException
 	{
-
 		IProofObligationList obligations = new ProofObligationList();
 
 		for (PMultipleBind mb : node.getBindList())

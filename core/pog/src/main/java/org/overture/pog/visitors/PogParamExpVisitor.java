@@ -1811,7 +1811,7 @@ public abstract class PogParamExpVisitor<Q extends IPOContextStack, A extends IP
 	public IProofObligationList defaultINode(INode node,
 			IPOContextStack question) throws AnalysisException
 	{
-		return rootVisitor.defaultINode(node, question);
+		return node.apply(rootVisitor,question);
 	}
 
 	@Override
