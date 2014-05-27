@@ -35,6 +35,21 @@
       </menu>
     </menuContribution>
   </extension>
+  <extension
+        point="org.eclipse.ui.preferencePages">
+     <page
+           category="org.overture.ide.ui.vdm"
+           class="org.overture.ide.plugins.poviewer.PogPrefPage1"
+           id="org.overture.ide.plugins.poviewer.pref1"
+           name="POG">
+     </page>
+  </extension>
+  <extension
+        point="org.eclipse.core.runtime.preferences">
+     <initializer
+           class="org.overture.ide.plugins.poviewer.PogPrefInitializer">
+     </initializer>
+  </extension>
   <!-- key bindings -->
   <!--extension point="org.eclipse.ui.bindings">
     <key commandId="org.overture.ide.plugins.poviewer.commandGeneratedPO" contextId="org.eclipse.ui.contexts.window" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" sequence="Alt+P"/>

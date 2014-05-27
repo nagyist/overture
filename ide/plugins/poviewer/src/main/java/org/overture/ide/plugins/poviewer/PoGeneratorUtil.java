@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -35,18 +36,19 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.modules.AModuleModules;
+import org.overture.ast.node.INode;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.ast.NotAllowedException;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.plugins.poviewer.view.PoOverviewTableView;
 import org.overture.ide.ui.utility.VdmTypeCheckerUi;
-import org.overture.pog.pub.IProofObligationList;
-import org.overture.pog.obligation.POContextStack;
-import org.overture.pog.visitors.PogVisitor;
 import org.overture.pog.obligation.ProofObligationList;
+import org.overture.pog.pub.IProofObligationList;
+import org.overture.pog.pub.ProofObligationGenerator;
 
 public class PoGeneratorUtil
 {
@@ -174,9 +176,11 @@ public class PoGeneratorUtil
 					}
 
 					final ProofObligationList pos = getProofObligations(model, project.getDialect());
-					pos.renumber();
-					showPOs(project, pos);
-
+					if (pos != null)
+					{
+						pos.renumber();
+						showPOs(project, pos);
+					}
 				} catch (Throwable e)
 				{
 					e.printStackTrace();
@@ -211,7 +215,6 @@ public class PoGeneratorUtil
 	protected ProofObligationList getProofObligations(IVdmModel model,
 			Dialect dialect) throws NotAllowedException, Throwable
 	{
-		PogVisitor pogVisitor = new PogVisitor();
 		ProofObligationList obligations = new ProofObligationList();
 
 		if (!model.isTypeCorrect())
@@ -230,8 +233,11 @@ public class PoGeneratorUtil
 						continue;
 					else
 					{
-						IProofObligationList tmp = ((AModuleModules) definition).apply(pogVisitor, new POContextStack());
-						tmp.trivialCheck();
+						IProofObligationList tmp = getPOs(((AModuleModules) definition));
+						if (tmp == null)
+						{
+							return null;
+						}
 						obligations.addAll(tmp);
 					}
 			}
@@ -246,8 +252,11 @@ public class PoGeneratorUtil
 						continue;
 					else
 					{
-						IProofObligationList tmp = pogVisitor.defaultPDefinition((SClassDefinition) definition, new POContextStack());
-						tmp.trivialCheck();
+						IProofObligationList tmp = getPOs(((SClassDefinition) definition));
+						if (tmp == null)
+						{
+							return null;
+						}
 						obligations.addAll(tmp);
 					}
 				}
@@ -256,6 +265,29 @@ public class PoGeneratorUtil
 		}
 		final ProofObligationList pos = obligations;
 		return pos;
+	}
+
+	private IProofObligationList getPOs(INode node) throws AnalysisException
+	{
+		String choice = Activator.getDefault().getPreferenceStore().getString(PogPrefConstants.POG_LOGIC_CHOICE);
+		Shell lshell =site.getPage().getWorkbenchWindow().getShell();
+		
+		if (choice == null)
+		{
+			MessageDialog.openError(lshell, "Error", "Error with underlying POG logic. Check preferences.");
+			return null;
+		}
+		if (choice.equals(PogPrefConstants.POG_MCCARTHY))
+		{
+			return ProofObligationGenerator.generateMcCarthyProofObligations(node);
+		}
+		if (choice.equals(PogPrefConstants.POG_LPF))
+		{
+			return ProofObligationGenerator.generateLPFProofObligations(node);
+		}
+		MessageDialog.openError(lshell, "Error", "Error with underlying POG logic. Check preferences.");
+		return null;
+
 	}
 
 	private void showPOs(final IVdmProject project,
