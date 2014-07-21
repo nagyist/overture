@@ -948,7 +948,22 @@ public class DefinitionReader extends SyntaxReader
 			postcondition = getExpressionReader().readExpression();
 		}
 
-		return AstFactory.newAExplicitOperationDefinition(idToName(funcName), type, parameters, precondition, postcondition, body);
+		PExp relyCondition = null;
+		PExp guarCondition = null;
+
+		if (lastToken().is(VDMToken.RELY))
+		{
+			nextToken();
+			relyCondition = getExpressionReader().readExpression();
+		}
+
+		if (lastToken().is(VDMToken.GUAR))
+		{
+			nextToken();
+			guarCondition = getExpressionReader().readExpression();
+		}
+
+		return AstFactory.newAExplicitOperationDefinition(idToName(funcName), type, parameters, precondition, postcondition, relyCondition, guarCondition, body);
 	}
 
 	private PDefinition readImplicitOperationDefinition(

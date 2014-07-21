@@ -720,7 +720,7 @@ public class AstFactory
 
 	public static AExplicitOperationDefinition newAExplicitOperationDefinition(
 			ILexNameToken name, AOperationType type, List<PPattern> parameters,
-			PExp precondition, PExp postcondition, PStm body)
+			PExp precondition, PExp postcondition, PExp relyCondition, PExp guarCondition, PStm body)
 	{
 
 		AExplicitOperationDefinition result = new AExplicitOperationDefinition();
@@ -731,6 +731,8 @@ public class AstFactory
 		result.setParameterPatterns(parameters);
 		result.setPrecondition(precondition);
 		result.setPostcondition(postcondition);
+		result.setRelycondition(relyCondition);
+		result.setGuarcondition(guarCondition);
 		result.setBody(body);
 		result.setIsConstructor(false);
 

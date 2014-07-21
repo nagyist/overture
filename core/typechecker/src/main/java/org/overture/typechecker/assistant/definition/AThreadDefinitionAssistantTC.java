@@ -23,7 +23,7 @@ public class AThreadDefinitionAssistantTC
 
 		AOperationType type = AstFactory.newAOperationType(d.getLocation()); // () ==> ()
 
-		AExplicitOperationDefinition def = AstFactory.newAExplicitOperationDefinition(d.getOperationName(), type, new Vector<PPattern>(), null, null, d.getStatement().clone());
+		AExplicitOperationDefinition def = AstFactory.newAExplicitOperationDefinition(d.getOperationName(), type, new Vector<PPattern>(), null, null, null, null, d.getStatement().clone());
 
 		def.setAccess(d.getAccess().clone());
 		def.setClassDefinition(d.getClassDefinition());
