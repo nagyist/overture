@@ -424,9 +424,13 @@ definition {-> package='org.overture.ast.definitions'
 	|	[body]:stm	
 	|	[precondition]:exp 
 	|	[postcondition]:exp
+    |   [relycondition]:exp
+    |   [guarcondition]:exp
 	//|	(type):type -- ASTCreator-1.4.4 cannot handle this. Also fix the case
 	|	(predef):definition.#Function.explicit
     |   (postdef):definition.#Function.explicit
+    |   (relydef):definition.#Function.explicit
+    |   (guardef):definition.#Function.explicit
     |	(state):definition.state
     |	(actualResult):type
     |	[isConstructor]:java_Boolean
