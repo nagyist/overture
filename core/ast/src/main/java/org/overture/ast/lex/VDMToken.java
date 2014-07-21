@@ -174,6 +174,8 @@ public enum VDMToken implements Serializable
 	IS("is", "is", VDM_SL, VDM_PP, VDM_RT),
 	YET("yet", "yet", VDM_SL, VDM_PP, VDM_RT),
 	SPECIFIED("specified", "specified", VDM_SL, VDM_PP, VDM_RT),
+	RELY("rely", "rely", VDM_SL),
+	GUAR("guar", "guar", VDM_SL),
 
 	// Expressions
 	LET("let", "let", VDM_SL, VDM_PP, VDM_RT),

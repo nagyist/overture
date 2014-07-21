@@ -790,7 +790,7 @@ public class AstFactory
 
 	public static ASpecificationStm newASpecificationStm(ILexLocation location,
 			List<AExternalClause> externals, PExp precondition,
-			PExp postcondition, List<AErrorCase> errors)
+			PExp postcondition, PExp relyCondition, PExp guarCondition, List<AErrorCase> errors)
 	{
 
 		ASpecificationStm result = new ASpecificationStm();
@@ -799,6 +799,8 @@ public class AstFactory
 		result.setExternals(externals);
 		result.setPrecondition(precondition);
 		result.setPostcondition(postcondition);
+		result.setRelycondition(relyCondition);
+		result.setGuarcondition(guarCondition);
 		result.setErrors(errors);
 
 		return result;
