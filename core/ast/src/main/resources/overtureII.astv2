@@ -579,7 +579,7 @@ stm {-> package='org.overture.ast.statements'
     |   {return} [expression]:exp
     |   #SimpleBlock
     |   {skip}
-    |   {specification} [externals]:clause.external* [precondition]:exp [postcondition]:exp [errors]:case.error*
+    |   {specification} [externals]:clause.external* [precondition]:exp [postcondition]:exp [relycondition]:exp [guarcondition]:exp [errors]:case.error*
     |   {start} [obj]:exp
     |   {stop} [obj]:exp
     |   {subclassResponsibility}
