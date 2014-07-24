@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.node.INode;
@@ -29,8 +30,8 @@ import com.google.gson.reflect.TypeToken;
 public class Playground
 {
 
-	// comment this annotation out when done! no need to run the test
-	//@Test
+	@Ignore
+	@Test
 	public void quickTest() throws AnalysisException, IOException,
 			URISyntaxException
 	{
@@ -43,7 +44,7 @@ public class Playground
 		boolean show_result = false;
 		//show_result = true;
 
-		String model = "src/test/resources/adhoc/sandbox.vdmpp";
+		String model = "src/test/resources/adhoc/sandbox.vdmsl";
 		String result = "src/test/resources/adhoc/sandbox.RESULT";
 
 		List<INode> ast = ParseTcFacade.typedAst(model, "Playground");
