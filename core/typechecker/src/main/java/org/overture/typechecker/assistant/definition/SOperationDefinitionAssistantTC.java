@@ -50,7 +50,7 @@ public class SOperationDefinitionAssistantTC
 			plist.add(d.getResult().getPattern().clone());
 		}
 
-		PExp body = d.getRelycondition();
+		PExp body = d.getRelycondition().clone();
 		ILexNameToken name = makeImplicitName(d.getName(), "pre_", d.getLocation());
 
 		return getImplicitDefinition(d, base, plist, body, name);
