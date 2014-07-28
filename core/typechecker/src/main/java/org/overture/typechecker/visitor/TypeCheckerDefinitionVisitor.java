@@ -751,6 +751,34 @@ public class TypeCheckerDefinitionVisitor extends AbstractTypeCheckVisitor
 				TypeCheckerErrors.detail2("Actual", b, "Expected", expected);
 			}
 		}
+		
+		if (node.getRelydef() != null)
+		{
+			FlatEnvironment rely = new FlatEnvironment(question.assistantFactory, new Vector<PDefinition>(), local);
+			rely.setEnclosingDefinition(node.getRelydef());
+			PType b = node.getRelydef().getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, rely, NameScope.NAMESANDANYSTATE));
+			ABooleanBasicType expected = AstFactory.newABooleanBasicType(node.getLocation());
+
+			if (!question.assistantFactory.createPTypeAssistant().isType(b, ABooleanBasicType.class))
+			{
+				TypeCheckerErrors.report(3018, "Rely-condition returns unexpected type", node.getLocation(), node);
+				TypeCheckerErrors.detail2("Actual", b, "Expected", expected);
+			}
+		}
+		
+		if (node.getGuardef() != null)
+		{
+			FlatEnvironment guar = new FlatEnvironment(question.assistantFactory, new Vector<PDefinition>(), local);
+			guar.setEnclosingDefinition(node.getGuardef());
+			PType b = node.getGuardef().getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, guar, NameScope.NAMESANDANYSTATE));
+			ABooleanBasicType expected = AstFactory.newABooleanBasicType(node.getLocation());
+
+			if (!question.assistantFactory.createPTypeAssistant().isType(b, ABooleanBasicType.class))
+			{
+				TypeCheckerErrors.report(3018, "Guarantee-condition returns unexpected type", node.getLocation(), node);
+				TypeCheckerErrors.detail2("Actual", b, "Expected", expected);
+			}
+		}
 
 		PType expectedResult = ((AOperationType) node.getType()).getResult();
 		PType actualResult = node.getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, local, NameScope.NAMESANDSTATE, null, null, expectedResult));
@@ -1058,7 +1086,7 @@ public class TypeCheckerDefinitionVisitor extends AbstractTypeCheckVisitor
 
 			if (!question.assistantFactory.createPTypeAssistant().isType(b, ABooleanBasicType.class))
 			{
-				TypeCheckerErrors.report(3018, "Guard-condition returns unexpected type", node.getLocation(), node);
+				TypeCheckerErrors.report(3018, "Guarantee-condition returns unexpected type", node.getLocation(), node);
 				TypeCheckerErrors.detail2("Actual", b, "Expected", expected);
 			}
 		}
