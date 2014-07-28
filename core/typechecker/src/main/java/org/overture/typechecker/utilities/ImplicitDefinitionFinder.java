@@ -207,6 +207,12 @@ public class ImplicitDefinitionFinder extends QuestionAdaptor<Environment>
 			node.setRelydef(af.createSOPerationDefinitionAssistant().getRelyDefinition(node, question));
 			af.createPDefinitionAssistant().markUsed(node.getRelydef());
 		}
+		
+		if (node.getGuarcondition()!=null){
+			node.setGuardef(af.createSOPerationDefinitionAssistant().getGuarDefinition(node, question));
+			af.createPDefinitionAssistant().markUsed(node.getGuardef());
+		}
+	
 
 	}
 
@@ -259,6 +265,11 @@ public class ImplicitDefinitionFinder extends QuestionAdaptor<Environment>
 		{
 			node.setRelydef(af.createSOPerationDefinitionAssistant().getRelyDefinition(node, question));
 			af.createPDefinitionAssistant().markUsed(node.getRelydef());
+		}
+		
+		if(node.getGuarcondition()!=null){
+			node.setGuardef(af.createSOPerationDefinitionAssistant().getGuarDefinition(node, question));
+			af.createPDefinitionAssistant().markUsed(node.getGuardef());
 		}
 	}
 
