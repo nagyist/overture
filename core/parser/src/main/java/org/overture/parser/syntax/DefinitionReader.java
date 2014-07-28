@@ -1094,7 +1094,7 @@ public class DefinitionReader extends SyntaxReader
 		if (lastToken().is(VDMToken.GUAR))
 		{
 			nextToken();
-			relyCondition = expr.readExpression();
+			guarCondition = expr.readExpression();
 		}
 
 		List<AErrorCase> errors = null;

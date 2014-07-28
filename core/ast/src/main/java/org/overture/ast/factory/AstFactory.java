@@ -754,6 +754,8 @@ public class AstFactory
 		result.setExternals(spec.getExternals());
 		result.setPrecondition(spec.getPrecondition());
 		result.setPostcondition(spec.getPostcondition());
+		result.setRelycondition(spec.getRelycondition());
+		result.setGuarcondition(spec.getGuarcondition());
 		result.setErrors(spec.getErrors());
 		result.setIsConstructor(false);
 
