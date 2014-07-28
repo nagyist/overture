@@ -24,6 +24,8 @@ import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
 
 public class SOperationDefinitionAssistantTC
 {
+	private static final String RELY_PREFIX = "rely_";
+	private static final String GUAR_PREFIX = "guar_";
 	protected ITypeCheckerAssistantFactory af;
 
 	public SOperationDefinitionAssistantTC(ITypeCheckerAssistantFactory af)
@@ -34,49 +36,45 @@ public class SOperationDefinitionAssistantTC
 	public AExplicitFunctionDefinition getRelyDefinition(
 			AImplicitOperationDefinition d, Environment base)
 	{
-
-		List<PPattern> plist = new Vector<PPattern>();
-
-		for (APatternListTypePair pl : (LinkedList<APatternListTypePair>) d.getParameterPatterns())
-		{
-			for (PPattern pp : pl.getPatterns())
-			{
-				plist.add(pp.clone());
-			}
-		}
-
-		if (d.getResult() != null)
-		{
-			plist.add(d.getResult().getPattern().clone());
-		}
+		List<PPattern> plist = buildParams(d);
 
 		PExp body = d.getRelycondition().clone();
-		ILexNameToken name = makeImplicitName(d.getName(), "rely_", d.getLocation());
+		ILexNameToken name = makeImplicitName(d.getName(), RELY_PREFIX, d.getLocation());
 
-		return getImplicitDefinition(d, base, plist, body, name);
+		return makeImplicitDefinition(d, base, plist, body, name);
 	}
 
 	public AExplicitFunctionDefinition getRelyDefinition(
 			AExplicitOperationDefinition d, Environment base)
 	{
-
-		List<PPattern> plist = new Vector<PPattern>();
-
-		for (PPattern pp : d.getParameterPatterns())
-		{
-			plist.add(pp.clone());
-		}
-
-		if (!(((AOperationType) d.getType()).getResult() instanceof AVoidType))
-		{
-			LexNameToken result = new LexNameToken(d.getName().getModule(), "RESULT", d.getLocation());
-			plist.add(AstFactory.newAIdentifierPattern(result));
-		}
+		List<PPattern> plist = buildParams(d);
 
 		PExp body = d.getRelycondition();
-		ILexNameToken name = makeImplicitName(d.getName(), "rely_", d.getLocation());
+		ILexNameToken name = makeImplicitName(d.getName(), RELY_PREFIX, d.getLocation());
 
-		return getImplicitDefinition(d, base, plist, body, name);
+		return makeImplicitDefinition(d, base, plist, body, name);
+	}
+
+	public AExplicitFunctionDefinition getGuarDefinition(
+			AImplicitOperationDefinition d, Environment base)
+	{
+		List<PPattern> plist = buildParams(d);
+
+		PExp body = d.getGuarcondition().clone();
+		ILexNameToken name = makeImplicitName(d.getName(), GUAR_PREFIX, d.getLocation());
+
+		return makeImplicitDefinition(d, base, plist, body, name);
+	}
+	
+	public AExplicitFunctionDefinition getGuarDefinition(
+			AExplicitOperationDefinition d, Environment base)
+	{
+		List<PPattern> plist = buildParams(d);
+
+		PExp body = d.getGuarcondition();
+		ILexNameToken name = makeImplicitName(d.getName(), GUAR_PREFIX, d.getLocation());
+
+		return makeImplicitDefinition(d, base, plist, body, name);
 	}
 
 	/**
@@ -95,8 +93,45 @@ public class SOperationDefinitionAssistantTC
 		return name;
 
 	}
+	
+	
+	private List<PPattern> buildParams(AImplicitOperationDefinition d)
+	{
+		List<PPattern> plist = new Vector<PPattern>();
 
-	private AExplicitFunctionDefinition getImplicitDefinition(
+		for (APatternListTypePair pl : (LinkedList<APatternListTypePair>) d.getParameterPatterns())
+		{
+			for (PPattern pp : pl.getPatterns())
+			{
+				plist.add(pp.clone());
+			}
+		}
+
+		if (d.getResult() != null)
+		{
+			plist.add(d.getResult().getPattern().clone());
+		}
+		return plist;
+	}
+
+	private List<PPattern> buildParams(AExplicitOperationDefinition d)
+	{
+		List<PPattern> plist = new Vector<PPattern>();
+
+		for (PPattern pp : d.getParameterPatterns())
+		{
+			plist.add(pp.clone());
+		}
+
+		if (!(((AOperationType) d.getType()).getResult() instanceof AVoidType))
+		{
+			LexNameToken result = new LexNameToken(d.getName().getModule(), "RESULT", d.getLocation());
+			plist.add(AstFactory.newAIdentifierPattern(result));
+		}
+		return plist;
+	}
+
+	private AExplicitFunctionDefinition makeImplicitDefinition(
 			SOperationDefinition d, Environment base, List<PPattern> plist,
 			PExp body, ILexNameToken name)
 	{
@@ -127,7 +162,6 @@ public class SOperationDefinitionAssistantTC
 		def.setAccess(af.createPAccessSpecifierAssistant().getStatic(d, false));
 		def.setClassDefinition(d.getClassDefinition());
 		return def;
-
 	}
 
 }
