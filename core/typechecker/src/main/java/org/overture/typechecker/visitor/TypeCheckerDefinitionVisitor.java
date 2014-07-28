@@ -1034,7 +1034,7 @@ public class TypeCheckerDefinitionVisitor extends AbstractTypeCheckVisitor
 			
 			FlatEnvironment post = new FlatEnvironment(question.assistantFactory, new Vector<PDefinition>(), local);
 			post.setEnclosingDefinition(node.getPostdef());
-			b = node.getPostdef().getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, post, NameScope.NAMESANDANYSTATE));
+			b = node.getRelydef().getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, post, NameScope.NAMESANDANYSTATE));
 
 			ABooleanBasicType expected = AstFactory.newABooleanBasicType(node.getLocation());
 
@@ -1052,7 +1052,7 @@ public class TypeCheckerDefinitionVisitor extends AbstractTypeCheckVisitor
 			
 			FlatEnvironment post = new FlatEnvironment(question.assistantFactory, new Vector<PDefinition>(), local);
 			post.setEnclosingDefinition(node.getPostdef());
-			b = node.getPostdef().getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, post, NameScope.NAMESANDANYSTATE));
+			b = node.getGuardef().getBody().apply(THIS, new TypeCheckInfo(question.assistantFactory, post, NameScope.NAMESANDANYSTATE));
 
 			ABooleanBasicType expected = AstFactory.newABooleanBasicType(node.getLocation());
 
