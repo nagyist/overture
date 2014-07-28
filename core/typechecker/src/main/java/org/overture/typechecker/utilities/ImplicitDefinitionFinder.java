@@ -247,6 +247,11 @@ public class ImplicitDefinitionFinder extends QuestionAdaptor<Environment>
 			node.setPostdef(af.createAImplicitOperationDefinitionAssistant().getPostDefinition(node, question));
 			af.createPDefinitionAssistant().markUsed(node.getPostdef());
 		}
+		
+		if (node.getRelycondition()!=null){
+			node.setRelydef(af.createSOPerationDefinitionAssistant().getRelyDefinition(node, question));
+			af.createPDefinitionAssistant().markUsed(node.getRelydef());
+		}
 	}
 
 	@Override

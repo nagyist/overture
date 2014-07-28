@@ -51,7 +51,7 @@ public class SOperationDefinitionAssistantTC
 		}
 
 		PExp body = d.getRelycondition().clone();
-		ILexNameToken name = makeImplicitName(d.getName(), "pre_", d.getLocation());
+		ILexNameToken name = makeImplicitName(d.getName(), "rely_", d.getLocation());
 
 		return getImplicitDefinition(d, base, plist, body, name);
 	}
@@ -74,7 +74,7 @@ public class SOperationDefinitionAssistantTC
 		}
 
 		PExp body = d.getRelycondition();
-		ILexNameToken name = makeImplicitName(d.getName(), "pre_", d.getLocation());
+		ILexNameToken name = makeImplicitName(d.getName(), "rely_", d.getLocation());
 
 		return getImplicitDefinition(d, base, plist, body, name);
 	}
