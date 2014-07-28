@@ -50,6 +50,7 @@ import org.overture.typechecker.assistant.definition.PDefinitionListAssistantTC;
 import org.overture.typechecker.assistant.definition.PDefinitionSet;
 import org.overture.typechecker.assistant.definition.PTraceDefinitionAssistantTC;
 import org.overture.typechecker.assistant.definition.SClassDefinitionAssistantTC;
+import org.overture.typechecker.assistant.definition.SOperationDefinitionAssistantTC;
 import org.overture.typechecker.assistant.expression.AApplyExpAssistantTC;
 import org.overture.typechecker.assistant.expression.ACaseAlternativeAssistantTC;
 import org.overture.typechecker.assistant.expression.PExpAssistantTC;
@@ -169,6 +170,7 @@ public class TypeCheckerAssistantFactory extends AstAssistantFactory implements
 	// instance variables of things to return
 	TypeComparator typeComp;
 	LexNameTokenAssistant lnt;
+	transient SOperationDefinitionAssistantTC sodA;
 
 	@Override
 	public AApplyObjectDesignatorAssistantTC createAApplyObjectDesignatorAssistant()
@@ -1102,9 +1104,20 @@ public class TypeCheckerAssistantFactory extends AstAssistantFactory implements
 	@Override
 	public LexNameTokenAssistant getLexNameTokenAssistant()
 	{
-		if (lnt ==null){
+		if (lnt == null)
+		{
 			lnt = new LexNameTokenAssistant(this);
 		}
 		return lnt;
+	}
+
+	@Override
+	public SOperationDefinitionAssistantTC createSOPerationDefinitionAssistant()
+	{
+		if (sodA == null)
+		{
+			sodA = new SOperationDefinitionAssistantTC(this);
+		}
+		return sodA;
 	}
 }
