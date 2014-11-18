@@ -12,6 +12,21 @@ public class A {
 
     public A() {
     }
+
+    public String toString() {
+        return "A{" + "a0 = " + Utils.toString(a0) + ", a1 = " +
+        Utils.toString(a1) + ", x = " + Utils.toString(x) + ", y = " +
+        Utils.toString(y) + ", z = " + Utils.toString(z) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

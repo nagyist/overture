@@ -1,6 +1,7 @@
 package org.overture.interpreter.assistant.pattern;
 
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.patterns.PBind;
 import org.overture.interpreter.assistant.IInterpreterAssistantFactory;
 import org.overture.interpreter.runtime.Context;
@@ -8,7 +9,7 @@ import org.overture.interpreter.runtime.ObjectContext;
 import org.overture.interpreter.values.ValueList;
 import org.overture.typechecker.assistant.pattern.PBindAssistantTC;
 
-public class PBindAssistantInterpreter extends PBindAssistantTC
+public class PBindAssistantInterpreter extends PBindAssistantTC implements IAstAssistant
 {
 	protected static IInterpreterAssistantFactory af;
 
@@ -22,17 +23,17 @@ public class PBindAssistantInterpreter extends PBindAssistantTC
 	public ValueList getBindValues(PBind bind, Context ctxt)
 			throws AnalysisException
 	{
-		
+
 		return bind.apply(af.getSingleBindValuesCollector(), ctxt);// FIXME: should we handle exceptions like this
-		
+
 	}
 
 	public ValueList getValues(PBind bind, ObjectContext ctxt)
-	{	
-		
+	{
+
 		try
 		{
-			return bind.apply(af.getBindValueCollector(),ctxt);// FIXME: should we handle exceptions like this
+			return bind.apply(af.getBindValueCollector(), ctxt);// FIXME: should we handle exceptions like this
 		} catch (AnalysisException e)
 		{
 			return new ValueList();

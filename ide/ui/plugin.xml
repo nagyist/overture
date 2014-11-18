@@ -161,7 +161,11 @@
                  <adapt type="org.eclipse.core.resources.IFile"/>
               </or>
            </possibleDropTargets>
-        </dropAssistant> 
+        </dropAssistant>
+        <commonSorter
+              class="org.overture.ide.ui.navigator.VdmViewerComparator"
+              id="org.overture.ide.ui.vdmNavigatorSorter">
+        </commonSorter> 
 
    
 
@@ -371,7 +375,7 @@
      </command>
       <command
            id="org.overture.ide.ui.editor.commandGoToDefinition"
-           name="Open Decleration">
+           name="Open Declaration">
     </command>
   </extension>
   <extension
@@ -475,7 +479,7 @@
         
            <command
                  commandId="org.overture.ide.ui.editor.commandGoToDefinition"
-                 label="Open Decleration"
+                 label="Open Declaration"
                  style="push">
               <visibleWhen
                     checkEnabled="false">

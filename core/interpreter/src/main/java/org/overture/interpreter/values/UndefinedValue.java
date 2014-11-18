@@ -23,10 +23,11 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.ValueException;
-
 
 public class UndefinedValue extends Value
 {
@@ -57,7 +58,7 @@ public class UndefinedValue extends Value
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws ValueException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done) throws ValueException
 	{
 		return abort(4132, "Using undefined value", ctxt);
 	}

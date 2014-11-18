@@ -33,6 +33,19 @@ public class A {
     public static Number h(final Number x, final Number y) {
         return x.longValue() + y.longValue();
     }
+
+    public String toString() {
+        return "A{" + "n := " + Utils.toString(n) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

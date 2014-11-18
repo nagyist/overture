@@ -1,3 +1,24 @@
+/*
+ * #%~
+ * VDM Code Generator
+ * %%
+ * Copyright (C) 2008 - 2014 Overture
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #~%
+ */
 package org.overture.codegen.utils;
 
 import java.io.BufferedReader;
@@ -9,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.ast.analysis.AnalysisException;
@@ -22,7 +44,8 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
 public class GeneralCodeGenUtils
 {
-	public static TypeCheckResult<List<SClassDefinition>> validateFile(File file) throws AnalysisException
+	public static TypeCheckResult<List<SClassDefinition>> validateFile(File file)
+			throws AnalysisException
 	{
 		if (!file.exists() || !file.isFile())
 		{
@@ -45,13 +68,13 @@ public class GeneralCodeGenUtils
 			throw new AnalysisException("File did not pass the type check: "
 					+ file.getName());
 		}
-		
+
 		return typeCheckResult;
 
 	}
-	
-	
-	public static TypeCheckResult<PExp> validateExp(String exp) throws AnalysisException
+
+	public static TypeCheckResult<PExp> validateExp(String exp)
+			throws AnalysisException
 	{
 		if (exp == null || exp.isEmpty())
 		{
@@ -82,11 +105,12 @@ public class GeneralCodeGenUtils
 			throw new AnalysisException("Unable to type check expression: "
 					+ exp + ". Message: " + e.getMessage());
 		}
-		
+
 		return typeCheckResult;
 	}
-	
-	public static void replaceInFile(String filePath, String regex, String replacement)
+
+	public static void replaceInFile(String filePath, String regex,
+			String replacement)
 	{
 		try
 		{
@@ -110,15 +134,15 @@ public class GeneralCodeGenUtils
 			ioe.printStackTrace();
 		}
 	}
-	
+
 	public static void copyDirectory(File sourceLocation, File targetLocation)
 			throws IOException
 	{
-		if(!targetLocation.exists())
+		if (!targetLocation.exists())
 		{
 			targetLocation.getParentFile().mkdirs();
 		}
-	
+
 		if (sourceLocation.isDirectory())
 		{
 			String[] children = sourceLocation.list();
@@ -129,7 +153,7 @@ public class GeneralCodeGenUtils
 		} else
 		{
 			targetLocation.createNewFile();
-			
+
 			InputStream in = new FileInputStream(sourceLocation);
 			OutputStream out = new FileOutputStream(targetLocation);
 
@@ -143,5 +167,32 @@ public class GeneralCodeGenUtils
 			in.close();
 			out.close();
 		}
+	}
+
+	public static List<String> getClassesToSkip(String userInput)
+	{
+		if(userInput == null)
+		{
+			return new LinkedList<String>();
+		}
+		
+		String[] split = userInput.split(";");
+
+		List<String> classesToSkip = new LinkedList<String>();
+		
+		for(String element : split)
+		{
+			element = element.trim();
+			
+			if(element != null && !element.isEmpty())
+			{
+				if(!classesToSkip.contains(element))
+				{
+					classesToSkip.add(element);
+				}
+			}
+		}
+		
+		return classesToSkip;
 	}
 }

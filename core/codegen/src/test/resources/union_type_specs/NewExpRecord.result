@@ -42,8 +42,13 @@ public class Entry {
     public static Object Run() {
         Object x = 1L;
         Object y = 'a';
+        Rec r = new Rec(((Number) x), ((Character) y));
 
-        return new Rec(((Number) x), ((Character) y));
+        return Tuple.mk_(r.x, r.y);
+    }
+
+    public String toString() {
+        return "Entry{}";
     }
 
     public static class Rec implements Record {
@@ -77,6 +82,15 @@ public class Entry {
             return Utils.recordToString(this, x, y);
         }
     }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

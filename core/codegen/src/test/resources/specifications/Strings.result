@@ -14,6 +14,19 @@ public class A {
     public static VDMSeq g() {
         return SeqUtil.seq('t', 'x', 't');
     }
+
+    public String toString() {
+        return "A{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

@@ -10,6 +10,19 @@ public class Entry {
     public static Object Run() {
         return "\n one \n \t two \t \r three \r \" \\ four";
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

@@ -47,6 +47,10 @@ public class A {
         return SetUtil.set(1L, 2L, 3L);
     }
 
+    public String toString() {
+        return "A{}";
+    }
+
     private static class Rec implements Record {
         public Number x;
 
@@ -76,6 +80,15 @@ public class A {
             return Utils.recordToString(this, x);
         }
     }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

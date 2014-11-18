@@ -10,6 +10,10 @@ public class Entry {
     public static Object Run() {
         return new SimpleTest().Run();
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
 }
 
 ##########
@@ -39,6 +43,7 @@ public class SimpleTest {
                     'e', 'r', ' ', 'G', 'o', 'r', 'm', ' ', 'L', 'a', 'r', 's',
                     'e', 'n'),
                 SeqUtil.seq('G', 'r', 'a', 'n', 'v', 'e', 'j', ' ', '2', '4'));
+
         Account pglacc1 = new Account().Create(MapUtil.map(
                     new Maplet(1L, peter)), 5000L);
         Number pglid1 = 1L;
@@ -51,6 +56,14 @@ public class SimpleTest {
         } else {
             return false;
         }
+    }
+
+    public String toString() {
+        return "SimpleTest{" + "c1 = " + Utils.toString(c1) + ", cards = " +
+        Utils.toString(cards) + ", resource = " + Utils.toString(resource) +
+        ", tills = " + Utils.toString(tills) + ", clock := " +
+        Utils.toString(clock) + ", letterbox := " + Utils.toString(letterbox) +
+        "}";
     }
 }
 
@@ -74,7 +87,7 @@ public class Account {
     }
 
     public Account Create(final VDMMap cs, final Number b) {
-        cards = cs.clone();
+        cards = Utils.clone(cs);
         balance = b;
 
         return this;
@@ -87,14 +100,20 @@ public class Account {
     public Boolean Withdrawal(final Number cardId, final Number amount,
         final VDMSeq date) {
         Transaction transaction = new Transaction(date, cardId, amount);
+        Boolean andResult_1 = false;
 
-        if (((balance.longValue() - amount.longValue()) >= 0L) &&
-                (DateTotal(date.clone(),
-                    SeqUtil.conc(transactions.clone(),
-                        SeqUtil.seq(transaction.clone()))).longValue() <= dailyLimit.longValue())) {
+        if ((balance.longValue() - amount.longValue()) >= 0L) {
+            if (DateTotal(Utils.clone(date),
+                        SeqUtil.conc(Utils.clone(transactions),
+                            SeqUtil.seq(Utils.clone(transaction)))).longValue() <= dailyLimit.longValue()) {
+                andResult_1 = true;
+            }
+        }
+
+        if (andResult_1) {
             balance = balance.longValue() - amount.longValue();
-            transactions = SeqUtil.conc(transactions.clone(),
-                    SeqUtil.seq(transaction.clone()));
+            transactions = SeqUtil.conc(Utils.clone(transactions),
+                    SeqUtil.seq(Utils.clone(transaction)));
 
             return true;
         } else {
@@ -107,20 +126,21 @@ public class Account {
         VDMSeq addr = ((Cardholder) cards.get(cardId)).GetAddress();
         Letter letter = new Letter();
 
-        return letter.Create(nm.clone(), addr.clone(), date.clone(),
-            transactions.clone(), balance);
+        return letter.Create(Utils.clone(nm), Utils.clone(addr),
+            Utils.clone(date), Utils.clone(transactions), balance);
     }
 
     public VDMSet GetCardIds() {
-        return MapUtil.dom(cards.clone());
+        return MapUtil.dom(Utils.clone(cards));
     }
 
     public void AddCard(final Number cId, final Cardholder ch) {
-        cards = MapUtil.munion(cards.clone(), MapUtil.map(new Maplet(cId, ch)));
+        cards = MapUtil.munion(Utils.clone(cards),
+                MapUtil.map(new Maplet(cId, ch)));
     }
 
     public void RemoveCard(final Number cId) {
-        cards = MapUtil.domResBy(SetUtil.set(cId), cards.clone());
+        cards = MapUtil.domResBy(SetUtil.set(cId), Utils.clone(cards));
     }
 
     private static Boolean TransactionsInvariant(final VDMSeq ts) {
@@ -129,18 +149,19 @@ public class Account {
 
         for (Iterator iterator_2 = set_2.iterator(); iterator_2.hasNext();) {
             Number i = ((Number) iterator_2.next());
-            setCompResult_1 = SetUtil.union(setCompResult_1.clone(),
-                    SetUtil.set(
-                        ((Transaction) ts.get(Utils.index(i))).date.clone()));
+            setCompResult_1 = SetUtil.union(Utils.clone(setCompResult_1),
+                    SetUtil.set(Utils.clone(
+                            ((Transaction) ts.get(Utils.index(i))).date)));
         }
 
         Boolean forAllExpResult_1 = true;
-        VDMSet set_1 = setCompResult_1.clone();
+        VDMSet set_1 = Utils.clone(setCompResult_1);
 
         for (Iterator iterator_1 = set_1.iterator();
                 iterator_1.hasNext() && forAllExpResult_1;) {
             VDMSeq date = ((VDMSeq) iterator_1.next());
-            forAllExpResult_1 = DateTotal(date.clone(), ts.clone()).longValue() <= dailyLimit.longValue();
+            forAllExpResult_1 = DateTotal(Utils.clone(date), Utils.clone(ts))
+                                    .longValue() <= dailyLimit.longValue();
         }
 
         return forAllExpResult_1;
@@ -153,14 +174,14 @@ public class Account {
         for (Iterator iterator_3 = set_3.iterator(); iterator_3.hasNext();) {
             Number i = ((Number) iterator_3.next());
 
-            if (SeqUtil.equals(((Transaction) ts.get(Utils.index(i))).date, date)) {
-                seqCompResult_1 = SeqUtil.conc(seqCompResult_1.clone(),
+            if (Utils.equals(((Transaction) ts.get(Utils.index(i))).date, date)) {
+                seqCompResult_1 = SeqUtil.conc(Utils.clone(seqCompResult_1),
                         SeqUtil.seq(
                             ((Transaction) ts.get(Utils.index(i))).amount));
             }
         }
 
-        return Sum(seqCompResult_1.clone());
+        return Sum(Utils.clone(seqCompResult_1));
     }
 
     private static Number Sum(final VDMSeq rs) {
@@ -168,8 +189,15 @@ public class Account {
             return 0L;
         } else {
             return ((Number) rs.get(0)).doubleValue() +
-            Sum(SeqUtil.tail(rs.clone())).doubleValue();
+            Sum(SeqUtil.tail(Utils.clone(rs))).doubleValue();
         }
+    }
+
+    public String toString() {
+        return "Account{" + "cards := " + Utils.toString(cards) +
+        ", balance := " + Utils.toString(balance) + ", transactions := " +
+        Utils.toString(transactions) + ", dailyLimit = " +
+        Utils.toString(dailyLimit) + "}";
     }
 
     public static class Transaction implements Record {
@@ -179,7 +207,7 @@ public class Account {
 
         public Transaction(final VDMSeq _date, final Number _cardId,
             final Number _amount) {
-            date = (_date != null) ? _date.clone() : null;
+            date = (_date != null) ? Utils.clone(_date) : null;
             cardId = _cardId;
             amount = _amount;
         }
@@ -191,7 +219,7 @@ public class Account {
 
             Transaction other = ((Transaction) obj);
 
-            return (SeqUtil.equals(date, other.date)) &&
+            return (Utils.equals(date, other.date)) &&
             (cardId.longValue() == other.cardId.longValue()) &&
             (amount.longValue() == other.amount.longValue());
         }
@@ -245,6 +273,12 @@ public class Card {
     public Number GetCardId() {
         return cardId;
     }
+
+    public String toString() {
+        return "Card{" + "code := " + Utils.toString(code) + ", cardId := " +
+        Utils.toString(cardId) + ", accountId := " + Utils.toString(accountId) +
+        "}";
+    }
 }
 
 ##########
@@ -261,18 +295,23 @@ public class Cardholder {
     }
 
     public Cardholder Create(final VDMSeq nm, final VDMSeq addr) {
-        name = nm.clone();
-        address = addr.clone();
+        name = Utils.clone(nm);
+        address = Utils.clone(addr);
 
         return this;
     }
 
     public VDMSeq GetName() {
-        return name.clone();
+        return Utils.clone(name);
     }
 
     public VDMSeq GetAddress() {
-        return address.clone();
+        return Utils.clone(address);
+    }
+
+    public String toString() {
+        return "Cardholder{" + "name := " + Utils.toString(name) +
+        ", address := " + Utils.toString(address) + "}";
     }
 }
 
@@ -299,7 +338,7 @@ public class CentralResource {
     }
 
     public Number GetBalance(final Number accountId) {
-        if (MapUtil.dom(accounts.clone()).contains(accountId)) {
+        if (MapUtil.dom(Utils.clone(accounts)).contains(accountId)) {
             return ((Account) accounts.get(accountId)).GetBalance();
         } else {
             return null;
@@ -328,9 +367,24 @@ public class CentralResource {
     }
 
     public Boolean IsLegalCard(final Number accountId, final Number cardId) {
-        return !(illegalCards.contains(cardId)) &&
-        MapUtil.dom(accounts.clone()).contains(accountId) &&
-        ((Account) accounts.get(accountId)).GetCardIds().contains(cardId);
+        Boolean andResult_2 = false;
+
+        if (!(illegalCards.contains(cardId))) {
+            Boolean andResult_3 = false;
+
+            if (MapUtil.dom(Utils.clone(accounts)).contains(accountId)) {
+                if (((Account) accounts.get(accountId)).GetCardIds()
+                         .contains(cardId)) {
+                    andResult_3 = true;
+                }
+            }
+
+            if (andResult_3) {
+                andResult_2 = true;
+            }
+        }
+
+        return andResult_2;
     }
 
     public Boolean NumberOfTriesExceeded(final Number cardId) {
@@ -347,7 +401,7 @@ public class CentralResource {
     }
 
     public void AddAccount(final Number accId, final Account acc) {
-        accounts = MapUtil.override(accounts.clone(),
+        accounts = MapUtil.override(Utils.clone(accounts),
                 MapUtil.map(new Maplet(accId, acc)));
 
         VDMMap mapCompResult_1 = MapUtil.map();
@@ -355,16 +409,25 @@ public class CentralResource {
 
         for (Iterator iterator_4 = set_4.iterator(); iterator_4.hasNext();) {
             Number cId = ((Number) iterator_4.next());
-            mapCompResult_1 = MapUtil.munion(mapCompResult_1.clone(),
+            mapCompResult_1 = MapUtil.munion(Utils.clone(mapCompResult_1),
                     MapUtil.map(new Maplet(cId, 0L)));
         }
 
-        numberOfTries = MapUtil.override(numberOfTries.clone(),
-                mapCompResult_1.clone());
+        numberOfTries = MapUtil.override(Utils.clone(numberOfTries),
+                Utils.clone(mapCompResult_1));
     }
 
     public void AddIllegalCard(final Number cId) {
-        illegalCards = SetUtil.union(illegalCards.clone(), SetUtil.set(cId));
+        illegalCards = SetUtil.union(Utils.clone(illegalCards), SetUtil.set(cId));
+    }
+
+    public String toString() {
+        return "CentralResource{" + "accounts := " + Utils.toString(accounts) +
+        ", numberOfTries := " + Utils.toString(numberOfTries) +
+        ", illegalCards := " + Utils.toString(illegalCards) +
+        ", letterbox := " + Utils.toString(letterbox) + ", clock := " +
+        Utils.toString(clock) + ", maxNumberOfTries = " +
+        Utils.toString(maxNumberOfTries) + "}";
     }
 }
 
@@ -381,11 +444,15 @@ public class Clock {
     }
 
     public void SetDate(final VDMSeq d) {
-        date = d.clone();
+        date = Utils.clone(d);
     }
 
     public VDMSeq GetDate() {
-        return date.clone();
+        return Utils.clone(date);
+    }
+
+    public String toString() {
+        return "Clock{" + "date := " + Utils.toString(date) + "}";
     }
 }
 
@@ -407,13 +474,20 @@ public class Letter {
 
     public Letter Create(final VDMSeq nm, final VDMSeq addr, final VDMSeq d,
         final VDMSeq ts, final Number b) {
-        name = nm.clone();
-        address = addr.clone();
-        date = d.clone();
-        transactions = ts.clone();
+        name = Utils.clone(nm);
+        address = Utils.clone(addr);
+        date = Utils.clone(d);
+        transactions = Utils.clone(ts);
         balance = b;
 
         return this;
+    }
+
+    public String toString() {
+        return "Letter{" + "name := " + Utils.toString(name) + ", address := " +
+        Utils.toString(address) + ", date := " + Utils.toString(date) +
+        ", transactions := " + Utils.toString(transactions) + ", balance := " +
+        Utils.toString(balance) + "}";
     }
 }
 
@@ -430,11 +504,16 @@ public class Letterbox {
     }
 
     public void PostStatement(final Letter letter) {
-        statements = SeqUtil.conc(statements.clone(), SeqUtil.seq(letter));
+        statements = SeqUtil.conc(Utils.clone(statements), SeqUtil.seq(letter));
     }
 
     public Letter GetLastStatement() {
         return ((Letter) statements.get(Utils.index(statements.size())));
+    }
+
+    public String toString() {
+        return "Letterbox{" + "statements := " + Utils.toString(statements) +
+        "}";
     }
 }
 
@@ -471,10 +550,18 @@ public class Till {
         Number cardId = curCard.GetCardId();
         Boolean codeOk = curCard.GetCode().longValue() == Encode(pin).longValue();
         Boolean cardLegal = IsLegalCard();
-        cardOk = codeOk && cardLegal;
+        Boolean andResult_5 = false;
+
+        if (codeOk) {
+            if (cardLegal) {
+                andResult_5 = true;
+            }
+        }
+
+        cardOk = andResult_5;
 
         if (!(cardLegal)) {
-            retainedCards = SetUtil.union(retainedCards.clone(),
+            retainedCards = SetUtil.union(Utils.clone(retainedCards),
                     SetUtil.set(curCard));
             curCard = null;
 
@@ -485,7 +572,7 @@ public class Till {
             resource.IncrNumberOfTries(cardId);
 
             if (resource.NumberOfTriesExceeded(cardId)) {
-                retainedCards = SetUtil.union(retainedCards.clone(),
+                retainedCards = SetUtil.union(Utils.clone(retainedCards),
                         SetUtil.set(curCard));
                 cardOk = false;
                 curCard = null;
@@ -525,7 +612,15 @@ public class Till {
     }
 
     public Boolean CardValidated() {
-        return (curCard != null) && cardOk;
+        Boolean andResult_6 = false;
+
+        if (curCard != null) {
+            if (cardOk) {
+                andResult_6 = true;
+            }
+        }
+
+        return andResult_6;
     }
 
     public Boolean CardInside() {
@@ -534,6 +629,13 @@ public class Till {
 
     private static Number Encode(final Number pin) {
         return pin;
+    }
+
+    public String toString() {
+        return "Till{" + "curCard := " + Utils.toString(curCard) +
+        ", cardOk := " + Utils.toString(cardOk) + ", retainedCards := " +
+        Utils.toString(retainedCards) + ", resource := " +
+        Utils.toString(resource) + "}";
     }
 }
 
@@ -548,6 +650,10 @@ abstract public class Event {
     }
 
     public abstract Object execute(final System system);
+
+    public String toString() {
+        return "Event{}";
+    }
 }
 
 ##########
@@ -577,6 +683,10 @@ public class GetBalance extends Event {
             return false;
         }
     }
+
+    public String toString() {
+        return "GetBalance{" + "tillid := " + Utils.toString(tillid) + "}";
+    }
 }
 
 ##########
@@ -601,6 +711,10 @@ public class IllegalCard extends Event {
         sys.GetResource().AddIllegalCard(mycard);
 
         return true;
+    }
+
+    public String toString() {
+        return "IllegalCard{" + "mycard := " + Utils.toString(mycard) + "}";
     }
 }
 
@@ -628,6 +742,11 @@ public class InsertCard extends Event {
         sys.GetTill(tillid).InsertCard(mycard);
 
         return true;
+    }
+
+    public String toString() {
+        return "InsertCard{" + "tillid := " + Utils.toString(tillid) +
+        ", mycard := " + Utils.toString(mycard) + "}";
     }
 }
 
@@ -660,6 +779,10 @@ public class ReturnCard extends Event {
 
         return true;
     }
+
+    public String toString() {
+        return "ReturnCard{" + "tillid := " + Utils.toString(tillid) + "}";
+    }
 }
 
 ##########
@@ -688,6 +811,10 @@ public class SendStatement extends Event {
         } else {
             return false;
         }
+    }
+
+    public String toString() {
+        return "SendStatement{" + "tillid := " + Utils.toString(tillid) + "}";
     }
 }
 
@@ -746,6 +873,7 @@ public class System {
         Cardholder CSK = new Cardholder().Create(SeqUtil.seq('C', 'S', 'K'),
                 SeqUtil.seq('F', 'o', 'r', 's', 'k', 'e', 'r', 'p', 'a', 'r',
                     'k', 'e', 'n', ' ', '1', '0', 'A'));
+
         Account pglacc1 = new Account().Create(MapUtil.map(
                     new Maplet(1L, peter)), 5000L);
         Account saacc1 = new Account().Create(MapUtil.map(new Maplet(2L, sten)),
@@ -768,6 +896,17 @@ public class System {
         resource.AddAccount(pmid1, pmacc1);
         resource.AddAccount(ifid1, ifacc1);
         resource.AddLetterbox(clock, new Letterbox());
+    }
+
+    public String toString() {
+        return "System{" + "c1 = " + Utils.toString(c1) + ", c2 = " +
+        Utils.toString(c2) + ", c3 = " + Utils.toString(c3) + ", c4 = " +
+        Utils.toString(c4) + ", c5 = " + Utils.toString(c5) + ", c6 = " +
+        Utils.toString(c6) + ", c7 = " + Utils.toString(c7) + ", cards = " +
+        Utils.toString(cards) + ", resource = " + Utils.toString(resource) +
+        ", tills = " + Utils.toString(tills) + ", clock := " +
+        Utils.toString(clock) + ", letterbox := " + Utils.toString(letterbox) +
+        "}";
     }
 }
 
@@ -793,6 +932,11 @@ public class Validate extends Event {
 
     public Object execute(final System sys) {
         return sys.GetTill(tillid).Validate(code);
+    }
+
+    public String toString() {
+        return "Validate{" + "tillid := " + Utils.toString(tillid) +
+        ", code := " + Utils.toString(code) + "}";
     }
 }
 
@@ -825,6 +969,11 @@ public class Withdrawal extends Event {
             return false;
         }
     }
+
+    public String toString() {
+        return "Withdrawal{" + "tillid := " + Utils.toString(tillid) +
+        ", amount := " + Utils.toString(amount) + "}";
+    }
 }
 
 ##########
@@ -832,9 +981,11 @@ public class Withdrawal extends Event {
 package quotes;
 
 public interface Quotes {
-    public static Number PinNotOk = 1L;
-    public static Number PinOk = 2L;
-    public static Number Retained = 3L;
+    public static Number start = 1L;
+    public static Number append = 2L;
+    public static Number PinNotOk = 3L;
+    public static Number PinOk = 4L;
+    public static Number Retained = 5L;
 }
 
 ##########

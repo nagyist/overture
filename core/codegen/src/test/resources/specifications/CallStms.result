@@ -32,6 +32,10 @@ public class A {
     public static Number f(final Number x) {
         return x;
     }
+
+    public String toString() {
+        return "A{}";
+    }
 }
 
 ##########
@@ -47,6 +51,19 @@ public class B {
     public static Number f(final Number x) {
         return x;
     }
+
+    public String toString() {
+        return "B{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

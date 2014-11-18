@@ -15,14 +15,27 @@ public class Entry {
             Number x = ((Number) iterator_1.next());
 
             if (1L == 1L) {
-                mapCompResult_1 = MapUtil.munion(mapCompResult_1.clone(),
+                mapCompResult_1 = MapUtil.munion(Utils.clone(mapCompResult_1),
                         MapUtil.map(
                             new Maplet(x, x.longValue() * x.longValue())));
             }
         }
 
-        return mapCompResult_1.clone();
+        return Utils.clone(mapCompResult_1);
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

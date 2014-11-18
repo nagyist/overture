@@ -22,13 +22,15 @@ Tokens
   java_Double = 'java:java.lang.Double';
   java_Character = 'java:java.lang.Character';
   java_String = 'java:java.lang.String';
+  java_Object = 'java:java.lang.Object';
   
      
 Abstract Syntax Tree
 /* This section declares the AST by giving root nodes and their possible sub classe */
 
 CG {-> package='org.overture.codegen.cgast'
-	| [sourceNode]:SourceNode}
+	| [sourceNode]:SourceNode
+	| (tag):java_Object}
 	= #pattern
 	| #bind
 	| #multipleBind
@@ -46,15 +48,24 @@ CG {-> package='org.overture.codegen.cgast'
 #pattern {-> package='org.overture.codegen.cgast.patterns'}
 	= {identifier} [name]:java_String
 	| {ignore}
+	| {bool} [value]:java_Boolean
+	| {char} [value]:java_Character
+	| {int}	[value]:java_Long
+	| {null}
+	| {quote} [value]:java_String
+	| {real} [value]:java_Double
+	| {string} [value]:java_String
+	| {tuple} [patterns]:CG.#pattern*
+	| {record} [typename]:java_String [patterns]:CG.#pattern* [type]:CG.#type
 	;
 
 #bind {-> package='org.overture.codegen.cgast.patterns'
-	|	[pattern]:CG.#pattern.identifier} ////In the Overture AST pList is of type multiple patterns. Here it is limited to identifiers
+	|	[pattern]:CG.#pattern}
     =   {set} [set]:CG.#exp //binds
     ;
 		
 #multipleBind {-> package='org.overture.codegen.cgast.patterns'
-	|	[patterns]:CG.#pattern.identifier*} //In the Overture AST pList is of type multiple patterns. Here it is limited to identifiers
+	|	[patterns]:CG.#pattern*}
     =   {set}  [set]:CG.#exp //binds
     ;
    
@@ -62,10 +73,14 @@ CG {-> package='org.overture.codegen.cgast'
 	=	{type}
 		[name]:java_String
 		[definingClass]:java_String
+	|	{token}
+		[name]:java_String
 	;
     
 #decl {-> package='org.overture.codegen.cgast.declarations'}
 	=	{method} //rename to operation
+		(preCond):CG.#decl
+		(postCond):CG.#decl
 		[access]:java_String
 		[static]:java_Boolean
 		[abstract]:java_Boolean
@@ -76,6 +91,8 @@ CG {-> package='org.overture.codegen.cgast'
 		[templateTypes]:CG.#type.template*
 		[body]:CG.#stm
 	|	{func}
+		(preCond):CG.#decl
+		(postCond):CG.#decl
 		[access]:java_String
 		[abstract]:java_Boolean
 		[methodType]:CG.#type.method
@@ -86,6 +103,7 @@ CG {-> package='org.overture.codegen.cgast'
 	|	{field} 
     	[access]:java_String
     	[static]:java_Boolean
+    	[volatile]:java_Boolean
     	[final]:java_Boolean
     	[type]:CG.#type
     	[name]:java_String
@@ -101,7 +119,12 @@ CG {-> package='org.overture.codegen.cgast'
     	[methods]:CG.#decl.method*
     	[functions]:CG.#decl.func*
     	[superName]:java_String
-    	[records]:CG.#decl.record*
+    	[thread]:CG.#decl.thread
+    	[innerClasses]:CG.#decl.class*
+    	[interfaces]:CG.#decl.interface*
+    	[typeDecls]:CG.#decl.type*
+    	[perSyncs]:CG.#decl.persync*
+    	[mutexSyncs]:CG.#decl.mutexSync*
     |	{interface}
     	[templateTypes]:CG.#type.template*
     	[package]:java_String
@@ -110,10 +133,25 @@ CG {-> package='org.overture.codegen.cgast'
     	[methodSignatures]:CG.#decl.method*
     |	{record}
     	[name]:java_String
-    	[access]:java_String
     	[fields]:field*
     	[methods]:CG.#decl.method*
-    |	{empty}
+    |	{thread}
+    	[def]:CG.#decl
+    	[stm]:CG.#stm
+    	[type]:CG.#type
+    |	{type}
+    	[access]:java_String
+    	[decl]:CG.#decl
+    |	{catchClause}
+    	[type]:CG.#type
+    	[name]:java_String
+    	[stm]:CG.#stm
+    |	{persync}
+    	[opname]:java_String
+    	[guardname]:java_String
+    	[pred]:CG.#exp
+    |	{mutexSync}
+    	[opnames]:CG.#name*
 	;
 
 #Local  {-> package='org.overture.codegen.cgast.declarations'}
@@ -154,15 +192,16 @@ CG {-> package='org.overture.codegen.cgast'
            |	{abstractBody}
            |	{assignment} [target]:CG.#stateDesignator [exp]:CG.#exp
            |	{localAssignment} [target]:CG.#exp [exp]:CG.#exp
+           |	{localPatternAssignment} [target]:CG.#pattern [exp]:CG.#exp (nextElementDecl):CG.#decl.#Local.var
            |	{block}	[localDefs]:CG.#decl.#Local* [statements]:CG.#stm*
            |	{callObject} [type]:CG.#type [designator]:CG.#objectDesignator [className]:java_String [fieldName]:java_String 
            					 [args]:CG.#exp*
            |	{callObjectExp} [type]:CG.#type [obj]:CG.#exp [className]:java_String [fieldName]:java_String 
            					 [args]:CG.#exp*
-           |	{call} [type]:CG.#type [classType]:CG.#type.class [name]:java_String [args]:CG.#exp*
+           |	#call
            |	{notImplemented}
            |	{forIndex} [var]:java_String [from]:CG.#exp [to]:CG.#exp [by]:CG.#exp [body]:CG.#stm
-           |	{forAll} [var]:java_String [exp]:CG.#exp [body]:CG.#stm
+           |	{forAll} [pattern]:CG.#pattern [exp]:CG.#exp [body]:CG.#stm
            |	{while} [exp]:CG.#exp [body]:CG.#stm
            |	{letBeSt} [header]:CG.#letBeSt.header [statement]:CG.#stm
            |	{throw} [exp]:CG.#exp
@@ -170,7 +209,28 @@ CG {-> package='org.overture.codegen.cgast'
            |	{increment} [var]:CG.#exp
            |	{decrement} [var]:CG.#exp
            |	{raiseError} [error]:CG.#exp.#RuntimeError
+           |	{cases} [exp]:CG.#exp [cases]:CG.#stm.#altStm.case* [others]:CG.#stm
+           |	#altStm
+           |	{error}
+           |	{continue}
+           |	{break}
+           |	{start}
+           		[exp]:CG.#exp 
+           |	{try} [stm]:CG.#stm [catchClauses]:CG.#decl.catchClause* [finally]:CG.#stm
            ;
+
+#call {-> package='org.overture.codegen.cgast.statements'
+	| 	[type]:CG.#type
+	|	[name]:java_String
+	|	[args]:CG.#exp*}
+    =  	{plain} [classType]:CG.#type
+    |	{super} 
+    ;
+
+           
+#altStm {-> package='org.overture.codegen.cgast.statements'}
+    = {case} [pattern]:CG.#pattern [result]:CG.#stm [patternType]:CG.#type
+    ;
            
 #letBeSt {-> package='org.overture.codegen.cgast.utils'}
 	= {header} [binding]:CG.#multipleBind.set [suchThat]:CG.#exp //The Overture AST uses a multiplebind 
@@ -185,6 +245,7 @@ CG {-> package='org.overture.codegen.cgast'
 	|	{new} [name]:CG.#name.type [args]:CG.#exp*
 	|	#Var
 	|	{instanceof} [checkedType]:CG.#type [exp]:CG.#exp
+	|	#Is
     |	#Literal
     |	{self}
     |	{null}
@@ -192,6 +253,7 @@ CG {-> package='org.overture.codegen.cgast'
     |	{methodInstantiation} [func]:CG.#exp [actualTypes]:CG.#type*
     |	{tuple} [args]:CG.#exp* [tupleType]:CG.#type.tuple
     |	{fieldNumber} [field]:java_Long [tuple]:CG.#exp
+    |	{tupleSize} [tuple]:CG.#exp
     |	{ternaryIf} [condition]:CG.#exp [trueValue]:CG.#exp [falseValue]:CG.#exp
     |   {maplet}  [left]:CG.#exp [right]:CG.#exp
     |	{letBeSt} [header]:CG.#letBeSt.header [value]:CG.#exp
@@ -213,17 +275,47 @@ CG {-> package='org.overture.codegen.cgast'
     |	{lambda} [params]:CG.#localParam.formalParam* [exp]:CG.#exp
     |	{anonymousClass} [methods]:CG.#decl.method*
     |	{notImplemented}
+    |	{undefined}
     |	{threadId}
+    |	{tupleCompatibility} [tuple]:CG.#exp [types]:CG.#type*
+    |	{cases} [exp]:CG.#exp [cases]:CG.#exp.#altExp.case* [others]:CG.#exp
+    |	#altExp
+    |	{subSeq} [seq]:CG.#exp [from]:CG.#exp [to]:CG.#exp
+    |	{history}[histype]:java_String [opsname]:java_String [sentinelType]:CG.#type.class
+    ;
+
+#Is {-> package='org.overture.codegen.cgast.expressions'
+	| [exp]:CG.#exp}
+    =	{bool}
+    |	{nat}
+    |	{nat1}
+    |	{int}
+    |	{rat}
+    |	{real}
+    |	{char}
+    |	{token}
+    |	{tuple} [checkedType]:CG.#type
+    |	{general} [checkedType]:CG.#type
+    ;   
+
+#altExp {-> package='org.overture.codegen.cgast.expressions'}
+    = {case} [pattern]:CG.#pattern [result]:CG.#exp [patternType]:CG.#type
     ;
 
 #RuntimeError {-> package='org.overture.codegen.cgast.expressions'}
     =   {LetBeStNoBinding}
+    |	{patternMatch} [message]:java_String
+    |	{missingMember} [message]:java_String
+    	//Raised at runtime when an attemp is made 
+		//to access a non-existing member (e.g. operation)
+	|	{preCond} [message]:java_String
     ;
 
 #Var {-> package='org.overture.codegen.cgast.expressions'
 	|	[isLambda]:java_Boolean}
     =   {identifier} [original]:java_String //Change original to name...
-	|	{explicit} [classType]:CG.#type.class [name]:java_String
+	|	{explicit} [classType]:CG.#type [name]:java_String
+	|	{super} [name]:java_String
     ;
     
 #Literal {-> package='org.overture.codegen.cgast.expressions'}
@@ -299,7 +391,8 @@ CG {-> package='org.overture.codegen.cgast'
     |   {minus}
     |	{cast}
     |	{isolation}
-    |	{size} //Used for both sets and sequences
+    |	{len}
+    |	{card}
     |	{elems}
     |	{indices}
     |	{head}
@@ -356,6 +449,7 @@ CG {-> package='org.overture.codegen.cgast'
     |	{interface} [types]:CG.#type* [name]:java_String
     |	{union} [types]:CG.#type*
     |	{quote} [value]:java_String
+    |	{unknown}
     ;
     
 externalType {-> package='org.overture.codegen.cgast.utils'}
@@ -364,6 +458,9 @@ externalType {-> package='org.overture.codegen.cgast.utils'}
 
 #basicTypeWrappers {-> package='org.overture.codegen.cgast.types'}
 	= {Int}
+	| {Nat1}
+	| {Nat}
+	| {Rat}
 	| {Real}
 	| {Char}
 	| {Bool}
@@ -374,7 +471,6 @@ externalType {-> package='org.overture.codegen.cgast.utils'}
 	| [setOf]:CG.#type}
     =   {set} 
     ;
-  
     
 #seq {-> package='org.overture.codegen.cgast.types'
 	| [empty]:java_Boolean
@@ -398,6 +494,9 @@ externalType {-> package='org.overture.codegen.cgast.utils'}
 
 #numeric {-> package='org.overture.codegen.cgast.types'}
     =   {int}
+    |	{nat1}
+    |	{nat}
+    |	{rat}
     |   {real} 
     ;
      

@@ -1,12 +1,13 @@
 package org.overture.interpreter.assistant.statement;
 
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.statements.PStm;
 import org.overture.interpreter.assistant.IInterpreterAssistantFactory;
 import org.overture.typechecker.assistant.statement.PStmAssistantTC;
 
-public class PStmAssistantInterpreter extends PStmAssistantTC
+public class PStmAssistantInterpreter extends PStmAssistantTC implements IAstAssistant
 {
 	protected static IInterpreterAssistantFactory af;
 
@@ -21,7 +22,7 @@ public class PStmAssistantInterpreter extends PStmAssistantTC
 	{
 		try
 		{
-			return stm.apply(af.getStatementExpressionFinder(),lineno);// FIXME: should we handle exceptions like this
+			return stm.apply(af.getStatementExpressionFinder(), lineno);// FIXME: should we handle exceptions like this
 		} catch (AnalysisException e)
 		{
 			return null; // Most have none
@@ -32,6 +33,8 @@ public class PStmAssistantInterpreter extends PStmAssistantTC
 	 * Find a statement starting on the given line. Single statements just compare their location to lineno, but block
 	 * statements and statements with sub-statements iterate over their branches.
 	 * 
+	 * @param stm
+	 *            the statement
 	 * @param lineno
 	 *            The line number to locate.
 	 * @return A statement starting on the line, or null.
@@ -40,7 +43,7 @@ public class PStmAssistantInterpreter extends PStmAssistantTC
 	{
 		try
 		{
-			return stm.apply(af.getStatementFinder(),lineno);// FIXME: should we handle exceptions like this
+			return stm.apply(af.getStatementFinder(), lineno);// FIXME: should we handle exceptions like this
 		} catch (AnalysisException e)
 		{
 			return null; // Most have none
@@ -48,5 +51,4 @@ public class PStmAssistantInterpreter extends PStmAssistantTC
 
 	}
 
-	
 }

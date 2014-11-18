@@ -24,6 +24,10 @@ public class Entry {
         return a.read();
     }
 
+    public String toString() {
+        return "Entry{" + "m := " + Utils.toString(m) + "}";
+    }
+
     private static class Rec implements Record {
         public Number field;
 
@@ -53,6 +57,15 @@ public class Entry {
             return Utils.recordToString(this, field);
         }
     }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
@@ -333,7 +334,7 @@ public class OperationValue extends Value
 			} catch (PatternMatchException e)
 			{
 				abort(e.number, e, ctxt);
-			} 
+			}
 		}
 
 		if (self != null)
@@ -539,7 +540,7 @@ public class OperationValue extends Value
 				}
 			}
 
-			PStm res = solver.solve(allDefs,name.getName(), this.impldef, stateExps, argExps, Console.out, Console.err);
+			PStm res = solver.solve(allDefs, name.getName(), this.impldef, stateExps, argExps, Console.out, Console.err);
 
 			rv = res.apply(VdmRuntime.getStatementEvaluator(), argContext);
 		} catch (Exception e)
@@ -573,12 +574,10 @@ public class OperationValue extends Value
 		if (classdef != null)
 		{
 			return VdmRuntime.getNodeState(assistantFactory, classdef).guardLock;
-		}
-		else if (self != null)
+		} else if (self != null)
 		{
 			return self.guardLock;
-		}
-		else
+		} else
 		{
 			return null;
 		}
@@ -663,7 +662,7 @@ public class OperationValue extends Value
 	private void notifySelf(IInterpreterAssistantFactory assistantFactory)
 	{
 		Lock lock = getGuardLock(assistantFactory);
-		
+
 		if (lock != null)
 		{
 			debug("Signal guard");
@@ -753,14 +752,15 @@ public class OperationValue extends Value
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
 		if (ctxt.assistantFactory.createPTypeAssistant().isType(to, AOperationType.class))
 		{
 			return this;
 		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 

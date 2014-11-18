@@ -14,6 +14,19 @@ public class A {
             return cg_double(3L);
         }
     }
+
+    public String toString() {
+        return "A{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

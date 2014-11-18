@@ -6,6 +6,10 @@ import java.util.*;
 public class A {
     public A() {
     }
+
+    public String toString() {
+        return "A{}";
+    }
 }
 
 ##########
@@ -22,6 +26,19 @@ public class B {
     public void cg_init_B_1() {
         //Skip;
     }
+
+    public String toString() {
+        return "B{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

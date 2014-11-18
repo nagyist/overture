@@ -12,6 +12,19 @@ public class A {
     public Tuple op() {
         return Tuple.mk_(2L, 3L);
     }
+
+    public String toString() {
+        return "A{" + "x := " + Utils.toString(x) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

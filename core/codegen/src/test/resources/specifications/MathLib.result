@@ -29,6 +29,19 @@ public class A {
         Number x16 = MATH.pi;
         MATH.srand(x);
     }
+
+    public String toString() {
+        return "A{" + "x = " + Utils.toString(x) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

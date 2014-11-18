@@ -11,19 +11,32 @@ public class Entry {
 
     public static Object Run() {
         VDMSet setCompResult_1 = SetUtil.set();
-        VDMSet set_1 = xs.clone();
+        VDMSet set_1 = Utils.clone(xs);
 
         for (Iterator iterator_1 = set_1.iterator(); iterator_1.hasNext();) {
             Object e = ((Object) iterator_1.next());
 
             if (((Boolean) e)) {
-                setCompResult_1 = SetUtil.union(setCompResult_1.clone(),
+                setCompResult_1 = SetUtil.union(Utils.clone(setCompResult_1),
                         SetUtil.set(e));
             }
         }
 
-        return setCompResult_1.clone();
+        return Utils.clone(setCompResult_1);
     }
+
+    public String toString() {
+        return "Entry{" + "xs = " + Utils.toString(xs) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.assistant.pattern.PTypeList;
 import org.overture.ast.definitions.AImplicitFunctionDefinition;
 import org.overture.ast.types.PType;
@@ -13,7 +14,7 @@ import org.overture.interpreter.values.FunctionValue;
 import org.overture.typechecker.assistant.definition.AImplicitFunctionDefinitionAssistantTC;
 
 public class AImplicitFunctionDefinitionAssistantInterpreter extends
-		AImplicitFunctionDefinitionAssistantTC
+		AImplicitFunctionDefinitionAssistantTC implements IAstAssistant
 {
 
 	protected static IInterpreterAssistantFactory af;
@@ -26,6 +27,7 @@ public class AImplicitFunctionDefinitionAssistantInterpreter extends
 		this.af = af;
 	}
 
+	//FIXME: only used one. Mainline it.
 	public FunctionValue getPolymorphicValue(IInterpreterAssistantFactory af,
 			AImplicitFunctionDefinition impdef, PTypeList actualTypes)
 	{
@@ -55,7 +57,7 @@ public class AImplicitFunctionDefinitionAssistantInterpreter extends
 
 		if (impdef.getPredef() != null)
 		{
-			prefv = af.createAExplicitFunctionDefinitionAssistant().getPolymorphicValue(af,impdef.getPredef(), actualTypes);
+			prefv = af.createAExplicitFunctionDefinitionAssistant().getPolymorphicValue(af, impdef.getPredef(), actualTypes);
 		} else
 		{
 			prefv = null;
@@ -63,17 +65,16 @@ public class AImplicitFunctionDefinitionAssistantInterpreter extends
 
 		if (impdef.getPostdef() != null)
 		{
-			postfv = af.createAExplicitFunctionDefinitionAssistant().getPolymorphicValue(af,impdef.getPostdef(), actualTypes);
+			postfv = af.createAExplicitFunctionDefinitionAssistant().getPolymorphicValue(af, impdef.getPostdef(), actualTypes);
 		} else
 		{
 			postfv = null;
 		}
 
-		FunctionValue rv = new FunctionValue(af,impdef, actualTypes, prefv, postfv, null);
+		FunctionValue rv = new FunctionValue(af, impdef, actualTypes, prefv, postfv, null);
 
 		polyfuncs.put(actualTypes, rv);
 		return rv;
 	}
-
 
 }

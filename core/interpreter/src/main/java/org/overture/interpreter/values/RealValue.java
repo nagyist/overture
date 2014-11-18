@@ -23,12 +23,13 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.types.ARealNumericBasicType;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.ValueException;
-
 
 public class RealValue extends NumericValue
 {
@@ -41,8 +42,7 @@ public class RealValue extends NumericValue
 		if (Double.isInfinite(value))
 		{
 			throw new Exception("Real is infinite");
-		}
-		else if (Double.isNaN(value))
+		} else if (Double.isNaN(value))
 		{
 			throw new Exception("Real is NaN");
 		}
@@ -58,8 +58,8 @@ public class RealValue extends NumericValue
 	{
 		if (other instanceof RealValue)
 		{
-			RealValue ro = (RealValue)other;
-			return (int)Math.round(Math.signum(value - ro.value));
+			RealValue ro = (RealValue) other;
+			return (int) Math.round(Math.signum(value - ro.value));
 		}
 
 		return super.compareTo(other);
@@ -135,15 +135,15 @@ public class RealValue extends NumericValue
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
 		if (to instanceof ARealNumericBasicType)
 		{
 			return this;
-		}
-		else
+		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 
@@ -153,8 +153,7 @@ public class RealValue extends NumericValue
 		try
 		{
 			return new RealValue(value);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			// Can't happen?
 			return null;

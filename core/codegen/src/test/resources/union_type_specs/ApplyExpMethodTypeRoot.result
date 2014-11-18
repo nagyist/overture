@@ -18,6 +18,19 @@ public class Entry {
 
         return e.op(((Number) x), ((Character) y));
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

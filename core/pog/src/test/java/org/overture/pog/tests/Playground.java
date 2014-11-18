@@ -29,22 +29,31 @@ import com.google.gson.reflect.TypeToken;
  */
 public class Playground
 {
+	
+	@Ignore
+	@Test
+	public void sandboxSl() throws AnalysisException, IOException, URISyntaxException{
+		quickPog("src/test/resources/adhoc/sandbox.vdmsl");
+	}
 
 	@Ignore
 	@Test
-	public void quickTest() throws AnalysisException, IOException,
+	public void sandboxPp() throws AnalysisException, IOException, URISyntaxException{
+		quickPog("src/test/resources/adhoc/sandbox.vdmpp");
+	}
+	
+	public void quickPog(String model) throws AnalysisException, IOException,
 			URISyntaxException
 	{
 
 		// switch this flag to update a test result file
 		boolean write_result = false;
-		//write_result = true;
+		 write_result = true;
 
 		// switch this flag to print the stored results
 		boolean show_result = false;
-		//show_result = true;
+		// show_result = true;
 
-		String model = "src/test/resources/adhoc/sandbox.vdmsl";
 		String result = "src/test/resources/adhoc/sandbox.RESULT";
 
 		List<INode> ast = ParseTcFacade.typedAst(model, "Playground");

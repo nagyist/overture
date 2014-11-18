@@ -10,6 +10,19 @@ public class StringType {
     public VDMSeq op1() {
         return SeqUtil.seq('k', 'a', 't', 't', 'e', 'b', 'a', 'k', 'k', 'e');
     }
+
+    public String toString() {
+        return "StringType{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

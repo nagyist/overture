@@ -1,3 +1,24 @@
+/*
+ * #%~
+ * The VDM Type Checker
+ * %%
+ * Copyright (C) 2008 - 2014 Overture
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #~%
+ */
 package org.overture.typechecker.assistant;
 
 import java.util.Collection;
@@ -59,7 +80,6 @@ import org.overture.typechecker.assistant.module.AFromModuleImportsAssistantTC;
 import org.overture.typechecker.assistant.module.AModuleExportsAssistantTC;
 import org.overture.typechecker.assistant.module.AModuleImportsAssistantTC;
 import org.overture.typechecker.assistant.module.AModuleModulesAssistantTC;
-import org.overture.typechecker.assistant.module.AValueValueImportAssistantTC;
 import org.overture.typechecker.assistant.module.PExportAssistantTC;
 import org.overture.typechecker.assistant.module.PImportAssistantTC;
 import org.overture.typechecker.assistant.pattern.AMapletPatternMapletAssistantTC;
@@ -97,16 +117,13 @@ import org.overture.typechecker.utilities.type.PTypeResolver;
 import org.overture.typechecker.utilities.type.QualifiedDefinition;
 
 //TODO Add assistant Javadoc
-/** 
- * The Interface specifying what is offered by the Overture TC assistant
- * functionalities.
+/**
+ * The Interface specifying what is offered by the Overture TC assistant functionalities.
+ * 
  * @author ldc
- *
  */
 public interface ITypeCheckerAssistantFactory extends IAstAssistantFactory
 {
-
-
 
 	ABusClassDefinitionAssistantTC createABusClassDefinitionAssistant();
 
@@ -128,7 +145,7 @@ public interface ITypeCheckerAssistantFactory extends IAstAssistantFactory
 
 	AStateDefinitionAssistantTC createAStateDefinitionAssistant();
 
-	//ASystemClassDefinitionAssistantTC createASystemClassDefinitionAssistant();
+	// ASystemClassDefinitionAssistantTC createASystemClassDefinitionAssistant();
 
 	AThreadDefinitionAssistantTC createAThreadDefinitionAssistant();
 
@@ -167,8 +184,6 @@ public interface ITypeCheckerAssistantFactory extends IAstAssistantFactory
 
 	AModuleModulesAssistantTC createAModuleModulesAssistant();
 
-	AValueValueImportAssistantTC createAValueValueImportAssistant();
-
 	PExportAssistantTC createPExportAssistant();
 
 	PImportAssistantTC createPImportAssistant();
@@ -178,31 +193,31 @@ public interface ITypeCheckerAssistantFactory extends IAstAssistantFactory
 
 	// ACharacterPatternAssistantTC createACharacterPatternAssistant();
 
-	//AConcatenationPatternAssistantTC createAConcatenationPatternAssistant();
-
-	//AExpressionPatternAssistantTC createAExpressionPatternAssistant();
+	// AConcatenationPatternAssistantTC createAConcatenationPatternAssistant();
+	
+	// AExpressionPatternAssistantTC createAExpressionPatternAssistant();
 
 	AMapletPatternMapletAssistantTC createAMapletPatternMapletAssistant();
 
-	//AMapPatternAssistantTC createAMapPatternAssistant();
+	// AMapPatternAssistantTC createAMapPatternAssistant();
 
-	//AMapUnionPatternAssistantTC createAMapUnionPatternAssistant();
+	// AMapUnionPatternAssistantTC createAMapUnionPatternAssistant();
 
 	APatternTypePairAssistant createAPatternTypePairAssistant();
 
-	//ARecordPatternAssistantTC createARecordPatternAssistant();
+	// ARecordPatternAssistantTC createARecordPatternAssistant();
 
-	//ASeqPatternAssistantTC createASeqPatternAssistant();
+	// ASeqPatternAssistantTC createASeqPatternAssistant();
 
 	ASetBindAssistantTC createASetBindAssistant();
 
-	//ASetPatternAssistantTC createASetPatternAssistant();
+	// ASetPatternAssistantTC createASetPatternAssistant();
 
-	//ATuplePatternAssistantTC createATuplePatternAssistant();
+	// ATuplePatternAssistantTC createATuplePatternAssistant();
 
 	ATypeBindAssistantTC createATypeBindAssistant();
 
-	//AUnionPatternAssistantTC createAUnionPatternAssistant();
+	// AUnionPatternAssistantTC createAUnionPatternAssistant();
 
 	PatternListTC createPatternList();
 
@@ -272,11 +287,10 @@ public interface ITypeCheckerAssistantFactory extends IAstAssistantFactory
 	
 		// visitors
 
-	//SSeqTypeAssistantTC createSSeqTypeAssistant();
+	// SSeqTypeAssistantTC createSSeqTypeAssistant();
 
 	// stuff to delete ends here
-	
-	
+
 	// visitor getters that we will actually keep
 
 	IAnswer<List<PDefinition>> getDefinitionCollector();
@@ -406,9 +420,9 @@ public interface ITypeCheckerAssistantFactory extends IAstAssistantFactory
 	IQuestionAnswer<AModuleModules, List<PDefinition>> getImportDefinitionFinder();
 
 	IAnswer<PTypeList> getComposeTypeCollector();
-	
+
 	TypeComparator getTypeComparator();
-	
+
 	LexNameTokenAssistant getLexNameTokenAssistant();
 
 	IQuestionAnswer<TypeCheckInfo, List<QualifiedDefinition>> getQualificationVisitor();

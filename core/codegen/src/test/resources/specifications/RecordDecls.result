@@ -7,6 +7,10 @@ public class A {
     public A() {
     }
 
+    public String toString() {
+        return "A{}";
+    }
+
     private static class Vector2D implements Record {
         public Number x;
         public Number y;
@@ -69,6 +73,15 @@ public class A {
             return Utils.recordToString(this, r);
         }
     }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

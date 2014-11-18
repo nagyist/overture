@@ -23,12 +23,12 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.types.AQuoteType;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
-import org.overture.interpreter.runtime.ValueException;
-
 
 public class QuoteValue extends Value
 {
@@ -51,13 +51,13 @@ public class QuoteValue extends Value
 	{
 		if (other instanceof Value)
 		{
-			Value val = ((Value)other).deref();
+			Value val = ((Value) other).deref();
 
-    		if (val instanceof QuoteValue)
-    		{
-    			QuoteValue ov = (QuoteValue)val;
-    			return ov.value.equals(value);
-    		}
+			if (val instanceof QuoteValue)
+			{
+				QuoteValue ov = (QuoteValue) val;
+				return ov.value.equals(value);
+			}
 		}
 
 		return false;
@@ -82,11 +82,12 @@ public class QuoteValue extends Value
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
 		if (to instanceof AQuoteType)
 		{
-			AQuoteType qto = (AQuoteType)to;
+			AQuoteType qto = (AQuoteType) to;
 
 			if (!qto.getValue().getValue().equals(value))
 			{
@@ -94,10 +95,9 @@ public class QuoteValue extends Value
 			}
 
 			return this;
-		}
-		else
+		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 

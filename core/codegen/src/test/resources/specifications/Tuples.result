@@ -10,6 +10,19 @@ public class A {
     public static Tuple f2(final Tuple x) {
         return Tuple.mk_(1L, 2L);
     }
+
+    public String toString() {
+        return "A{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

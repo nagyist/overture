@@ -10,6 +10,10 @@ public class C {
     public Number op() {
         return Q.pi;
     }
+
+    public String toString() {
+        return "C{}";
+    }
 }
 
 ##########
@@ -23,6 +27,19 @@ public class Q {
 
     public Q() {
     }
+
+    public String toString() {
+        return "Q{" + "pi = " + Utils.toString(pi) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

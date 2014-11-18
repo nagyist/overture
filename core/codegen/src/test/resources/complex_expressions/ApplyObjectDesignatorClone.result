@@ -24,11 +24,15 @@ public class A {
         Tuple a = Tuple.mk_('x', 'y');
         Tuple b = Tuple.mk_(1L, 2L);
 
-        return ((A) m(a.clone(), a.clone()).get(b)).no();
+        return ((A) m(Utils.clone(a), Utils.clone(a)).get(b)).no();
     }
 
     public VDMMap m(final Tuple p, final Tuple q) {
-        return x.clone();
+        return Utils.clone(x);
+    }
+
+    public String toString() {
+        return "A{" + "x = " + Utils.toString(x) + "}";
     }
 }
 
@@ -47,6 +51,19 @@ public class Entry {
 
         return a.op1().longValue() + a.op2().longValue();
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

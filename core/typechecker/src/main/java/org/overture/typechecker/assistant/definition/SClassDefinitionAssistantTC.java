@@ -1,12 +1,35 @@
+/*
+ * #%~
+ * The VDM Type Checker
+ * %%
+ * Copyright (C) 2008 - 2014 Overture
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #~%
+ */
 package org.overture.typechecker.assistant.definition;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.QuestionAnswerAdaptor;
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.definitions.ABusClassDefinition;
 import org.overture.ast.definitions.AClassInvariantDefinition;
 import org.overture.ast.definitions.ACpuClassDefinition;
@@ -36,7 +59,7 @@ import org.overture.typechecker.TypeCheckInfo;
 import org.overture.typechecker.TypeCheckerErrors;
 import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
 
-public class SClassDefinitionAssistantTC
+public class SClassDefinitionAssistantTC implements IAstAssistant
 {
 	protected static ITypeCheckerAssistantFactory af;
 
@@ -256,7 +279,6 @@ public class SClassDefinitionAssistantTC
 		{
 			af.createPDefinitionAssistant().setClassDefinition(invariant, d);
 		}
-
 	}
 
 	private AExplicitOperationDefinition getInvDefinition(SClassDefinition d)
@@ -607,8 +629,8 @@ public class SClassDefinitionAssistantTC
 					TypeCheckerErrors.detail2("This", af.createPDefinitionAssistant().kind(override), "Super", af.createPDefinitionAssistant().kind(indef));
 				} else if (af.createPAccessSpecifierAssistant().narrowerThan(override.getAccess(), indef.getAccess()))
 				{
-					TypeCheckerErrors.report(3006, "Overriding definition reduces visibility", override.getName().getLocation(), override);
-					TypeCheckerErrors.detail2("This", override.getName(), "Super", indef.getName());
+					TypeCheckerErrors.report(3006, "Overriding definition reduces visibility", override.getName().getLocation(),override);
+					TypeCheckerErrors.detail2("This", override.getAccess().getAccess()+" "+ override.getName(), "Super",indef.getAccess().getAccess()+" "+ indef.getName());
 				} else
 				{
 					PType to = af.createPDefinitionAssistant().getType(indef);
@@ -693,6 +715,15 @@ public class SClassDefinitionAssistantTC
 		if (c.getTypeChecked())
 		{
 			return;
+		}
+
+		if (p == Pass.TYPES) // First one
+		{
+			List<PDefinition> localDefs = new LinkedList<PDefinition>();
+			localDefs.addAll(c.getDefinitions());
+			localDefs.addAll(c.getLocalInheritedDefinitions());
+			af.createPDefinitionListAssistant().removeDuplicates(localDefs);
+			c.setIsAbstract(af.createPDefinitionListAssistant().hasSubclassResponsibilities(localDefs));
 		}
 
 		for (PDefinition d : c.getDefinitions())

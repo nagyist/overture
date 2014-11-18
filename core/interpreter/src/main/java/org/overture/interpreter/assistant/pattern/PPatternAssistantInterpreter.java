@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.patterns.AIdentifierPattern;
 import org.overture.ast.patterns.PPattern;
@@ -14,7 +15,7 @@ import org.overture.interpreter.values.NameValuePairList;
 import org.overture.interpreter.values.Value;
 import org.overture.typechecker.assistant.pattern.PPatternAssistantTC;
 
-public class PPatternAssistantInterpreter extends PPatternAssistantTC
+public class PPatternAssistantInterpreter extends PPatternAssistantTC implements IAstAssistant
 {
 	protected static IInterpreterAssistantFactory af;
 
@@ -73,11 +74,12 @@ public class PPatternAssistantInterpreter extends PPatternAssistantTC
 	public List<NameValuePairList> getAllNamedValues(PPattern pattern,
 			Value expval, Context ctxt) throws AnalysisException
 	{
-		
+
 		return pattern.apply(af.getAllNamedValuesLocator(), new AllNamedValuesLocator.Newquestion(expval, ctxt));
 	}
 
 	/**
+	 * @param pattern
 	 * @return The "length" of the pattern (eg. sequence and set patterns).
 	 */
 
@@ -93,6 +95,7 @@ public class PPatternAssistantInterpreter extends PPatternAssistantTC
 	}
 
 	/**
+	 * @param pattern
 	 * @return True if the pattern has constraints, such that matching values should be permuted, where necessary, to
 	 *         find a match.
 	 */
@@ -105,6 +108,6 @@ public class PPatternAssistantInterpreter extends PPatternAssistantTC
 		{
 			return true;
 		}
-		
+
 	}
 }

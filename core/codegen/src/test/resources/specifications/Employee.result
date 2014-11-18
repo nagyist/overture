@@ -8,6 +8,10 @@ abstract public class Employee {
     }
 
     public abstract Number getSalary();
+
+    public String toString() {
+        return "Employee{}";
+    }
 }
 
 ##########
@@ -46,6 +50,11 @@ public class HourlyPaidEmployee extends Employee {
             rate = pRate;
         }
     }
+
+    public String toString() {
+        return "HourlyPaidEmployee{" + "hours := " + Utils.toString(hours) +
+        ", rate := " + Utils.toString(rate) + "}";
+    }
 }
 
 ##########
@@ -71,6 +80,11 @@ public class FixedSalaryEmployee extends Employee {
     public Number getSalary() {
         return fixedSalary;
     }
+
+    public String toString() {
+        return "FixedSalaryEmployee{" + "fixedSalary := " +
+        Utils.toString(fixedSalary) + "}";
+    }
 }
 
 ##########
@@ -92,14 +106,14 @@ public class Company {
 
     public void op1() {
         Number x = employees.size();
-        VDMSeq y = employees.clone();
+        VDMSeq y = Utils.clone(employees);
         Employee q = ((Employee) employees.get(0));
 
         //Skip;
     }
 
     public Number calculateSalary() {
-        return start_calc(0L, employees.clone());
+        return start_calc(0L, Utils.clone(employees));
     }
 
     private Number start_calc(final Number sum, final VDMSeq emps) {
@@ -108,7 +122,7 @@ public class Company {
         } else {
             return start_calc(sum.doubleValue() +
                 ((Employee) emps.get(0)).getSalary().doubleValue(),
-                SeqUtil.tail(emps.clone()));
+                SeqUtil.tail(Utils.clone(emps)));
         }
     }
 
@@ -118,9 +132,13 @@ public class Company {
     }
 
     public Company addEmp(final Employee emp) {
-        employees = SeqUtil.conc(employees.clone(), SeqUtil.seq(emp));
+        employees = SeqUtil.conc(Utils.clone(employees), SeqUtil.seq(emp));
 
         return this;
+    }
+
+    public String toString() {
+        return "Company{" + "employees := " + Utils.toString(employees) + "}";
     }
 }
 
@@ -144,6 +162,19 @@ public class World {
 
         return company.calculateSalary();
     }
+
+    public String toString() {
+        return "World{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

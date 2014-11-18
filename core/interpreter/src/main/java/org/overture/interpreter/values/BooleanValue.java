@@ -23,12 +23,12 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.types.ABooleanBasicType;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
-import org.overture.interpreter.runtime.ValueException;
-
 
 public class BooleanValue extends Value
 {
@@ -51,13 +51,13 @@ public class BooleanValue extends Value
 	{
 		if (other instanceof Value)
 		{
-			Value val = ((Value)other).deref();
+			Value val = ((Value) other).deref();
 
-    		if (val instanceof BooleanValue)
-    		{
-    			BooleanValue ov = (BooleanValue)val;
-    			return ov.value == value;
-    		}
+			if (val instanceof BooleanValue)
+			{
+				BooleanValue ov = (BooleanValue) val;
+				return ov.value == value;
+			}
 		}
 
 		return false;
@@ -78,19 +78,19 @@ public class BooleanValue extends Value
 	@Override
 	public String kind()
 	{
-		 return "bool";
+		return "bool";
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
-		if (ctxt.assistantFactory.createPTypeAssistant().isType(to,ABooleanBasicType.class))
+		if (ctxt.assistantFactory.createPTypeAssistant().isType(to, ABooleanBasicType.class))
 		{
 			return this;
-		}
-		else
+		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 

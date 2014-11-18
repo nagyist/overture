@@ -34,6 +34,19 @@ public class Functions {
     public static Number f3() {
         return 5L;
     }
+
+    public String toString() {
+        return "Functions{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

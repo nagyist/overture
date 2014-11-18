@@ -23,11 +23,12 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.ValueException;
-
 
 abstract public class ReferenceValue extends Value
 {
@@ -36,8 +37,8 @@ abstract public class ReferenceValue extends Value
 
 	public ReferenceValue(Value value)
 	{
-		this.value = (value instanceof UpdatableValue) ?
-			((UpdatableValue)value).value :	value;	// Avoid double-references
+		this.value = value instanceof UpdatableValue ? ((UpdatableValue) value).value
+				: value; // Avoid double-references
 	}
 
 	public ReferenceValue()
@@ -46,9 +47,10 @@ abstract public class ReferenceValue extends Value
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
-		return value.convertValueTo(to, ctxt);
+		return value.convertValueTo(to, ctxt, done);
 	}
 
 	@Override
@@ -176,17 +178,16 @@ abstract public class ReferenceValue extends Value
 	{
 		if (other instanceof Value)
 		{
-			Value val = ((Value)other).deref();
+			Value val = ((Value) other).deref();
 
-    		if (val instanceof ReferenceValue)
-    		{
-    			ReferenceValue rvo = (ReferenceValue)val;
-    			return value.equals(rvo.value);
-    		}
-    		else
-    		{
-    			return value.equals(other);
-    		}
+			if (val instanceof ReferenceValue)
+			{
+				ReferenceValue rvo = (ReferenceValue) val;
+				return value.equals(rvo.value);
+			} else
+			{
+				return value.equals(other);
+			}
 		}
 
 		return false;

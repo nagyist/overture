@@ -1,3 +1,24 @@
+/*
+ * #%~
+ * The Overture Abstract Syntax Tree
+ * %%
+ * Copyright (C) 2008 - 2014 Overture
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #~%
+ */
 package org.overture.ast.factory;
 
 import java.io.File;
@@ -95,7 +116,9 @@ import org.overture.ast.patterns.AIntegerPattern;
 import org.overture.ast.patterns.AMapPattern;
 import org.overture.ast.patterns.AMapUnionPattern;
 import org.overture.ast.patterns.AMapletPatternMaplet;
+import org.overture.ast.patterns.ANamePatternPair;
 import org.overture.ast.patterns.ANilPattern;
+import org.overture.ast.patterns.AObjectPattern;
 import org.overture.ast.patterns.APatternListTypePair;
 import org.overture.ast.patterns.APatternTypePair;
 import org.overture.ast.patterns.AQuotePattern;
@@ -639,11 +662,10 @@ public class AstFactory
 
 		List<PDefinition> defs = new Vector<PDefinition>();
 
-			for (ILexNameToken var : af.createPPatternAssistant().getVariableNames(p))
-			{
-				defs.add(AstFactory.newAUntypedDefinition(result.getLocation(), var, scope));
-			}
-
+		for (ILexNameToken var : af.createPPatternAssistant().getVariableNames(p))
+		{
+			defs.add(AstFactory.newAUntypedDefinition(result.getLocation(), var, scope));
+		}
 
 		result.setDefs(defs);
 
@@ -765,8 +787,8 @@ public class AstFactory
 		{
 			ptypes.addAll(getTypeList(ptp));
 		}
-		AOperationType operationType = AstFactory.newAOperationType(result.getLocation(), ptypes, (result.getResult() == null ? AstFactory.newAVoidType(name.getLocation())
-				: result.getResult().getType()));
+		AOperationType operationType = AstFactory.newAOperationType(result.getLocation(), ptypes, result.getResult() == null ? AstFactory.newAVoidType(name.getLocation())
+				: result.getResult().getType());
 		result.setType(operationType);
 
 		return result;
@@ -817,7 +839,7 @@ public class AstFactory
 		AExternalClause result = new AExternalClause();
 		result.setMode(mode);
 		result.setIdentifiers(names);
-		result.setType((type == null) ? AstFactory.newAUnknownType(names.get(0).getLocation())
+		result.setType(type == null ? AstFactory.newAUnknownType(names.get(0).getLocation())
 				: type);
 
 		return result;
@@ -2399,6 +2421,26 @@ public class AstFactory
 		return result;
 	}
 
+	public static AObjectPattern newAObjectPattern(ILexNameToken classname,
+			List<ANamePatternPair> list)
+	{
+		AObjectPattern result = new AObjectPattern();
+		initPattern(result, classname.getLocation());
+		result.setFields(list);
+		result.setClassname(classname);
+		result.setType(AstFactory.getAUnresolvedType(classname));
+		return result;
+	}
+	
+	public static ANamePatternPair newANamePatternPair(ILexNameToken name, PPattern pattern)
+	{
+		ANamePatternPair pair = new ANamePatternPair();
+		pair.setName(name);
+		pair.setPattern(pattern);
+		pair.setResolved(false);
+		return pair;
+	}
+
 	private static AUnresolvedType getAUnresolvedType(ILexNameToken typename)
 	{
 		AUnresolvedType result = new AUnresolvedType();
@@ -3034,6 +3076,7 @@ public class AstFactory
 
 		result.setSuperdef(d);
 		result.setOldname(localname.getOldName());
+		result.setType(d.getType());
 
 		af.createPDefinitionAssistant().setClassDefinition(result, d.getClassDefinition());
 		result.setAccess(d.getAccess().clone());

@@ -23,10 +23,11 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.ValueException;
-
 
 public class ParameterValue extends Value
 {
@@ -45,7 +46,7 @@ public class ParameterValue extends Value
 
 		if (other instanceof ParameterValue)
 		{
-			ParameterValue ov = (ParameterValue)other;
+			ParameterValue ov = (ParameterValue) other;
 			return ov.type.equals(type);
 		}
 
@@ -71,7 +72,7 @@ public class ParameterValue extends Value
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws ValueException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done) throws ValueException
 	{
 		abort(4073, "Cannot convert type parameter value to " + to, ctxt);
 		return null;

@@ -17,7 +17,7 @@ public class Entry {
         } else {
             Number x = null;
             Boolean success_1 = false;
-            VDMSet set_1 = xs.clone();
+            VDMSet set_1 = Utils.clone(xs);
 
             for (Iterator iterator_1 = set_1.iterator();
                     iterator_1.hasNext() && !(success_1);) {
@@ -31,11 +31,24 @@ public class Entry {
             }
 
             Number letBeStExp_1 = x.longValue() +
-                sum(SetUtil.diff(xs.clone(), SetUtil.set(x))).longValue();
+                sum(SetUtil.diff(Utils.clone(xs), SetUtil.set(x))).longValue();
 
             return letBeStExp_1;
         }
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

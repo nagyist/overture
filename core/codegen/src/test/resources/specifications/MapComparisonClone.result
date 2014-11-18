@@ -5,8 +5,8 @@ import java.util.*;
 
 public class A {
     private static final VDMMap a = MapUtil.map(new Maplet(1L, 2L));
-    private static final Boolean b = MapUtil.equals(a, op());
-    private static final Boolean c = !(MapUtil.equals(a, op()));
+    private static final Boolean b = Utils.equals(a, op());
+    private static final Boolean c = !(Utils.equals(a, op()));
 
     public A() {
     }
@@ -14,6 +14,20 @@ public class A {
     public static VDMMap op() {
         return MapUtil.map(new Maplet(1L, 2L), new Maplet(3L, 4L));
     }
+
+    public String toString() {
+        return "A{" + "a = " + Utils.toString(a) + ", b = " +
+        Utils.toString(b) + ", c = " + Utils.toString(c) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

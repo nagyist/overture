@@ -1256,6 +1256,11 @@ public class DefinitionReader extends SyntaxReader
 
 		if (token.is(VDMToken.PERIODIC))
 		{
+			if (dialect != Dialect.VDM_RT)
+			{
+				throwMessage(2316, "Periodic threads only available in VDM-RT");
+			}
+
 			nextToken();
 			checkFor(VDMToken.BRA, 2112, "Expecting '(' after periodic");
 			List<PExp> args = getExpressionReader().readExpressionList();
@@ -1267,6 +1272,11 @@ public class DefinitionReader extends SyntaxReader
 			return AstFactory.newPeriodicAThreadDefinition(name, args);
 		} else if (token.is(VDMToken.SPORADIC))
 		{
+			if (dialect != Dialect.VDM_RT)
+			{
+				throwMessage(2317, "Sporadic threads only available in VDM-RT");
+			}
+
 			nextToken();
 			checkFor(VDMToken.BRA, 2312, "Expecting '(' after sporadic");
 			List<PExp> args = getExpressionReader().readExpressionList();

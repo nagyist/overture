@@ -13,6 +13,10 @@ public class Records {
         return new Vector2D(1L, 2L);
     }
 
+    public String toString() {
+        return "Records{" + "v := " + Utils.toString(v) + "}";
+    }
+
     public static class Vector2D implements Record {
         public Number x;
         public Number y;
@@ -45,6 +49,15 @@ public class Records {
             return Utils.recordToString(this, x, y);
         }
     }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

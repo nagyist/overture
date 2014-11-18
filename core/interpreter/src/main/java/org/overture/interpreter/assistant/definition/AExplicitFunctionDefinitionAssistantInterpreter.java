@@ -3,6 +3,7 @@ package org.overture.interpreter.assistant.definition;
 import java.util.HashMap;
 import java.util.List;
 
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.assistant.pattern.PTypeList;
 import org.overture.ast.definitions.AExplicitFunctionDefinition;
 import org.overture.ast.types.PType;
@@ -13,7 +14,7 @@ import org.overture.interpreter.values.FunctionValue;
 import org.overture.typechecker.assistant.definition.AExplicitFunctionDefinitionAssistantTC;
 
 public class AExplicitFunctionDefinitionAssistantInterpreter extends
-		AExplicitFunctionDefinitionAssistantTC
+		AExplicitFunctionDefinitionAssistantTC implements IAstAssistant
 {
 
 	protected static IInterpreterAssistantFactory af;
@@ -34,8 +35,7 @@ public class AExplicitFunctionDefinitionAssistantInterpreter extends
 		if (state.polyfuncs == null)
 		{
 			state.polyfuncs = new HashMap<List<PType>, FunctionValue>();
-		}
-		else
+		} else
 		{
 			// We always return the same function value for a polymorph
 			// with a given set of types. This is so that the one function
@@ -55,23 +55,21 @@ public class AExplicitFunctionDefinitionAssistantInterpreter extends
 
 		if (expdef.getPredef() != null)
 		{
-			prefv = getPolymorphicValue(af,expdef.getPredef(), actualTypes);
-		}
-		else
+			prefv = getPolymorphicValue(af, expdef.getPredef(), actualTypes);
+		} else
 		{
 			prefv = null;
 		}
 
 		if (expdef.getPostdef() != null)
 		{
-			postfv = getPolymorphicValue(af,expdef.getPostdef(), actualTypes);
-		}
-		else
+			postfv = getPolymorphicValue(af, expdef.getPostdef(), actualTypes);
+		} else
 		{
 			postfv = null;
 		}
 
-		FunctionValue rv = new FunctionValue(af,expdef, actualTypes, prefv, postfv, null);
+		FunctionValue rv = new FunctionValue(af, expdef, actualTypes, prefv, postfv, null);
 
 		state.polyfuncs.put(actualTypes, rv);
 		return rv;

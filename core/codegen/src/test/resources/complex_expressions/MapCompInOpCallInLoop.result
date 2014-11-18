@@ -23,12 +23,12 @@ public class Entry {
             Number x = ((Number) iterator_1.next());
 
             if (pick()) {
-                mapCompResult_1 = MapUtil.munion(mapCompResult_1.clone(),
+                mapCompResult_1 = MapUtil.munion(Utils.clone(mapCompResult_1),
                         MapUtil.map(new Maplet(x, x.longValue() * 2L)));
             }
         }
 
-        return mapCompResult_1.clone();
+        return Utils.clone(mapCompResult_1);
     }
 
     public static Number Test() {
@@ -42,6 +42,19 @@ public class Entry {
 
         return sum;
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

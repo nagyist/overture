@@ -1,5 +1,6 @@
 package org.overture.interpreter.assistant.definition;
 
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.definitions.AStateDefinition;
 import org.overture.interpreter.assistant.IInterpreterAssistantFactory;
 import org.overture.interpreter.runtime.Context;
@@ -11,7 +12,7 @@ import org.overture.interpreter.values.State;
 import org.overture.typechecker.assistant.definition.AStateDefinitionAssistantTC;
 
 public class AStateDefinitionAssistantInterpreter extends
-		AStateDefinitionAssistantTC
+		AStateDefinitionAssistantTC implements IAstAssistant
 {
 	protected static IInterpreterAssistantFactory af;
 
@@ -27,8 +28,7 @@ public class AStateDefinitionAssistantInterpreter extends
 		return VdmRuntime.getNodeState(state).moduleState.getContext();
 	}
 
-	public void initState(AStateDefinition sdef,
-			StateContext initialContext)
+	public void initState(AStateDefinition sdef, StateContext initialContext)
 	{
 		StateDefinitionRuntimeState state = new StateDefinitionRuntimeState();
 		VdmRuntime.setNodeState(sdef, state);
@@ -47,6 +47,5 @@ public class AStateDefinitionAssistantInterpreter extends
 		state.moduleState = new State(sdef);
 		state.moduleState.initialize(initialContext);
 	}
-
 
 }

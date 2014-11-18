@@ -5,7 +5,7 @@ import java.util.*;
 
 public class A {
     private static final VDMSet a = SetUtil.set(1L, 2L, 3L);
-    private static final VDMSet x = SetUtil.intersect(a.clone(), op());
+    private static final VDMSet x = SetUtil.intersect(Utils.clone(a), op());
 
     public A() {
     }
@@ -13,6 +13,20 @@ public class A {
     public static VDMSet op() {
         return SetUtil.set(1L, 2L, 3L);
     }
+
+    public String toString() {
+        return "A{" + "a = " + Utils.toString(a) + ", x = " +
+        Utils.toString(x) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

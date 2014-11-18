@@ -7,6 +7,10 @@ public class A {
     public A() {
     }
 
+    public String toString() {
+        return "A{}";
+    }
+
     public static class RecA implements Record {
         public Number i;
         public Character c;
@@ -51,6 +55,15 @@ public class A {
             return Utils.recordToString(this, i, c, r, q, n, n1);
         }
     }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

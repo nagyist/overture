@@ -17,6 +17,19 @@ public class Entry {
     public static String f() {
         return "cat";
     }
+
+    public String toString() {
+        return "Entry{" + "a = " + Utils.toString(a) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

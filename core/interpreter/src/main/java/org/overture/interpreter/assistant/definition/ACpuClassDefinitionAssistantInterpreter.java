@@ -1,5 +1,6 @@
 package org.overture.interpreter.assistant.definition;
 
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.definitions.ACpuClassDefinition;
 import org.overture.ast.lex.LexLocation;
 import org.overture.ast.lex.LexNameToken;
@@ -24,7 +25,7 @@ import org.overture.interpreter.values.VoidValue;
 import org.overture.typechecker.assistant.definition.ACpuClassDefinitionAssistantTC;
 
 public class ACpuClassDefinitionAssistantInterpreter extends
-		ACpuClassDefinitionAssistantTC
+		ACpuClassDefinitionAssistantTC implements IAstAssistant
 {
 
 	protected static IInterpreterAssistantFactory af;
@@ -56,11 +57,11 @@ public class ACpuClassDefinitionAssistantInterpreter extends
 		}
 
 		CPUValue cpu = new CPUValue((AClassType) node.getClasstype(), map, argvals);
-		
-		//TODO: Here is one basis to pass the parameter with the Context.
-		
+
+		// TODO: Here is one basis to pass the parameter with the Context.
+
 		RTLogger.log(new RTDeclareCPUMessage(cpu.resource.getNumber(), node.getName().getName()));
-		
+
 		return cpu;
 	}
 

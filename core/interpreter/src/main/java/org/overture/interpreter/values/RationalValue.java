@@ -23,12 +23,12 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.types.ARationalNumericBasicType;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
-import org.overture.interpreter.runtime.ValueException;
-
 
 public class RationalValue extends RealValue
 {
@@ -51,15 +51,15 @@ public class RationalValue extends RealValue
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
 		if (to instanceof ARationalNumericBasicType)
 		{
 			return this;
-		}
-		else
+		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 
@@ -69,8 +69,7 @@ public class RationalValue extends RealValue
 		try
 		{
 			return new RationalValue(value);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			// Can't happen?
 			return null;

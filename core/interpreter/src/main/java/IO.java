@@ -31,16 +31,22 @@ import java.io.Serializable;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.lex.Dialect;
 import org.overture.config.Settings;
+import org.overture.interpreter.VDMJ;
 import org.overture.interpreter.messages.Console;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.Interpreter;
 import org.overture.interpreter.runtime.ValueException;
 import org.overture.interpreter.runtime.VdmRuntime;
-import org.overture.interpreter.values.*;
+import org.overture.interpreter.values.BooleanValue;
+import org.overture.interpreter.values.CharacterValue;
+import org.overture.interpreter.values.NilValue;
+import org.overture.interpreter.values.SeqValue;
+import org.overture.interpreter.values.TupleValue;
+import org.overture.interpreter.values.Value;
+import org.overture.interpreter.values.ValueList;
+import org.overture.interpreter.values.VoidValue;
 import org.overture.parser.lex.LexTokenReader;
 import org.overture.parser.syntax.ExpressionReader;
-
-
 
 /**
  * This class contains the code for native IO operations.
@@ -48,7 +54,7 @@ import org.overture.parser.syntax.ExpressionReader;
 
 public class IO implements Serializable
 {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	private static String lastError = "";
 
 	public static Value writeval(Value tval)
@@ -65,17 +71,15 @@ public class IO implements Serializable
 	{
 		File file = getFile(fval);
 		String text = tval.toString();// stringOf(tval);
-		String fdir = dval.toString();	// <start>|<append>
+		String fdir = dval.toString(); // <start>|<append>
 
 		try
 		{
-			FileOutputStream fos =
-				new FileOutputStream(file, fdir.equals("<append>"));
+			FileOutputStream fos = new FileOutputStream(file, fdir.equals("<append>"));
 
 			fos.write(text.getBytes(Console.charset));
 			fos.close();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			lastError = e.getMessage();
 			return new BooleanValue(false);
@@ -87,7 +91,7 @@ public class IO implements Serializable
 	// Note that this method is not callable via the native interface, since it
 	// need access to the Context to call any type invariants involved while
 	// reading the data.
-	
+
 	public static Value freadval(Value fval, Context ctxt)
 	{
 		ValueList result = new ValueList();
@@ -95,8 +99,8 @@ public class IO implements Serializable
 		try
 		{
 			File file = getFile(fval);
-			
-			LexTokenReader ltr = new LexTokenReader(file, Dialect.VDM_PP);
+
+			LexTokenReader ltr = new LexTokenReader(file, Dialect.VDM_PP, VDMJ.filecharset);
 			ExpressionReader reader = new ExpressionReader(ltr);
 			reader.setCurrentModule("IO");
 			PExp exp = reader.readExpression();
@@ -105,8 +109,7 @@ public class IO implements Serializable
 			ip.typeCheck(exp, ip.getGlobalEnvironment());
 			result.add(new BooleanValue(true));
 			result.add(exp.apply(VdmRuntime.getExpressionEvaluator(), ctxt));
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			lastError = e.toString();
 			result = new ValueList();
@@ -116,12 +119,13 @@ public class IO implements Serializable
 
 		return new TupleValue(result);
 	}
-	
+
 	/**
-	 * Gets the absolute path the file based on the filename parsed and the working dir of the IDE or the
-	 * execution dir of VDMJ
+	 * Gets the absolute path the file based on the filename parsed and the working dir of the IDE or the execution dir
+	 * of VDMJ
 	 * 
-	 * @param fval file name
+	 * @param fval
+	 *            file name
 	 * @return
 	 */
 	protected static File getFile(Value fval)
@@ -145,21 +149,18 @@ public class IO implements Serializable
 		{
 			Console.out.print(text);
 			Console.out.flush();
-		}
-		else
+		} else
 		{
-			String fdir = dval.toString();	// <start>|<append>
+			String fdir = dval.toString(); // <start>|<append>
 
 			try
 			{
 				File file = getFile(fval);
-				FileOutputStream fos =
-					new FileOutputStream(file, fdir.equals("<append>"));
+				FileOutputStream fos = new FileOutputStream(file, fdir.equals("<append>"));
 
 				fos.write(text.getBytes(Console.charset));
 				fos.close();
-			}
-			catch (IOException e)
+			} catch (IOException e)
 			{
 				lastError = e.getMessage();
 				return new BooleanValue(false);
@@ -184,26 +185,24 @@ public class IO implements Serializable
 
 		if (val instanceof SeqValue)
 		{
-			SeqValue sv = (SeqValue)val;
+			SeqValue sv = (SeqValue) val;
 
-			for (Value v: sv.values)
+			for (Value v : sv.values)
 			{
 				v = v.deref();
 
 				if (v instanceof CharacterValue)
 				{
-					CharacterValue cv = (CharacterValue)v;
+					CharacterValue cv = (CharacterValue) v;
 					s.append(cv.unicode);
-				}
-				else
+				} else
 				{
 					s.append("?");
 				}
 			}
 
 			return s.toString();
-		}
-		else
+		} else
 		{
 			return val.toString();
 		}
@@ -215,7 +214,7 @@ public class IO implements Serializable
 		Console.out.flush();
 		return new VoidValue();
 	}
-	
+
 	public static Value println(Value v)
 	{
 		Console.out.printf("%s", v);
@@ -224,8 +223,7 @@ public class IO implements Serializable
 		return new VoidValue();
 	}
 
-	public static Value printf(Value fv, Value vs)
-		throws ValueException
+	public static Value printf(Value fv, Value vs) throws ValueException
 	{
 		String format = stringOf(fv);
 		ValueList values = vs.seqValue(null);
@@ -233,7 +231,7 @@ public class IO implements Serializable
 		Console.out.flush();
 		return new VoidValue();
 	}
-	
+
 	public static Value toString(Value v)
 	{
 		String text = v.toString().replaceAll("\"", "");

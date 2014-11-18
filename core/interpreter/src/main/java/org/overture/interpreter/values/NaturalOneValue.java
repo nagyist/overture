@@ -23,13 +23,13 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.messages.InternalException;
 import org.overture.ast.types.ANatOneNumericBasicType;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
-import org.overture.interpreter.runtime.ValueException;
-
 
 public class NaturalOneValue extends NaturalValue
 {
@@ -52,15 +52,15 @@ public class NaturalOneValue extends NaturalValue
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
 		if (to instanceof ANatOneNumericBasicType)
 		{
 			return this;
-		}
-		else
+		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 
@@ -70,8 +70,7 @@ public class NaturalOneValue extends NaturalValue
 		try
 		{
 			return new NaturalOneValue(longVal);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			throw new InternalException(5, "Illegal clone");
 		}

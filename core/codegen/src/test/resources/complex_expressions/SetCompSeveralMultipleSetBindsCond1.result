@@ -23,14 +23,27 @@ public class Entry {
                 Number y = ((Number) iterator_2.next());
 
                 if (1L == 1L) {
-                    setCompResult_1 = SetUtil.union(setCompResult_1.clone(),
+                    setCompResult_1 = SetUtil.union(Utils.clone(setCompResult_1),
                             SetUtil.set(x.longValue() * y.longValue()));
                 }
             }
         }
 
-        return setCompResult_1.clone();
+        return Utils.clone(setCompResult_1);
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

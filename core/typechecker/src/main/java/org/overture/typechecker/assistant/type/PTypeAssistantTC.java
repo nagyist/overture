@@ -1,9 +1,31 @@
+/*
+ * #%~
+ * The VDM Type Checker
+ * %%
+ * Copyright (C) 2008 - 2014 Overture
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #~%
+ */
 package org.overture.typechecker.assistant.type;
 
 import java.util.LinkedList;
 
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.intf.IQuestionAnswer;
+import org.overture.ast.assistant.IAstAssistant;
 import org.overture.ast.assistant.pattern.PTypeList;
 import org.overture.ast.assistant.type.PTypeAssistant;
 import org.overture.ast.definitions.ATypeDefinition;
@@ -30,7 +52,7 @@ import org.overture.typechecker.assistant.ITypeCheckerAssistantFactory;
 import org.overture.typechecker.utilities.type.ConcreateTypeImplementor;
 import org.overture.typechecker.utilities.type.PTypeResolver;
 
-public class PTypeAssistantTC extends PTypeAssistant
+public class PTypeAssistantTC extends PTypeAssistant implements IAstAssistant
 {
 	protected ITypeCheckerAssistantFactory af;
 
@@ -57,13 +79,12 @@ public class PTypeAssistantTC extends PTypeAssistant
 
 	}
 
-	public PType polymorph(PType type, ILexNameToken pname,
-			PType actualType)
+	public PType polymorph(PType type, ILexNameToken pname, PType actualType)
 	{
 		try
 		{
 			return type.apply(af.getConcreateTypeImplementor(), new ConcreateTypeImplementor.Newquestion(pname, actualType));
-			
+
 		} catch (AnalysisException e)
 		{
 			return null;
@@ -370,16 +391,16 @@ public class PTypeAssistantTC extends PTypeAssistant
 
 		return other;
 	}
-	
-//	public static Object deBracket(Object other) // used at pog-string-base, problematic conversion.
-//	{
-//		while (other instanceof ABracketType)
-//		{
-//			other = ((ABracketType) other).getType();
-//		}
-//
-//		return other;
-//	}
+
+	// public static Object deBracket(Object other) // used at pog-string-base, problematic conversion.
+	// {
+	// while (other instanceof ABracketType)
+	// {
+	// other = ((ABracketType) other).getType();
+	// }
+	//
+	// return other;
+	// }
 
 	public PType isType(PType type, String typename)
 	{
@@ -425,8 +446,7 @@ public class PTypeAssistantTC extends PTypeAssistant
 		}
 	}
 
-	public boolean equals(LinkedList<PType> parameters,
-			LinkedList<PType> other)
+	public boolean equals(LinkedList<PType> parameters, LinkedList<PType> other)
 	{
 
 		if (parameters.size() != other.size())
@@ -482,14 +502,14 @@ public class PTypeAssistantTC extends PTypeAssistant
 		try
 		{
 			return type.apply(af.getComposeTypeCollector());
-		}
-		catch (AnalysisException e)
+		} catch (AnalysisException e)
 		{
 			return new PTypeList();
 		}
 	}
-	
-	public PType checkConstraint(PType constraint, PType actual, ILexLocation location)
+
+	public PType checkConstraint(PType constraint, PType actual,
+			ILexLocation location)
 	{
 		if (constraint != null)
 		{
@@ -499,11 +519,12 @@ public class PTypeAssistantTC extends PTypeAssistant
 				TypeChecker.detail2("Actual", actual, "Expected", constraint);
 			}
 		}
-		
+
 		return actual;
 	}
 
-	public PType possibleConstraint(PType constraint, PType actual, ILexLocation location)
+	public PType possibleConstraint(PType constraint, PType actual,
+			ILexLocation location)
 	{
 		if (constraint != null)
 		{
@@ -517,18 +538,19 @@ public class PTypeAssistantTC extends PTypeAssistant
 		return actual;
 	}
 
-	public PType checkReturnType(PType constraint, PType actual, ILexLocation location)
+	public PType checkReturnType(PType constraint, PType actual,
+			ILexLocation location)
 	{
 		PTypeAssistantTC assistant = af.createPTypeAssistant();
-		
-		if (constraint != null && !(actual instanceof AVoidType) && !(assistant.isUnknown(actual)))
+
+		if (constraint != null && !(actual instanceof AVoidType)
+				&& !assistant.isUnknown(actual))
 		{
 			if (assistant.hasVoid(actual) && !(constraint instanceof AVoidType))
 			{
 				TypeChecker.report(3328, "Statement may return void value", location);
 				TypeChecker.detail2("Actual", actual, "Expected", constraint);
-			}
-			else if (!af.getTypeComparator().compatible(constraint, actual))
+			} else if (!af.getTypeComparator().compatible(constraint, actual))
 			{
 				TypeChecker.report(3327, "Value is not of the right type", location);
 				TypeChecker.detail2("Actual", actual, "Expected", constraint);

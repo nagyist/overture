@@ -28,6 +28,19 @@ public class Entry {
 
         return MapUtil.map(new Maplet(forAllExpResult_1, forAllExpResult_2));
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

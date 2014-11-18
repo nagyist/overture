@@ -44,16 +44,14 @@ import org.overture.parser.syntax.ExpressionReader;
 import org.overture.parser.syntax.ParserException;
 
 /**
- * 
  * This method expands the trace of a core element in the tree.
  * 
  * @author pvj
- *
  */
 public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 {
 	protected IInterpreterAssistantFactory af;
-	
+
 	public TraceExpander(IInterpreterAssistantFactory af)
 	{
 		this.af = af;
@@ -64,7 +62,7 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 			AApplyExpressionTraceCoreDefinition core, Context ctxt)
 			throws AnalysisException
 	{
-		//return AApplyExpressionTraceCoreDefinitionAssistantInterpreter.expand(core, ctxt);
+		// return AApplyExpressionTraceCoreDefinitionAssistantInterpreter.expand(core, ctxt);
 		List<PExp> newargs = new Vector<PExp>();
 		List<PExp> args = null;
 
@@ -124,54 +122,57 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 		} else
 		{
 			ACallObjectStm stmt = (ACallObjectStm) core.getCallStatement();
+			ACallObjectStm newCallStatement;
 
 			if (stmt.getClassname() != null)
 			{
-				newStatement = AstFactory.newACallObjectStm(stmt.getDesignator().clone(), stmt.getClassname().clone(), newargs);
+				newCallStatement = AstFactory.newACallObjectStm(stmt.getDesignator().clone(), stmt.getClassname().clone(), newargs);
 			} else
 			{
-				newStatement = AstFactory.newACallObjectStm(stmt.getDesignator().clone(), (LexIdentifierToken) stmt.getFieldname().clone(), newargs);
+				newCallStatement = AstFactory.newACallObjectStm(stmt.getDesignator().clone(), (LexIdentifierToken) stmt.getFieldname().clone(), newargs);
 			}
+			
+			newCallStatement.setField(stmt.getField());
+			newStatement = newCallStatement;
 		}
 
 		return new StatementTraceNode(newStatement);
 	}
-	
+
 	@Override
 	public TraceNode caseABracketedExpressionTraceCoreDefinition(
 			ABracketedExpressionTraceCoreDefinition core, Context ctxt)
 			throws AnalysisException
 	{
-		//return ABracketedExpressionTraceCoreDefinitionAssitantInterpreter.expand(core, ctxt);
+		// return ABracketedExpressionTraceCoreDefinitionAssitantInterpreter.expand(core, ctxt);
 		SequenceTraceNode node = new SequenceTraceNode();
 
 		for (ATraceDefinitionTerm term : core.getTerms())
 		{
-			//node.nodes.add(ATraceDefinitionTermAssistantInterpreter.expand(term, ctxt));
-			node.nodes.add(term.apply(THIS,ctxt)); 
-		}
-
-		return node;
-	}
-	
-	@Override
-	public TraceNode caseAConcurrentExpressionTraceCoreDefinition(
-			AConcurrentExpressionTraceCoreDefinition core, Context ctxt)
-			throws AnalysisException
-	{
-		//return AConcurrentExpressionTraceCoreDefinitionAssistantInterpreter.expand(core, ctxt);
-		ConcurrentTraceNode node = new ConcurrentTraceNode();
-
-		for (PTraceDefinition term : core.getDefs())
-		{
-			//node.nodes.add(PTraceDefinitionAssistantInterpreter.expand(term, ctxt));
+			// node.nodes.add(ATraceDefinitionTermAssistantInterpreter.expand(term, ctxt));
 			node.nodes.add(term.apply(THIS, ctxt));
 		}
 
 		return node;
 	}
-	
-	
+
+	@Override
+	public TraceNode caseAConcurrentExpressionTraceCoreDefinition(
+			AConcurrentExpressionTraceCoreDefinition core, Context ctxt)
+			throws AnalysisException
+	{
+		// return AConcurrentExpressionTraceCoreDefinitionAssistantInterpreter.expand(core, ctxt);
+		ConcurrentTraceNode node = new ConcurrentTraceNode();
+
+		for (PTraceDefinition term : core.getDefs())
+		{
+			// node.nodes.add(PTraceDefinitionAssistantInterpreter.expand(term, ctxt));
+			node.nodes.add(term.apply(THIS, ctxt));
+		}
+
+		return node;
+	}
+
 	@Override
 	public TraceNode caseATraceDefinitionTerm(ATraceDefinitionTerm node,
 			Context question) throws AnalysisException
@@ -181,12 +182,12 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 		for (PTraceDefinition term : node.getList())
 		{
 			newNode.alternatives.add(term.apply(THIS, question));
-			//newNode.alternatives.add(PTraceDefinitionAssistantInterpreter.expand(term, ctxt));
+			// newNode.alternatives.add(PTraceDefinitionAssistantInterpreter.expand(term, ctxt));
 		}
 
 		return newNode;
 	}
-	
+
 	@Override
 	public TraceNode defaultPTraceCoreDefinition(PTraceCoreDefinition node,
 			Context question) throws AnalysisException
@@ -194,7 +195,7 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 		assert false : "Should not happen";
 		return null;
 	}
-	
+
 	@Override
 	public TraceNode createNewReturnValue(INode node, Context question)
 			throws AnalysisException
@@ -210,7 +211,7 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public TraceNode caseAInstanceTraceDefinition(
 			AInstanceTraceDefinition term, Context ctxt)
@@ -219,13 +220,13 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 		assert false : "this one is not in Nicks tree";
 		return null;
 	}
-	
+
 	@Override
 	public TraceNode caseALetBeStBindingTraceDefinition(
 			ALetBeStBindingTraceDefinition term, Context ctxt)
 			throws AnalysisException
 	{
-		//return ALetBeStBindingTraceDefinitionAssistantInterpreter.expand(term, ctxt);
+		// return ALetBeStBindingTraceDefinitionAssistantInterpreter.expand(term, ctxt);
 		AlternativeTraceNode node = new AlternativeTraceNode();
 
 		try
@@ -292,13 +293,13 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 
 		return node;
 	}
-	
+
 	@Override
 	public TraceNode caseALetDefBindingTraceDefinition(
 			ALetDefBindingTraceDefinition term, Context ctxt)
 			throws AnalysisException
 	{
-		//return ALetDefBindingTraceDefinitionAssistantInterpreter.expand(term, ctxt);
+		// return ALetDefBindingTraceDefinitionAssistantInterpreter.expand(term, ctxt);
 		Context evalContext = new Context(af, term.getLocation(), "TRACE", ctxt);
 
 		for (PDefinition d : term.getLocalDefs())
@@ -310,12 +311,12 @@ public class TraceExpander extends QuestionAnswerAdaptor<Context, TraceNode>
 		node.addVariables(new TraceVariableList(evalContext, term.getLocalDefs()));
 		return node;
 	}
-	
+
 	@Override
 	public TraceNode caseARepeatTraceDefinition(ARepeatTraceDefinition term,
 			Context ctxt) throws AnalysisException
 	{
-		//return ARepeatTraceDefinitionAssistantInterpreter.expand(term, ctxt);
+		// return ARepeatTraceDefinitionAssistantInterpreter.expand(term, ctxt);
 		TraceNode body = af.createPTraceCoreDefinitionAssistant().expand(term.getCore(), ctxt);
 
 		if (term.getFrom() == 1 && term.getTo() == 1)

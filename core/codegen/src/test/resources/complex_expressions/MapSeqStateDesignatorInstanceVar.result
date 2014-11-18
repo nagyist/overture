@@ -12,8 +12,21 @@ public class Entry {
     public static Object Run() {
         x.put(4L, false);
 
-        return x.clone();
+        return Utils.clone(x);
     }
+
+    public String toString() {
+        return "Entry{" + "x := " + Utils.toString(x) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

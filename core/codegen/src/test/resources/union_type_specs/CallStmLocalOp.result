@@ -17,6 +17,10 @@ public class A {
 
         return op(((Number) a), b);
     }
+
+    public String toString() {
+        return "A{}";
+    }
 }
 
 ##########
@@ -32,6 +36,19 @@ public class Entry {
     public static Object Run() {
         return new A().go();
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

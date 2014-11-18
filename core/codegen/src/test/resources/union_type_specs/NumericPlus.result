@@ -15,6 +15,20 @@ public class Entry {
         return ((Number) a).doubleValue() + ((Number) b).doubleValue() +
         ((Number) c).doubleValue();
     }
+
+    public String toString() {
+        return "Entry{" + "a = " + Utils.toString(a) + ", b = " +
+        Utils.toString(b) + ", c = " + Utils.toString(c) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

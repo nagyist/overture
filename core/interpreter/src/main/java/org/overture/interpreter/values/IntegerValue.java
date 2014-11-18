@@ -23,13 +23,14 @@
 
 package org.overture.interpreter.values;
 
+import java.util.Set;
+
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.messages.InternalException;
 import org.overture.ast.types.AIntNumericBasicType;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.runtime.Context;
 import org.overture.interpreter.runtime.ValueException;
-
 
 public class IntegerValue extends RationalValue
 {
@@ -47,8 +48,8 @@ public class IntegerValue extends RationalValue
 	{
 		if (other instanceof IntegerValue)
 		{
-			IntegerValue io = (IntegerValue)other;
-			return (int)(longVal - io.longVal);
+			IntegerValue io = (IntegerValue) other;
+			return (int) (longVal - io.longVal);
 		}
 
 		return super.compareTo(other);
@@ -97,7 +98,7 @@ public class IntegerValue extends RationalValue
 	@Override
 	public int hashCode()
 	{
-		return (int)longVal;
+		return (int) longVal;
 	}
 
 	@Override
@@ -107,15 +108,15 @@ public class IntegerValue extends RationalValue
 	}
 
 	@Override
-	public Value convertValueTo(PType to, Context ctxt) throws AnalysisException
+	protected Value convertValueTo(PType to, Context ctxt, Set<PType> done)
+			throws AnalysisException
 	{
 		if (to instanceof AIntNumericBasicType)
 		{
 			return this;
-		}
-		else
+		} else
 		{
-			return super.convertValueTo(to, ctxt);
+			return super.convertValueTo(to, ctxt, done);
 		}
 	}
 
@@ -125,8 +126,7 @@ public class IntegerValue extends RationalValue
 		try
 		{
 			return new IntegerValue(longVal);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			throw new InternalException(5, "Illegal clone");
 		}

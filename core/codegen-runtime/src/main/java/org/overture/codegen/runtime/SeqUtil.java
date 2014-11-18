@@ -1,7 +1,27 @@
+/*
+ * #%~
+ * VDM Code Generator Runtime
+ * %%
+ * Copyright (C) 2008 - 2014 Overture
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #~%
+ */
 package org.overture.codegen.runtime;
 
 import java.util.Collections;
-
 
 public class SeqUtil
 {
@@ -75,6 +95,36 @@ public class SeqUtil
 		}
 		
 		return builder.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static VDMSeq subSeq(VDMSeq seq, long fromIndex, long toIndex)
+	{
+		if(fromIndex > toIndex || toIndex < 1)
+		{
+			return seq();
+		}
+		
+		fromIndex = Utils.index(Math.max(1, fromIndex));
+		toIndex = Math.min(seq.size(), toIndex);
+		
+		VDMSeq subSeq = seq();
+		subSeq.addAll(seq.subList(Utils.toInt(fromIndex), Utils.toInt(toIndex)));
+		
+		return subSeq;
+	}
+	
+	public static String subSeq(String seq, long fromIndex, long toIndex)
+	{
+		if(fromIndex > toIndex || toIndex < 1)
+		{
+			return "";
+		}
+		
+		fromIndex = Utils.index(Math.max(1, fromIndex));
+		toIndex = Math.min(seq.length(), toIndex);
+		
+		return seq.substring(Utils.toInt(fromIndex), Utils.toInt(toIndex));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -180,14 +230,6 @@ public class SeqUtil
 		}
 		
 		return indices;
-	}
-	
-	public static boolean equals(VDMSeq left, VDMSeq right)
-	{
-		if(left == null || right == null)
-			throw new IllegalArgumentException("A sequences cannot be compared to null");
-		
-		return left.equals(right);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -5,8 +5,8 @@ import java.util.*;
 
 public class A {
     private static final VDMSet a = SetUtil.set(1L, 2L, 3L);
-    private static final VDMSet b = SetUtil.dinter(SetUtil.set(a.clone(),
-                a.clone(), a.clone()));
+    private static final VDMSet b = SetUtil.dinter(SetUtil.set(Utils.clone(a),
+                Utils.clone(a), Utils.clone(a)));
     private static final VDMSet c = SetUtil.dinter(op());
 
     public A() {
@@ -15,6 +15,20 @@ public class A {
     public static VDMSet op() {
         return SetUtil.set(SetUtil.set(1L, 2L, 3L), SetUtil.set(3L, 4L, 5L));
     }
+
+    public String toString() {
+        return "A{" + "a = " + Utils.toString(a) + ", b = " +
+        Utils.toString(b) + ", c = " + Utils.toString(c) + "}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########

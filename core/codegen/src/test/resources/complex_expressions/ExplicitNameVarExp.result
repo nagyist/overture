@@ -10,6 +10,10 @@ public class A {
     public Number opA() {
         return 1L;
     }
+
+    public String toString() {
+        return "A{}";
+    }
 }
 
 ##########
@@ -23,7 +27,11 @@ public class B extends A {
     }
 
     public Number opB() {
-        return opA();
+        return super.opA();
+    }
+
+    public String toString() {
+        return "B{}";
     }
 }
 
@@ -40,6 +48,19 @@ public class Entry {
     public static Object Run() {
         return new B().opB();
     }
+
+    public String toString() {
+        return "Entry{}";
+    }
+}
+
+##########
+
+package quotes;
+
+public interface Quotes {
+    public static Number start = 1L;
+    public static Number append = 2L;
 }
 
 ##########
