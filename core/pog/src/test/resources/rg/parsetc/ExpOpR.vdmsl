@@ -1,0 +1,4 @@
+operations
+op2 : () ==> ()
+op2 () == skip
+rely true;

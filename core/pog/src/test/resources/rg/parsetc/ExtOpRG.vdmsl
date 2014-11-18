@@ -1,0 +1,5 @@
+operations
+op3 () == skip
+post true
+rely true 
+guar true;

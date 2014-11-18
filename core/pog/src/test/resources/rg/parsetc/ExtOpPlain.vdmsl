@@ -1,0 +1,3 @@
+operations
+op3 () == skip
+post true;
