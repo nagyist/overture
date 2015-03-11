@@ -1,14 +1,16 @@
 package org.overture.interpreter.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 public abstract class QuickProfiler
 {
 
-	private static String PROFILE_PATH = "profile.csv";
+	private static String PROFILE_PATH = "generated/profile.csv";
 	private static StringBuilder sb = new StringBuilder();
 
 	public static void printDuration(long start, String name)
@@ -23,13 +25,32 @@ public abstract class QuickProfiler
 
 	public static void print()
 	{
+		Writer writer = null;
 		try
 		{
-			FileUtils.writeStringToFile(new File(PROFILE_PATH), sb.toString(), false);
+			File file = new File(PROFILE_PATH);
+			if (file.exists())
+			{
+				file.delete();
+			}
+			file.getParentFile().mkdirs();
+
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+			writer.write(sb.toString());
+
 		} catch (IOException e)
 		{
+			System.out.println(e.toString());
 			e.printStackTrace();
+		} finally
+		{
+			try
+			{
+				writer.close();
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
-
 }

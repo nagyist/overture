@@ -78,6 +78,7 @@ import org.overture.ide.debug.core.model.IVdmVariable;
 import org.overture.ide.debug.logging.LogItem;
 import org.overture.ide.debug.logging.LogView;
 import org.overture.ide.debug.utils.CharOperation;
+import org.overture.interpreter.util.QuickProfiler;
 
 public class VdmDebugTarget extends VdmDebugElement implements IVdmDebugTarget,
 		IVdmThreadManagerListener, IStepFilters
@@ -838,6 +839,8 @@ public class VdmDebugTarget extends VdmDebugElement implements IVdmDebugTarget,
 
 		try
 		{
+			QuickProfiler.print();
+			
 			if (isCoverageEnabled())
 			{
 				DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");

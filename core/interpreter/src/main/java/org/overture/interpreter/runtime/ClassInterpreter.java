@@ -247,7 +247,6 @@ public class ClassInterpreter extends Interpreter
 
 		RuntimeValidator.stop();
 
-		QuickProfiler.print();
 		return main.getResult(); // Can throw ContextException
 	}
 
