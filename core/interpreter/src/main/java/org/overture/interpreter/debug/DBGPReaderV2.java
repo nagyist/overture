@@ -85,6 +85,7 @@ import org.overture.interpreter.scheduler.BasicSchedulableThread;
 import org.overture.interpreter.scheduler.ISchedulableThread;
 import org.overture.interpreter.traces.TraceReductionType;
 import org.overture.interpreter.util.ExitStatus;
+import org.overture.interpreter.util.QuickProfiler;
 import org.overture.interpreter.values.BooleanValue;
 import org.overture.interpreter.values.CPUValue;
 import org.overture.interpreter.values.CharacterValue;
@@ -2043,6 +2044,9 @@ public class DBGPReaderV2 extends DBGPReader implements Serializable
 			throws IOException
 	{
 
+		
+		File profile = coverage.getParentFile().getParentFile();
+		QuickProfiler.print(profile);
 		Properties.init(); // Read properties file, if any
 
 		for (File f : interpreter.getSourceFiles())

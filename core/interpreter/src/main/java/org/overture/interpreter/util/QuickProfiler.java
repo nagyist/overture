@@ -6,12 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 public abstract class QuickProfiler
 {
 
-	private static String PROFILE_PATH = "generated/profile.csv";
-	private static StringBuilder sb = new StringBuilder();
+	private static String PROFILE_PATH = "/profile.csv";
+	private static StringBuilder sb = new StringBuilder( "\"operation\",\"duration\"\n");
 
 	public static void printDuration(long start, String name)
 	{
@@ -23,19 +24,23 @@ public abstract class QuickProfiler
 		sb.append("\n");
 	}
 
-	public static void print()
+	public static String get(){
+		return sb.toString();
+	}
+	
+	public static void print(File dest)
 	{
 		Writer writer = null;
 		try
 		{
-			File file = new File(PROFILE_PATH);
+			File file = new File(dest.getAbsolutePath()+PROFILE_PATH);
 			if (file.exists())
 			{
 				file.delete();
 			}
 			file.getParentFile().mkdirs();
 
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
 			writer.write(sb.toString());
 
 		} catch (IOException e)

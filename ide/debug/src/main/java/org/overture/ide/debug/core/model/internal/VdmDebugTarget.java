@@ -838,9 +838,7 @@ public class VdmDebugTarget extends VdmDebugElement implements IVdmDebugTarget,
 	{
 
 		try
-		{
-			QuickProfiler.print();
-			
+		{		
 			if (isCoverageEnabled())
 			{
 				DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
