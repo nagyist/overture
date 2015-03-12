@@ -2047,22 +2047,22 @@ public class DBGPReaderV2 extends DBGPReader implements Serializable
 		
 		File profile = coverage.getParentFile().getParentFile();
 		QuickProfiler.print(profile);
-		Properties.init(); // Read properties file, if any
+//		Properties.init(); // Read properties file, if any
 
-		for (File f : interpreter.getSourceFiles())
-		{
+//		for (File f : interpreter.getSourceFiles())
+//		{
+//
+//			SourceFile source = interpreter.getSourceFile(f);
+//
+//			File data = new File(coverage.getPath() + File.separator
+//					+ f.getName() + ".covtbl");
+//			PrintWriter pw = new PrintWriter(data);
+//			source.writeCoverage(pw);
+//			pw.close();
+//
+//		}
 
-			SourceFile source = interpreter.getSourceFile(f);
-
-			File data = new File(coverage.getPath() + File.separator
-					+ f.getName() + ".covtbl");
-			PrintWriter pw = new PrintWriter(data);
-			source.writeCoverage(pw);
-			pw.close();
-
-		}
-
-		Properties.parser_tabstop = 1;// required to match locations with the editor representation
+//		Properties.parser_tabstop = 1;// required to match locations with the editor representation
 	}
 
 	public static String getStackTrace(Throwable t)
