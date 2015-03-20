@@ -51,7 +51,9 @@ import org.overture.codegen.cgast.expressions.ASetSubsetBinaryExpCG;
 import org.overture.codegen.cgast.expressions.ATupleCompatibilityExpCG;
 import org.overture.codegen.cgast.expressions.ATupleSizeExpCG;
 import org.overture.codegen.cgast.statements.AAssignToExpStmCG;
+import org.overture.codegen.cgast.statements.ACallObjectExpStmCG;
 import org.overture.codegen.cgast.statements.AForAllStmCG;
+import org.overture.codegen.cgast.statements.AInvCheckStmCG;
 import org.overture.codegen.cgast.statements.AMapSeqUpdateStmCG;
 import org.overture.codegen.cgast.types.AExternalTypeCG;
 import org.overture.codegen.cgast.types.AMethodTypeCG;
@@ -107,6 +109,11 @@ public class JavaValueSemantics
 			return false;
 		}
 		
+		if(cloneNotNeededCallObj(exp))
+		{
+			return false;
+		}
+		
 		STypeCG type = exp.getTuple().getType();
 
 		if (type instanceof ATupleTypeCG)
@@ -144,6 +151,11 @@ public class JavaValueSemantics
 		}
 		
 		if(cloneNotNeededAssign(exp))
+		{
+			return false;
+		}
+		
+		if(cloneNotNeededCallObj(exp))
 		{
 			return false;
 		}
@@ -192,6 +204,11 @@ public class JavaValueSemantics
 			{
 				return false;
 			}
+		}
+		
+		if(cloneNotNeededCallObj(exp))
+		{
+			return false;
 		}
 		
 		if(cloneNotNeededMapPutGet(exp))
@@ -281,6 +298,7 @@ public class JavaValueSemantics
 				|| parent instanceof AAddrNotEqualsBinaryExpCG
 				|| parent instanceof AForAllStmCG
 				|| parent instanceof AInstanceofExpCG
+				|| parent instanceof AInvCheckStmCG
 				|| cloneNotNeededCollectionOperator(parent)
 				|| cloneNotNeededUtilCall(parent);
 	}
@@ -372,6 +390,21 @@ public class JavaValueSemantics
 		{
 			AAssignToExpStmCG assignment = (AAssignToExpStmCG) parent;
 			if (assignment.getTarget() == exp)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean cloneNotNeededCallObj(SExpCG exp)
+	{
+		INode parent = exp.parent();
+		
+		if(parent instanceof ACallObjectExpStmCG)
+		{
+			if(((ACallObjectExpStmCG) parent).getObj() == exp)
 			{
 				return true;
 			}

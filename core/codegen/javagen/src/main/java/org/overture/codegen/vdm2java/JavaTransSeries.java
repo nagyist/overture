@@ -12,6 +12,7 @@ import org.overture.codegen.traces.TracesTransformation;
 import org.overture.codegen.trans.AssignStmTransformation;
 import org.overture.codegen.trans.CallObjStmTransformation;
 import org.overture.codegen.trans.IPostCheckCreator;
+import org.overture.codegen.trans.StateInvTransformation;
 import org.overture.codegen.trans.IsExpTransformation;
 import org.overture.codegen.trans.PostCheckTransformation;
 import org.overture.codegen.trans.PreCheckTransformation;
@@ -79,6 +80,9 @@ public class JavaTransSeries
 		UnionTypeTransformation unionTypeTransformation = new UnionTypeTransformation(transAssistant, irInfo, classes, APPLY_EXP_NAME_PREFIX, OBJ_EXP_NAME_PREFIX, CALL_STM_OBJ_NAME_PREFIX, MISSING_OP_MEMBER, MISSING_MEMBER);
 		JavaClassToStringTrans javaToStringTransformation = new JavaClassToStringTrans(irInfo);
 
+		//TODO: Consider where to put (after union type transformations?)
+		StateInvTransformation indTransformation = new StateInvTransformation(irInfo,transAssistant, classes);
+		
 		DepthFirstAnalysisAdaptor[] analyses = new DepthFirstAnalysisAdaptor[] {
 				assignTransformation,
 				callObjTransformation,
@@ -87,7 +91,7 @@ public class JavaTransSeries
 				preCheckTransformation, postCheckTransformation,
 				isExpTransformation, unionTypeTransformation,
 				javaToStringTransformation, concurrencytransform,
-				mutexTransform, mainclassTransform, seqConversionTransformation, instanceVarPPEval };
+				mutexTransform, mainclassTransform, seqConversionTransformation, instanceVarPPEval, indTransformation };
 
 		return analyses;
 	}

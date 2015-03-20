@@ -1,0 +1,3 @@
+#set( $subject = $JavaFormat.format(${node.getSubject()}))
+###set( $className = $JavaFormat.getEnclosingClassName($node))
+${subject}.inv_();
