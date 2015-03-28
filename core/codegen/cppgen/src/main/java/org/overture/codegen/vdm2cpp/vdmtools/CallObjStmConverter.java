@@ -13,7 +13,7 @@ import org.overture.codegen.cgast.statements.ACallObjectStmCG;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
-import org.overture.codegen.trans.uniontypes.ObjectDesignatorToExpCG;
+import org.overture.codegen.trans.conv.ObjectDesignatorToExpCG;
 
 public class CallObjStmConverter extends DepthFirstAnalysisAdaptor {
 	private TransAssistantCG transAssistant;

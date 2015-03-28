@@ -3,6 +3,7 @@
 
   <parent>
     <groupId>org.overturetool</groupId>
+<artifactId>core</artifactId>
     <version>2.2.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -18,10 +19,11 @@
   </properties>
 
   <modules>
-    <module>javagen</module>
+    	<module>javagen</module>
 	<module>codegen-runtime</module>
-    <module>codegen-maven-plugin</module>
+    	<module>codegen-maven-plugin</module>
 	<!-- <module>cgisa</module> -->
+	<module>cppgen</module>
   </modules>
   
 </project>
