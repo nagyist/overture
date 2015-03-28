@@ -57,12 +57,14 @@ public class CppCodeGenMain
 				gen_timing = true;
 			}
 		}
-		
+		File inputRoot = new File(args[3]);
 		if (setting.toLowerCase().equals("oo"))
 		{
 			try
 			{
-				List<File> files = GeneralUtils.getFilesRecursive(new File(args[3]));
+				
+				
+				List<File> files = GeneralUtils.getFilesRecursive(inputRoot);
 				for( File f : files)
 				{
 					
@@ -79,7 +81,7 @@ public class CppCodeGenMain
 					
 				}
 
-				List<File> libFiles = GeneralUtils.getFiles(new File("src\\test\\resources\\lib"));
+				List<File> libFiles = GeneralUtils.getFiles(new File("src/test/resources/lib".replace('/', File.separatorChar)));
 				nfiles.addAll(libFiles);
 
 				GeneratedData data = CppCodeGenUtil.generateCppFromFiles(nfiles, irSettings, cppSettings, dialect,cpp_gen_type,gen_timing);
@@ -102,7 +104,12 @@ public class CppCodeGenMain
 					} else
 					{
 						//Logger.getLog().println(generatedClass.getContent());
-						CppCodeGenUtil.saveCppClass(new File("src-gen/m2"), generatedClass.getName()+".hpp", generatedClass.getContent());
+						File output = new File("target/test-results/"+inputRoot.getName());
+						
+						if(args.length>3)
+							output = new File(args[4]);
+						
+						CppCodeGenUtil.saveCppClass(output, generatedClass.getName()+".hpp", generatedClass.getContent());
 					}
 
 					Logger.getLog().println("\n");
